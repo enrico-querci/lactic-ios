@@ -415,7 +415,12 @@ Dependabot for GitHub Actions and Swift packages, matching the API repo.
 3. `LacticCore` + `LacticKit` models and `APIClient`, with Swift Testing coverage for every remaining trap against fixture JSON captured from step 1's real responses.
 4. ~~Auth: Keychain store, single-flight refresh, `dev_login`~~ — **DONE**. `SessionStore` is `@MainActor @Observable` and conforms to `TokenProviding`; refresh is coalesced through a single `Task`, proven by a test where eight concurrent callers produce exactly one `/auth/refresh` request. Storage is behind a `SecureStorage` protocol so tests use memory rather than an unsigned host keychain.
 5. `LacticUI` design system.
-6. Client app: Home → Programs → Workout execution (with `WorkoutRecorder`) → History → Exercise detail → Settings.
+6. Client app, split into three passes because it contains two different kinds of work:
+   - **6A — read-only screens.** Home, Programs, Program detail, History, History detail, Exercise detail, Settings, and the tab shell. Mechanical view work on a finished foundation (all 24 `ClientAPI` endpoints and 22 models already exist), and the pass where `LacticUI` first meets real data.
+   - **6B — `WorkoutRecorder` and the outbox, with no UI.** Its failure modes are force-quit mid-set, dead signal and duplicate replay; those are fast unit tests against a stub transport and near-impossible to exercise through a screen. Building it inside the execution view would mean only ever checking it by driving a simulator, which here costs a throwaway XCUITest target each time.
+   - **6C — the workout execution screen**, wiring the recorder to resume detection, per-exercise cards, the "last time" assist, on-demand animation and unbounded extra sets.
+
+   Session and per-exercise notes are **in scope for iOS** even though `lactic-web` has no UI for them; the API has supported both since the logging endpoints landed. The web gap is recorded in `AGENTS.md` §8.
 7. Rest timer, notes, localization (`.xcstrings`, en + it — ~150 client-facing keys, mirroring `lactic-web/lib/i18n/messages/en.ts` namespaces).
 8. **Google Sign-In** — Google Cloud iOS OAuth client, `GIDClientID` + reversed-client-id URL scheme in `Info.plist`, `GoogleSignInProvider`, and `POST /auth`. Decode the first real ID token and check its `aud` before deciding whether `Auth::GoogleVerifier` needs widening. `include ErrorHandling` in `AuthController` ships with this.
 9. **Invitation onboarding** — now testable, because it needs a real signed-in identity and Google provides one. Manual code/link entry plus the `onOpenURL` handler; Universal Links stay deferred (they need an Apple Team ID and an `apple-app-site-association` file on `lactic-web`).

@@ -591,6 +591,11 @@ npm run build
 - Advanced analytics and progress charts.
 - Supersets and linked exercises.
 - Photo/video object storage and upload pipeline.
+- **Session and per-exercise notes UI in the web portal.** The API has
+  supported `workout_sessions.notes` and `exercise_logs.notes` since the
+  logging endpoints landed, and §4.1 lists them as a client feature, but
+  `lactic-web` never built UI for either. The iOS client writes both, so until
+  the web catches up a note taken on the phone is invisible in the browser.
 - Apple Sign-In UI in the web portal.
 - Optional email/password authentication only if product requirements change.
 - In-App Purchase for the native iOS Lactic Studio app once it exists.
