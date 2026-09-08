@@ -1,0 +1,19 @@
+// Lactic Studio — the coach/admin app. iPad first, iPhone supported.
+
+// No space: PRODUCT_NAME names the binary and the .app bundle, and a space
+// there breaks TEST_HOST resolution and makes every script path awkward. The
+// user-facing name is CFBundleDisplayName below.
+PRODUCT_NAME = LacticStudio
+PRODUCT_BUNDLE_IDENTIFIER = com.enricoquerci.lacticstudio
+PRODUCT_MODULE_NAME = LacticStudio
+CURRENT_PROJECT_VERSION = 1
+MARKETING_VERSION = 0.1.0
+
+// 1,2 = iPhone and iPad. Layout is designed iPad-first.
+TARGETED_DEVICE_FAMILY = 1,2
+INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait
+
+INFOPLIST_KEY_CFBundleDisplayName = Lactic Studio
+INFOPLIST_KEY_UILaunchScreen_Generation = YES
+INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES

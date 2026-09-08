@@ -1,0 +1,134 @@
+# XcodeGen project definition — the source of truth for Lactic.xcodeproj.
+#
+# The .xcodeproj is generated and git-ignored. Run `make project` after editing
+# this file or adding a target. Build SETTINGS belong in Configs/*.xcconfig,
+# not here and not in Xcode's UI, because a regenerate discards UI-only edits.
+
+name: Lactic
+options:
+  bundleIdPrefix: com.enricoquerci
+  createIntermediateGroups: true
+  deploymentTarget:
+    iOS: "18.0"
+  groupSortPosition: top
+  generateEmptyDirectories: true
+  findCarthageFrameworks: false
+
+configs:
+  Debug: debug
+  Release: release
+
+# Repo-wide settings come from the xcconfigs so that Xcode, xcodebuild and CI
+# all read the same file.
+configFiles:
+  Debug: Configs/Debug.xcconfig
+  Release: Configs/Release.xcconfig
+
+packages:
+  LacticCore:
+    path: Packages/LacticCore
+  LacticKit:
+    path: Packages/LacticKit
+  LacticUI:
+    path: Packages/LacticUI
+
+targetTemplates:
+  App:
+    type: application
+    platform: iOS
+    sources:
+      - path: Apps/${target_name}
+        excludes: ["Support/Info.plist"]
+    dependencies:
+      - package: LacticCore
+        product: LacticCore
+      - package: LacticKit
+        product: LacticKit
+      - package: LacticUI
+        product: LacticUI
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: Apps/${target_name}/Support/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+
+  AppTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - Apps/${target_name}
+    settings:
+      base:
+        # Without this the bundle has no Info.plist and codesign refuses it,
+        # so `xcodebuild test` fails before a single test runs.
+        GENERATE_INFOPLIST_FILE: YES
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+
+targets:
+  Lactic:
+    templates: [App]
+    configFiles:
+      Debug: Configs/Lactic.xcconfig
+      Release: Configs/Lactic.xcconfig
+
+  LacticTests:
+    templates: [AppTests]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.enricoquerci.lactic.tests
+    dependencies:
+      - target: Lactic
+
+  LacticStudio:
+    templates: [App]
+    configFiles:
+      Debug: Configs/LacticStudio.xcconfig
+      Release: Configs/LacticStudio.xcconfig
+
+  LacticStudioTests:
+    templates: [AppTests]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.enricoquerci.lacticstudio.tests
+    dependencies:
+      - target: LacticStudio
+
+schemes:
+  Lactic:
+    build:
+      targets:
+        Lactic: all
+        LacticTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets: [LacticTests]
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
+
+  LacticStudio:
+    build:
+      targets:
+        LacticStudio: all
+        LacticStudioTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets: [LacticStudioTests]
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

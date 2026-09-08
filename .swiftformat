@@ -1,0 +1,27 @@
+# SwiftFormat configuration for lactic-ios.
+# Run `make format` to apply, `make lint` to check.
+
+--swiftversion 6.0
+--exclude .build,DerivedData,**/.build
+
+# Layout
+--indent 4
+--maxwidth 120
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--closingparen balanced
+
+# Style
+--self remove
+--importgrouping testable-bottom
+--commas always
+--trimwhitespace always
+--stripunusedargs closure-only
+--patternlet inline
+
+# Keep MARK comments tidy and consistent.
+--markextensions always
+--typeblanklines remove
+
+--disable redundantInternal

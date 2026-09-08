@@ -1,0 +1,34 @@
+# Xcode project — generated from project.yml by XcodeGen. Never commit it:
+# project.yml and Configs/*.xcconfig are the source of truth. Run `make project`.
+*.xcodeproj
+*.xcworkspace
+!*.xcodeproj/project.xcworkspace
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/*/.build/
+Packages/*/.swiftpm/
+
+# The app targets resolve packages through the generated project, so a
+# top-level Package.resolved is noise. Package-local ones are committed.
+/Package.resolved
+
+# Fastlane / signing artefacts
+*.mobileprovision
+*.p12
+*.cer
+
+# macOS
+.DS_Store

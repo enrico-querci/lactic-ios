@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- The rest of Info.plist is generated from INFOPLIST_KEY_* settings in
+	     Configs/*.xcconfig; only keys with no build-setting equivalent live here. -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<!-- Permits http://localhost:3000, the local Rails API used for
+		     development and for the dev_login sign-in path. This relaxes ATS
+		     for local/private-range hosts only, never for the public internet,
+		     so it is safe to ship and needs no App Review justification. -->
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+</dict>
+</plist>

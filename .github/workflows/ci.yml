@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pinned so a runner image update cannot silently change the toolchain.
+  DEVELOPER_DIR: /Applications/Xcode_26.app/Contents/Developer
+
+jobs:
+  lint:
+    runs-on: macos-15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install tools
+        run: brew install xcodegen swiftlint swiftformat
+
+      - name: Check formatting
+        run: swiftformat --lint .
+
+      - name: Lint
+        run: swiftlint lint --strict
+
+  test:
+    runs-on: macos-15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install tools
+        run: brew install xcodegen
+
+      # Package tests run on the host with no simulator, so they fail fast and
+      # cover everything in LacticCore and LacticKit before the slow job starts.
+      - name: Test packages
+        run: make test-packages
+
+      - name: Generate project
+        run: make project
+
+      - name: Build and test both app schemes
+        run: make test
