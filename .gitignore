@@ -32,3 +32,4 @@ Packages/*/.swiftpm/
 
 # macOS
 .DS_Store
+.screenshots/

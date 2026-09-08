@@ -19,6 +19,12 @@ struct SignedInPlaceholderView: View {
                     LabeledContent("User ID", value: String(user.id))
                 }
 
+                #if DEBUG
+                    Section {
+                        NavigationLink("Design system") { DesignSystemGalleryView() }
+                    }
+                #endif
+
                 Section {
                     Button("Sign out", role: .destructive) {
                         Task { await environment.session.signOut() }
