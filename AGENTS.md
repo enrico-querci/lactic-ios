@@ -577,6 +577,7 @@ npm run build
 | 13 | Open coach signup, gated by a paid plan's client limit rather than an allowlist | Removes the manual step from customer acquisition; `COACH_EMAILS` is repurposed as an unlimited comp list instead of deleted, so existing comped access keeps working |
 | 14 | RevenueCat Web Billing for subscriptions | Web-only today with a native iOS app as a future target; RevenueCat unifies entitlements across both under one App User ID (the coach's own `User#id`) without committing to Apple In-App Purchase before that app exists |
 | 15 | Subscription state always re-derived from `expires_at`, never a stored status | Self-heals if a webhook is missed, delayed, or arrives out of order — RevenueCat's own delivery guarantee is at-least-once with no ordering guarantee |
+| 16 | `lactic-ios` generates its Xcode project from `project.yml` (XcodeGen) and git-ignores `Lactic.xcodeproj` | Removes `project.pbxproj` as a merge-conflict surface and makes adding a file a filesystem operation rather than a project edit. Build settings live in `Configs/*.xcconfig` as a direct consequence: the Xcode UI writes into the generated project, where a regenerate silently discards the change |
 
 ---
 
