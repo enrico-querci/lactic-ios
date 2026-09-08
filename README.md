@@ -43,11 +43,18 @@ make format     # apply formatting
 without a simulator, so they are the fast inner loop for anything in
 `LacticCore` or `LacticKit`.
 
-Override the simulator if you do not have the default one:
+Override the simulator if you do not have the default one, or replace the
+destination entirely:
 
 ```bash
 make test SIMULATOR="iPhone 17" IOS=26.5
+make build DESTINATION="generic/platform=iOS Simulator"
 ```
+
+CI runs `lint`, the package tests, and a generic-destination build of both app
+targets. It deliberately does **not** run the app-scheme tests: those need a
+booted simulator, which is slow and ties CI to whichever iOS runtimes the
+runner image ships. Run `make test` locally before pushing.
 
 ## Packages
 

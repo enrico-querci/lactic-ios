@@ -7,8 +7,12 @@
 SIMULATOR ?= iPhone 17 Pro
 IOS       ?= 26.5
 PROJECT   := Lactic.xcodeproj
-DEST      := platform=iOS Simulator,name=$(SIMULATOR),OS=$(IOS)
 PACKAGES  := LacticCore LacticKit LacticUI
+
+# Overridable wholesale, because a machine that lacks this exact runtime — a CI
+# runner, or a laptop a version behind — should not need the Makefile edited.
+# CI passes a UDID it discovered from `simctl list devices available`.
+DESTINATION ?= platform=iOS Simulator,name=$(SIMULATOR),OS=$(IOS)
 
 .DEFAULT_GOAL := help
 .PHONY: help project build test test-packages lint format clean
@@ -22,7 +26,7 @@ project: ## Regenerate Lactic.xcodeproj from project.yml
 build: project ## Build both app schemes for the simulator
 	@for scheme in Lactic LacticStudio; do \
 		echo "--- building $$scheme ---"; \
-		xcodebuild build -project $(PROJECT) -scheme $$scheme -destination "$(DEST)" -quiet || exit 1; \
+		xcodebuild build -project $(PROJECT) -scheme $$scheme -destination "$(DESTINATION)" -quiet || exit 1; \
 	done
 
 test-packages: ## Run the Swift Package tests on the host (fast, no simulator)
@@ -34,7 +38,7 @@ test-packages: ## Run the Swift Package tests on the host (fast, no simulator)
 test: project test-packages ## Run package tests and both app test schemes
 	@for scheme in Lactic LacticStudio; do \
 		echo "--- testing $$scheme ---"; \
-		xcodebuild test -project $(PROJECT) -scheme $$scheme -destination "$(DEST)" -quiet || exit 1; \
+		xcodebuild test -project $(PROJECT) -scheme $$scheme -destination "$(DESTINATION)" -quiet || exit 1; \
 	done
 
 lint: ## Check formatting and lint rules without changing anything

@@ -369,9 +369,19 @@ GraphQL does **not** solve:
 
 `Makefile`: `project`, `build`, `test`, `lint`, `format`, `clean`.
 `.github/workflows/ci.yml` on macOS with job names mirroring `lactic-api`:
-`lint` (swiftlint + `swiftformat --lint`) and `test` (`xcodegen generate`,
-`swift test` per package, `xcodebuild test` for both app schemes). Dependabot for
-GitHub Actions and Swift packages, matching the API repo.
+`lint` (swiftlint + `swiftformat --lint`) and `test` (`swift test` per package,
+then a generic-destination build of both app schemes).
+
+**App-scheme tests are deliberately excluded from CI for now.** They need a
+booted simulator, which is slow and couples the pipeline to whichever iOS
+runtimes the runner image ships — the first CI run failed on exactly that, plus
+a hardcoded `DEVELOPER_DIR` that did not exist on the runner. The package tests
+hold 58 of the 59 assertions and run on the host in under a second, so the loss
+is small. `make test` runs the full set locally. To re-enable, resolve a device
+UDID from `xcrun simctl list devices available` and pass
+`DESTINATION="platform=iOS Simulator,id=<udid>"`.
+
+Dependabot for GitHub Actions and Swift packages, matching the API repo.
 
 ---
 
