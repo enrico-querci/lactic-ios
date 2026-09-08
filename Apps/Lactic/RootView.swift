@@ -3,14 +3,14 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
-/// Placeholder root while the client experience is built out. Replaced by the
-/// sign-in / tab-shell split once `AuthService` lands.
+/// Placeholder root. Replaced by the sign-in / shell split once `AuthService`
+/// and the feature screens land.
 struct RootView: View {
     var body: some View {
         VStack(spacing: 8) {
             Text("Lactic")
                 .font(.largeTitle.bold())
-            Text("Core \(LacticCore.version) · Kit \(LacticKit.version) · UI \(LacticUI.version)")
+            Text("Client")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }

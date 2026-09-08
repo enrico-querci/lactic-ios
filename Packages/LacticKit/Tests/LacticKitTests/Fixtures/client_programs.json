@@ -1,0 +1,1 @@
+[{"id":1,"client":{"id":4,"avatar_url":null,"email":"alice@example.com","name":"Alice Client","role":"client"},"notes":"Local development assignment.","program":{"id":2,"created_at":"2026-09-08T10:56:02.650Z","description":"Two-week upper/lower split used for local development.","name":"Upper/Lower Split (dev)"},"start_date":"2026-09-01","status":"active"}]

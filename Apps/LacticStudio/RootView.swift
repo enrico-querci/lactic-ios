@@ -3,14 +3,14 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
-/// Placeholder root for the coach app. Becomes a `NavigationSplitView` shell
-/// once sign-in and the client list land.
+/// Placeholder root. Replaced by the sign-in / shell split once `AuthService`
+/// and the feature screens land.
 struct RootView: View {
     var body: some View {
         VStack(spacing: 8) {
             Text("Lactic Studio")
                 .font(.largeTitle.bold())
-            Text("Core \(LacticCore.version) · Kit \(LacticKit.version) · UI \(LacticUI.version)")
+            Text("Coach")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
