@@ -5,7 +5,7 @@ import LacticCore
 ///
 /// Separated from `APIClient` so the transport can be tested without a
 /// keychain, and so the session store owns persistence exclusively.
-public protocol TokenProviding: Actor {
+public protocol TokenProviding: AnyObject, Sendable {
     func currentAccessToken() async -> String?
     /// Performs one refresh and returns the new access token, or nil if the
     /// session is over. Implementations must coalesce concurrent callers: the

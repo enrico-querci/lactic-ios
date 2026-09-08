@@ -2,7 +2,7 @@
 
 Status: approved; in progress. See **Current state** for what is built today.
 
-Last updated: 2026-09-08.
+Last updated: 2026-09-08. Steps 0-4 of the order of work are complete.
 
 This is the working plan for `lactic-ios`, the third Lactic repository. It is a
 living document — update it as decisions change rather than letting it drift.
@@ -154,21 +154,43 @@ a half-built iOS app, where a failure is ambiguous between client and server.
 
 ## Current state (2026-09-08)
 
-Built and verified in `lactic-ios`, **not yet committed** — `git init` done, no commits:
+Steps 0-4 of the order of work are done. `lactic-ios` is live at
+`github.com/enrico-querci/lactic-ios`, CI green, everything pushed.
 
-- `docs/ios-plan.md` — this document
-- `.gitignore`, `.gitattributes`, `.editorconfig`, `.swiftlint.yml`, `.swiftformat`
-- `Configs/{Shared,Debug,Release,Lactic,LacticStudio}.xcconfig` — iOS 18.0, Swift 6 language mode, complete concurrency, warnings-as-errors in Release only
-- `project.yml` + generated `Lactic.xcodeproj` (git-ignored)
-- Three SPM packages, each building with a passing Swift Testing target
-- Both app targets **build clean** on an iOS 26.5 simulator, importing all three packages
+**Shipped in `lactic-api`** (all merged and deployed):
 
-Loose end: the two unit-test targets need `GENERATE_INFOPLIST_FILE: YES` in the
-`AppTests` template — `xcodebuild test` fails without it ("Cannot code sign
-because the target does not have an Info.plist file"). One line in `project.yml`.
+- One ISO-8601 datetime format across the whole API (PR #46, `b21bee6`).
+- `GET /client/exercises/:id/history` ordered by session date rather than set
+  number — `Positionable`'s `default_scope` was winning over the controller's
+  `order` (PR #47, `7e26e1e`).
+- `bin/rails dev:seed` / `dev:unseed`, because both databases held zero
+  assignments and zero sessions.
+- `AGENTS.md` synced byte-identical across all three repos (PR #48 / web #26).
 
-Still to do from the skeleton: `AGENTS.md` + `CLAUDE.md` symlink, `README.md`,
-`Makefile`, `.github/workflows/ci.yml`.
+**Built in `lactic-ios`:**
+
+| Area | State |
+| --- | --- |
+| Skeleton | Two app targets, three SPM packages, xcconfigs, Makefile, CI, README, `AGENTS.md` + `CLAUDE.md` symlink |
+| `LacticCore` | Date/decimal/calendar coding, `SecureStorage` + Keychain, redacting logger, formatters — 25 tests |
+| `LacticKit` | All client models, `APIClient` actor, error envelopes, header pagination, `ClientAPI`, `SessionStore` — 40 tests |
+| `LacticUI` | Still a stub. Step 5. |
+| App | Sign-in (dev_login), session restore, signed-in placeholder, sign-out |
+
+CI runs lint, the package tests, and a generic-destination build of both app
+targets. App-scheme tests are deliberately excluded (see Tooling and CI);
+`make test` runs them locally.
+
+Two findings worth remembering, both caught by testing rather than reading:
+
+- `Date.ISO8601FormatStyle` **truncates** fractional seconds instead of
+  rounding, so an encoder built on it cannot round-trip its own decoder — about
+  half of all millisecond values drifted by 1ms. `APIDateFormat` formats the
+  milliseconds explicitly.
+- SwiftLint and SwiftFormat overlap on four rules and disagree on all of them
+  (`trailing_comma`, `modifier_order`, `optional_data_string_conversion`,
+  `static_over_final_class`). SwiftFormat owns formatting; those rules are
+  disabled in `.swiftlint.yml` with the reason recorded inline.
 
 ---
 
@@ -391,7 +413,7 @@ Dependabot for GitHub Actions and Swift packages, matching the API repo.
 1. **Local seed data in `lactic-api`** (`db/seeds.rb` or a rake task): a coach, an accepted client, a program with weeks/workouts/exercises drawn from the real 1327-row catalog, an active assignment, and one completed session with set logs. Then **walk the whole flow by hand with `curl`** against a local server before any Swift touches it, so the endpoints are known-good in sequence and a later failure is unambiguously the client's fault.
 2. Finish the repo skeleton: the `GENERATE_INFOPLIST_FILE` one-liner, `AGENTS.md` + `CLAUDE.md` symlink, `README.md`, `Makefile`, CI — then **`make project && make build && make test` green before writing any feature**, and a first commit.
 3. `LacticCore` + `LacticKit` models and `APIClient`, with Swift Testing coverage for every remaining trap against fixture JSON captured from step 1's real responses.
-4. Auth: Keychain store, single-flight refresh, `#if DEBUG` `dev_login`. First end-to-end proof against the seeded local server — **this is the "runs on my simulator" milestone**.
+4. ~~Auth: Keychain store, single-flight refresh, `dev_login`~~ — **DONE**. `SessionStore` is `@MainActor @Observable` and conforms to `TokenProviding`; refresh is coalesced through a single `Task`, proven by a test where eight concurrent callers produce exactly one `/auth/refresh` request. Storage is behind a `SecureStorage` protocol so tests use memory rather than an unsigned host keychain.
 5. `LacticUI` design system.
 6. Client app: Home → Programs → Workout execution (with `WorkoutRecorder`) → History → Exercise detail → Settings.
 7. Rest timer, notes, localization (`.xcstrings`, en + it — ~150 client-facing keys, mirroring `lactic-web/lib/i18n/messages/en.ts` namespaces).

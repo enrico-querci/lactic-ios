@@ -1,22 +1,28 @@
-import LacticCore
 import LacticKit
-import LacticUI
 import SwiftUI
 
-/// Placeholder root. Replaced by the sign-in / shell split once `AuthService`
-/// and the feature screens land.
+/// Routes on session state.
+///
+/// `restoring` is a distinct case rather than a flavour of signed out so the
+/// app shows a splash instead of flashing the sign-in screen at someone who
+/// turns out to be signed in already.
 struct RootView: View {
-    var body: some View {
-        VStack(spacing: 8) {
-            Text("Lactic")
-                .font(.largeTitle.bold())
-            Text("Client")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-        }
-    }
-}
+    @Environment(AppEnvironment.self) private var environment
 
-#Preview {
-    RootView()
+    var body: some View {
+        Group {
+            switch environment.session.phase {
+            case .restoring:
+                ProgressView()
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            case .signedOut:
+                SignInView()
+            case .signedIn(let user):
+                SignedInPlaceholderView(user: user)
+            }
+        }
+        .animation(.default, value: environment.session.phase)
+        .task { await environment.session.restore() }
+    }
 }

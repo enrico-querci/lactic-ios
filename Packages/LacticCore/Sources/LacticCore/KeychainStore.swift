@@ -1,6 +1,34 @@
 import Foundation
 import Security
 
+/// Somewhere to keep a credential across launches.
+///
+/// A protocol so tests can substitute memory: the real Keychain in a host test
+/// binary is unsigned, and its behaviour there is neither reliable nor worth
+/// asserting on.
+public protocol SecureStorage: Sendable {
+    func string(forKey key: String) throws -> String?
+    func set(_ string: String?, forKey key: String) throws
+}
+
+/// An in-memory `SecureStorage`, for tests and previews.
+public final class InMemoryStorage: SecureStorage, @unchecked Sendable {
+    private let lock = NSLock()
+    private var values: [String: String] = [:]
+
+    public init(_ values: [String: String] = [:]) {
+        self.values = values
+    }
+
+    public func string(forKey key: String) throws -> String? {
+        lock.withLock { values[key] }
+    }
+
+    public func set(_ string: String?, forKey key: String) throws {
+        lock.withLock { values[key] = string }
+    }
+}
+
 /// Minimal Keychain wrapper for the refresh token.
 ///
 /// The web keeps its refresh token in `localStorage`; the native equivalent is
@@ -11,7 +39,7 @@ import Security
 /// refresh can run while the device is locked, and a value that cannot be read
 /// then would sign the user out for no reason. It is deliberately not
 /// `ThisDeviceOnly` — the intent is that a restored backup keeps you signed in.
-public struct KeychainStore: Sendable {
+public struct KeychainStore: SecureStorage, Sendable {
     public enum Failure: Error, Equatable {
         case unexpectedStatus(OSStatus)
         case dataCorrupted

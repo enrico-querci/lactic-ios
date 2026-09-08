@@ -31,7 +31,6 @@ opt_in_rules:
   - joined_default_parameter
   - last_where
   - literal_expression_end_indentation
-  - modifier_order
   - operator_usage_whitespace
   - overridden_super_call
   - prefer_self_type_over_type_of_self
@@ -50,6 +49,13 @@ disabled_rules:
   # keeps multi-line collection diffs to one line per change. SwiftLint owns
   # correctness rules; where the two overlap, SwiftFormat wins.
   - trailing_comma
+  # Contradicts SwiftFormat's modifierOrder on `nonisolated(unsafe)`: one wants
+  # it before the access level, the other after. Same rule as above — where the
+  # two tools disagree about formatting, SwiftFormat wins.
+  - modifier_order
+  # `override class func` cannot become `override static func` when overriding
+  # a superclass class method, which is exactly what URLProtocol requires.
+  - static_over_final_class
   # Fires on `String(decoding:as: UTF8.self)`, which is the non-failable
   # standard-library API and the right one for asserting on an encoded body.
   # The suggested `String(bytes:encoding:)` only adds an optional to unwrap.
