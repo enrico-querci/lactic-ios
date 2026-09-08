@@ -6,6 +6,10 @@
 # Xcode string catalogs are JSON; keep them diffable but never merged blindly.
 *.xcstrings text merge=union
 
+# Captured HTTP header dumps. Real headers are CRLF-terminated, so normalising
+# them to LF would misrepresent what the server actually sent.
+*.headers -text
+
 # Binary assets.
 *.png binary
 *.jpg binary
