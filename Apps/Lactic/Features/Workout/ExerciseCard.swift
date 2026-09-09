@@ -15,10 +15,16 @@ struct ExerciseCard: View {
     @State private var isEditingNotes = false
     @State private var noteDraft = ""
     @State private var restDeadline: Date?
+    @State private var isLogging = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: LacticSpacing.md) {
-            header
+            ExerciseTrainingHeader(
+                position: workoutExercise.position,
+                name: workoutExercise.exercise.name,
+                loggedCount: loggedSets.count,
+                targetCount: workoutExercise.sets
+            )
             targetRow
             assist
 
@@ -28,8 +34,25 @@ struct ExerciseCard: View {
                 load: animationLoader
             )
 
+            Divider().overlay(LacticColor.border)
             sets
-            actions
+            Button(action: addSet) {
+                Label {
+                    if loggedSets.count >= workoutExercise.sets {
+                        Text("Log extra set")
+                    } else {
+                        Text("Log set")
+                    }
+                } icon: {
+                    Image(systemName: "checkmark")
+                }
+            }
+            .lacticButton(isEnabled: !isLogging)
+            RestTimerView(
+                duration: workoutExercise.effectiveRestSeconds,
+                deadline: $restDeadline,
+                onFinished: finishRest
+            )
             notes
         }
         .padding(LacticSpacing.lg)
@@ -39,24 +62,6 @@ struct ExerciseCard: View {
         .overlay {
             RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous)
                 .strokeBorder(LacticColor.border, lineWidth: 1)
-        }
-    }
-
-    /// The timer deliberately does **not** live here.
-    ///
-    /// It did, and starting it reflowed the whole card: the running `1:25` in
-    /// the large timer font plus a Skip button is far wider than the `Rest 90s`
-    /// button it replaces, so the exercise name wrapped to two lines and
-    /// everything below shifted down — mid-workout, under a thumb. It now sits
-    /// on its own row beside "Add set", where it can change width freely and is
-    /// closer to the action that triggers it.
-    private var header: some View {
-        HStack(spacing: LacticSpacing.sm) {
-            PositionBadge(workoutExercise.position)
-            Text(workoutExercise.exercise.name)
-                .font(.lacticHeadline)
-                .foregroundStyle(LacticColor.textPrimary)
-            Spacer(minLength: LacticSpacing.sm)
         }
     }
 
@@ -72,9 +77,11 @@ struct ExerciseCard: View {
                 }
             }
             if let notes = workoutExercise.notes, !notes.isEmpty {
-                Text(notes)
-                    .font(.lacticCaption.italic())
+                Label(notes, systemImage: "text.bubble")
+                    .font(.subheadline)
                     .foregroundStyle(LacticColor.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, LacticSpacing.sm)
             }
         }
     }
@@ -101,45 +108,15 @@ struct ExerciseCard: View {
 
     private var sets: some View {
         VStack(spacing: LacticSpacing.sm) {
+            if loggedSets.isEmpty {
+                Text("Log your first set after you finish it. Adjust weight and reps below.")
+                    .font(.lacticCaption)
+                    .foregroundStyle(LacticColor.textMuted)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, LacticSpacing.sm)
+            }
             ForEach(loggedSets) { set in
-                HStack(spacing: LacticSpacing.sm) {
-                    Text("\(set.position)")
-                        .font(.lacticCaption.monospacedDigit())
-                        .foregroundStyle(LacticColor.textSecondary)
-                        .frame(width: 20, alignment: .leading)
-
-                    NumericField(kind: .weight, value: set.weightKg) { newValue in
-                        Task {
-                            await recorder.updateSet(
-                                set.id, in: workoutExercise.id, weightKg: newValue, reps: nil
-                            )
-                        }
-                    }
-
-                    NumericField(kind: .reps, value: Decimal(set.reps)) { newValue in
-                        Task {
-                            await recorder.updateSet(
-                                set.id, in: workoutExercise.id,
-                                weightKg: nil, reps: Int(truncating: newValue as NSNumber)
-                            )
-                        }
-                    }
-
-                    Button {
-                        Task { await recorder.deleteSet(set.id, in: workoutExercise.id) }
-                    } label: {
-                        Image(systemName: "xmark")
-                            .font(.body.weight(.semibold))
-                            .foregroundStyle(LacticColor.textSecondary)
-                            .frame(
-                                width: LacticSize.minimumHitTarget,
-                                height: LacticSize.minimumHitTarget
-                            )
-                            .contentShape(.rect)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Delete set \(set.position)")
-                }
+                LoggedSetRow(set: set, exerciseID: workoutExercise.id, recorder: recorder)
             }
         }
     }
@@ -147,21 +124,12 @@ struct ExerciseCard: View {
     /// Adding is unbounded on purpose: exceeding the coach's target is the
     /// "add extra sets" feature, and the target line above is a prescription,
     /// not a limit.
-    private var actions: some View {
-        HStack(spacing: LacticSpacing.sm) {
-            Button("Add set") {
-                Task { await logSet() }
-            }
-            .lacticButton(.secondary, size: .small)
-            .fixedSize()
-
-            Spacer(minLength: LacticSpacing.sm)
-
-            RestTimerView(
-                duration: workoutExercise.effectiveRestSeconds,
-                deadline: $restDeadline,
-                onFinished: finishRest
-            )
+    private func addSet() {
+        guard !isLogging else { return }
+        isLogging = true
+        Task {
+            await logSet()
+            isLogging = false
         }
     }
 

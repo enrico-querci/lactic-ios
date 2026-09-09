@@ -8,9 +8,7 @@ import SwiftUI
 /// they left it. Recomputing from a stored end date is correct across
 /// backgrounding, and survives the view being rebuilt.
 ///
-/// Presentational only. Haptics, a local notification for when the app is
-/// backgrounded, and holding the screen awake belong with the rest of the
-/// workout polish and are not here yet.
+/// Presentational only; the caller owns notifications and haptics.
 public struct RestTimerView: View {
     private let duration: Int
     @Binding private var deadline: Date?
@@ -34,15 +32,11 @@ public struct RestTimerView: View {
     }
 
     public var body: some View {
-        Group {
-            if deadline != nil {
-                running
-            } else {
-                Button("Rest \(duration)s") { start() }
-                    .lacticButton(.secondary, size: .small)
-                    .fixedSize()
-            }
-        }
+        RestTimerPanel(
+            remaining: remaining, duration: duration, isRunning: deadline != nil,
+            start: start, finish: finish
+        )
+        .onChange(of: deadline) { _, _ in now = Date() }
         .onReceive(tick) { date in
             guard deadline != nil else { return }
             now = date
@@ -52,27 +46,9 @@ public struct RestTimerView: View {
         }
     }
 
-    private var running: some View {
-        HStack(spacing: LacticSpacing.sm) {
-            Text(formatted)
-                .font(.lacticTimer)
-                .foregroundStyle(remaining <= 10 ? LacticColor.danger : LacticColor.textPrimary)
-                .contentTransition(.numericText())
-                .accessibilityLabel("\(remaining) seconds of rest remaining")
-
-            Button("Skip") { finish() }
-                .lacticButton(.secondary, size: .small)
-                .fixedSize()
-        }
-    }
-
     private var remaining: Int {
         guard let deadline else { return duration }
         return max(0, Int(deadline.timeIntervalSince(now).rounded(.up)))
-    }
-
-    private var formatted: String {
-        String(format: "%d:%02d", remaining / 60, remaining % 60)
     }
 
     private func start() {
@@ -83,6 +59,55 @@ public struct RestTimerView: View {
     private func finish() {
         deadline = nil
         onFinished()
+    }
+}
+
+private struct RestTimerPanel: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    let remaining: Int
+    let duration: Int
+    let isRunning: Bool
+    let start: () -> Void
+    let finish: () -> Void
+
+    var body: some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: LacticSpacing.sm))
+            : AnyLayout(HStackLayout(spacing: LacticSpacing.md))
+
+        VStack(alignment: .leading, spacing: LacticSpacing.md) {
+            layout {
+                VStack(alignment: .leading, spacing: LacticSpacing.xs) {
+                    // Lactic's shared component translations live in the app catalog.
+                    Label { Text("Rest", bundle: .main) } icon: { Image(systemName: "timer") }
+                        .font(.lacticEyebrow)
+                        .foregroundStyle(isRunning ? LacticColor.textOnHero : LacticColor.textSecondary)
+                    Text(Duration.seconds(remaining), format: .time(pattern: .minuteSecond))
+                        .font(.lacticTimer)
+                        .foregroundStyle(isRunning ? LacticColor.brand : LacticColor.textPrimary)
+                        .contentTransition(.numericText())
+                        .accessibilityLabel(Text("\(remaining) seconds of rest remaining", bundle: .main))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                Button(action: isRunning ? finish : start) {
+                    if isRunning {
+                        Text("Skip", bundle: .main)
+                    } else {
+                        Text("Rest \(duration)s", bundle: .main)
+                    }
+                }
+                .lacticButton(.secondary, size: .small)
+            }
+            ProgressView(value: Double(min(remaining, duration)), total: Double(max(duration, 1)))
+                .tint(isRunning ? LacticColor.brand : LacticColor.borderStrong)
+                .accessibilityHidden(true)
+        }
+        .padding(LacticSpacing.lg)
+        .background(
+            isRunning ? LacticColor.heroSurface : LacticColor.surfacePressed,
+            in: RoundedRectangle(cornerRadius: LacticRadius.control)
+        )
     }
 }
 

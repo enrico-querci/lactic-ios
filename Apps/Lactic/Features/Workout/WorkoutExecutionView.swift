@@ -26,7 +26,7 @@ struct WorkoutExecutionView: View {
         // rest of the app and quietly drain the battery.
         .onDisappear {
             RestAlerts.setKeepScreenAwake(false)
-            RestAlerts.cancelAll()
+            Task { await RestAlerts.cancelAll() }
         }
         .onChange(of: model?.isSessionActive ?? false) { _, isActive in
             RestAlerts.setKeepScreenAwake(isActive)
@@ -61,6 +61,12 @@ struct WorkoutExecutionView: View {
                 }
 
                 if let recorder = model.recorder {
+                    WorkoutOverviewHeader(
+                        name: context.workout.name,
+                        exerciseCount: context.workout.workoutExercises.count,
+                        targetSets: context.workout.workoutExercises.reduce(0) { $0 + $1.sets },
+                        loggedSets: recorder.entries.values.reduce(0) { $0 + $1.sets.count }
+                    )
                     syncIndicator(recorder)
                     ForEach(context.workout.orderedExercises) { exercise in
                         ExerciseCard(
@@ -79,6 +85,7 @@ struct WorkoutExecutionView: View {
             }
             .padding(LacticSpacing.lg)
         }
+        .scrollDismissesKeyboard(.interactively)
     }
 
     /// Before the session starts: what the coach prescribed, and one button.
@@ -86,6 +93,12 @@ struct WorkoutExecutionView: View {
         _ context: WorkoutExecutionModel.Context, model: WorkoutExecutionModel
     ) -> some View {
         VStack(alignment: .leading, spacing: LacticSpacing.lg) {
+            WorkoutOverviewHeader(
+                name: context.workout.name,
+                exerciseCount: context.workout.workoutExercises.count,
+                targetSets: context.workout.workoutExercises.reduce(0) { $0 + $1.sets },
+                loggedSets: nil
+            )
             if !context.workout.volumeSets.isEmpty {
                 FlowLayout(spacing: LacticSpacing.xs) {
                     ForEach(ClientFormat.orderedVolume(context.workout.volumeSets), id: \.muscleGroup) {
@@ -99,7 +112,7 @@ struct WorkoutExecutionView: View {
                     PositionBadge(entry.position)
                     VStack(alignment: .leading, spacing: LacticSpacing.xs) {
                         Text(entry.exercise.name)
-                            .font(.lacticBody.weight(.medium))
+                            .font(.lacticHeadline)
                             .foregroundStyle(LacticColor.textPrimary)
                         Text(target(for: entry))
                             .font(.lacticCaption)
@@ -107,6 +120,8 @@ struct WorkoutExecutionView: View {
                     }
                     Spacer()
                 }
+                .padding(LacticSpacing.lg)
+                .background(LacticColor.surfaceElevated, in: RoundedRectangle(cornerRadius: LacticRadius.card))
             }
 
             Button(model.isStarting ? "Starting…" : "Start workout") {
@@ -151,6 +166,8 @@ struct WorkoutExecutionView: View {
                 .lineLimit(2 ... 5)
                 .textFieldStyle(.roundedBorder)
         }
+        .padding(LacticSpacing.lg)
+        .background(LacticColor.surfaceElevated, in: RoundedRectangle(cornerRadius: LacticRadius.card))
     }
 
     /// Commits on blur rather than on every keystroke: typing a sentence would

@@ -79,12 +79,11 @@ enum RestAlerts {
             .removePendingNotificationRequests(withIdentifiers: ["\(identifierPrefix)-\(exerciseKey)"])
     }
 
-    static func cancelAll() {
+    static func cancelAll() async {
         let center = UNUserNotificationCenter.current()
-        center.getPendingNotificationRequests { requests in
-            let ours = requests.map(\.identifier).filter { $0.hasPrefix(identifierPrefix) }
-            center.removePendingNotificationRequests(withIdentifiers: ours)
-        }
+        let requests = await center.pendingNotificationRequests()
+        let ours = requests.map(\.identifier).filter { $0.hasPrefix(identifierPrefix) }
+        center.removePendingNotificationRequests(withIdentifiers: ours)
     }
 
     /// Fired when a rest ends with the app in the foreground.

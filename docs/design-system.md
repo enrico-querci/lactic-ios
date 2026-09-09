@@ -32,3 +32,30 @@ The sign-in, current-programme card, shared controls, and Studio scaffold show
 the direction. The debug component gallery documents typography and palette.
 Existing contrast tests protect text on page/card surfaces, button labels,
 status badges, and disabled-state hierarchy.
+
+## Workout execution
+
+The workout overview uses a graphite panel for the session name and counts.
+Exercise cards lead with a lime position marker, a bold name, and logged-set
+progress. Prescribed targets, coach notes, and previous performance remain
+separate from the client's recorded values.
+
+Each recorded row carries a checkmark, large monospaced weight/repetition
+inputs, and a menu for deletion. The checkmark means the set was logged;
+the existing session sync indicator still reports pending or failed writes.
+The keyboard's Done action commits an edit by ending focus.
+
+"Log set" records a performed set using the existing coach-value defaults
+and starts rest. It becomes "Log extra set" once the prescribed count is
+reached. Counts continue beyond the target while the progress bar caps at
+100%. Logging remains backed by the existing recorder and outbox.
+
+Rest occupies its own full-width panel. Idle and running states retain the
+same layout; running uses graphite and lime. At accessibility text sizes,
+set controls and timer content stack vertically. No fixed font sizes or
+newer-than-iOS-18 APIs are required.
+
+The debug gallery includes a Workout preview backed by synthetic data and a
+network-blocking transport. Launch with `--workout-design-preview` to open it
+without authentication; add `--workout-design-timer` for the active timer.
+Preview writes are never persisted, and both routes are excluded from Release.

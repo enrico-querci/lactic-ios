@@ -12,6 +12,10 @@
         var body: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: LacticSpacing.xl) {
+                    NavigationLink("Workout preview") { WorkoutDesignPreview() }
+                        .font(.lacticHeadline)
+                        .foregroundStyle(LacticColor.accent)
+
                     section("Typography") {
                         VStack(alignment: .leading, spacing: LacticSpacing.sm) {
                             Text("Lactic").font(.lacticDisplay)

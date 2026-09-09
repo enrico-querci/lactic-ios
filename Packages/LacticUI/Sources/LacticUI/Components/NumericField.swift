@@ -13,13 +13,6 @@ public struct NumericField: View {
     public enum Kind: Sendable {
         case weight
         case reps
-
-        var suffix: String {
-            switch self {
-            case .weight: "kg"
-            case .reps: "reps"
-            }
-        }
     }
 
     private let kind: Kind
@@ -39,10 +32,12 @@ public struct NumericField: View {
     public var body: some View {
         HStack(spacing: LacticSpacing.xs) {
             TextField("", text: $text)
-                .font(.lacticNumeric)
+                .font(.title3.weight(.semibold).monospacedDigit())
+                .foregroundStyle(LacticColor.textPrimary)
+                .accessibilityLabel(kind == .weight ? Text("Weight", bundle: .main) : Text("Reps", bundle: .main))
                 .multilineTextAlignment(.trailing)
                 .focused($isFocused)
-                .frame(minHeight: LacticSize.minimumHitTarget)
+                .frame(minHeight: 52)
             #if os(iOS)
                 .keyboardType(kind == .weight ? .decimalPad : .numberPad)
             #endif
@@ -52,12 +47,18 @@ public struct NumericField: View {
                     }
                 }
 
-            Text(kind.suffix)
-                .font(.lacticCaption)
-                .foregroundStyle(LacticColor.textSecondary)
+            Group {
+                if kind == .weight {
+                    Text(verbatim: "kg")
+                } else {
+                    Text("reps", bundle: .main)
+                }
+            }
+            .font(.lacticCaption)
+            .foregroundStyle(LacticColor.textSecondary)
         }
         .padding(.horizontal, LacticSpacing.sm)
-        .background(LacticColor.surfaceElevated)
+        .background(isFocused ? LacticColor.surfaceElevated : LacticColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
@@ -70,6 +71,16 @@ public struct NumericField: View {
             guard !isFocused else { return }
             text = Self.format(newValue)
         }
+        #if os(iOS)
+        .toolbar {
+            if isFocused {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button { isFocused = false } label: { Text("Done", bundle: .main) }
+                }
+            }
+        }
+        #endif
     }
 
     private func commit() {
