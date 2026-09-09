@@ -2,15 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- The rest of Info.plist is generated from INFOPLIST_KEY_* settings in
-	     Configs/*.xcconfig; only keys with no build-setting equivalent live here. -->
-	<key>GIDClientID</key>
-	<string>$(GID_CLIENT_ID)</string>
-	<key>GIDServerClientID</key>
-	<string>$(GID_SERVER_CLIENT_ID)</string>
-	<!-- Google's sign-in flow returns to the app through this scheme. The
-	     value comes from GID_REVERSED_CLIENT_ID in Configs/Lactic.xcconfig, so
-	     it cannot drift from the client id declared beside it. -->
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -20,12 +11,12 @@
 			</array>
 		</dict>
 	</array>
+	<key>GIDClientID</key>
+	<string>$(GID_CLIENT_ID)</string>
+	<key>GIDServerClientID</key>
+	<string>$(GID_SERVER_CLIENT_ID)</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<!-- Permits http://localhost:3000, the local Rails API used for
-		     development and for the dev_login sign-in path. This relaxes ATS
-		     for local/private-range hosts only, never for the public internet,
-		     so it is safe to ship and needs no App Review justification. -->
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>

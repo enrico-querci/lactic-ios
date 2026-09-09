@@ -43,8 +43,9 @@ struct SignInView: View {
                 // requires an equivalent privacy-preserving option once Google
                 // is offered, so this build is not submittable as it stands.
                 #if DEBUG
-                    developmentSignIn
+                    serverPicker
                         .padding(.top, LacticSpacing.lg)
+                    developmentSignIn
                 #endif
             }
 
@@ -85,6 +86,34 @@ struct SignInView: View {
     }
 
     #if DEBUG
+        /// The server switch lives here, not only in Settings.
+        ///
+        /// Settings is inside the signed-in shell, so a switch that only lived
+        /// there was unreachable exactly when it was needed: the app defaults
+        /// to the local server, and choosing a different one would have meant
+        /// signing in against the local server first.
+        private var serverPicker: some View {
+            VStack(alignment: .leading, spacing: LacticSpacing.xs) {
+                Picker("Server", selection: serverBinding) {
+                    ForEach(AppEnvironment.Server.allCases) { server in
+                        Text(server.title).tag(server)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                Text("Development builds only. Release always uses production.")
+                    .font(.lacticCaption)
+                    .foregroundStyle(LacticColor.textMuted)
+            }
+        }
+
+        private var serverBinding: Binding<AppEnvironment.Server> {
+            Binding(
+                get: { environment.server },
+                set: { newValue in Task { await environment.applyServer(newValue) } }
+            )
+        }
+
         private var developmentSignIn: some View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Development sign-in")
