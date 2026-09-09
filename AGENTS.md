@@ -18,7 +18,7 @@ is a workout-management ecosystem for coaches and their clients.
 
 | Product | Audience | Platform | Purpose | Current state |
 | --- | --- | --- | --- | --- |
-| **Lactic** | Client | iOS | Follow assigned programs and log workouts | Core flows implemented; visual redesign is in stacked PRs `lactic-ios#1`-`#4`; see `docs/ios-plan.md` |
+| **Lactic** | Client | iOS | Follow assigned programs and log workouts | Core flows implemented; visual redesign landed through `lactic-ios#1`-`#4`; see `docs/ios-plan.md` |
 | **Lactic Studio** | Coach/Admin | Web today; iOS/iPadOS planned | Manage clients and create training programs | Coach routes (`/coach/**`) in Lactic Web are implemented and deployed; a native app is a product target |
 | **Lactic Web** | Coach and client | Web | Browser access to both role-specific experiences | Implemented and deployed |
 | **Lactic API** | All clients | Rails API | Shared auth, business logic, persistence, email, and REST API | Implemented and deployed |
@@ -55,9 +55,8 @@ The latest completed milestone is Lactic Studio subscription billing via Revenue
 
 ### 1.2 Current iOS milestone
 
-As of **2026-09-09**, the Lactic client has completed four stacked visual
-implementation increments. They remain open pull requests and must merge in
-order:
+As of **2026-09-09**, the Lactic client has completed and merged four visual
+implementation increments, landed in order:
 
 1. `lactic-ios#1` (`codex/lactic-visual-foundation` onto `main`) establishes
    the shared chalk/graphite/electric-lime palette, system-font hierarchy,
