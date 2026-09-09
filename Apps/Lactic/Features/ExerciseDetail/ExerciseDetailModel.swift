@@ -7,12 +7,79 @@ import Observation
 @MainActor
 @Observable
 final class ExerciseDetailModel: LoadableSource {
+    struct HistorySession: Sendable, Equatable, Identifiable {
+        let id: Int
+        let performedAt: Date?
+        let sets: [SetLog]
+
+        var bestWeight: Decimal {
+            sets.map(\.weightKg).max() ?? .zero
+        }
+
+        var totalReps: Int {
+            sets.reduce(0) { $0 + $1.reps }
+        }
+
+        var volumeKg: Decimal {
+            sets.reduce(Decimal.zero) { total, set in
+                total + set.weightKg * Decimal(set.reps)
+            }
+        }
+    }
+
     struct Detail: Sendable, Equatable {
         let exercise: ExerciseDetail
-        /// Flat and ungroupable by design: the endpoint returns sets ordered
-        /// newest session first, with no dates and no session reference, so
-        /// they cannot be split into sessions here.
         let history: [SetLog]
+
+        var historySessions: [HistorySession] {
+            var sessions: [HistorySession] = []
+            var indices: [Int: Int] = [:]
+
+            for set in history {
+                let sessionID = set.workoutSessionID ?? -set.id
+                if let index = indices[sessionID] {
+                    let existing = sessions[index]
+                    sessions[index] = HistorySession(
+                        id: existing.id,
+                        performedAt: existing.performedAt ?? set.performedAt,
+                        sets: existing.sets + [set]
+                    )
+                } else {
+                    indices[sessionID] = sessions.count
+                    sessions.append(
+                        HistorySession(id: sessionID, performedAt: set.performedAt, sets: [set])
+                    )
+                }
+            }
+            return sessions
+        }
+
+        var bestWeight: Decimal? {
+            history.map(\.weightKg).max()
+        }
+
+        var totalReps: Int {
+            history.reduce(0) { $0 + $1.reps }
+        }
+
+        var totalVolumeKg: Decimal {
+            history.reduce(Decimal.zero) { total, set in
+                total + set.weightKg * Decimal(set.reps)
+            }
+        }
+
+        var datedHistorySessions: [HistorySession] {
+            historySessions
+                .filter { $0.performedAt != nil }
+                .sorted { ($0.performedAt ?? .distantPast) < ($1.performedAt ?? .distantPast) }
+        }
+
+        var bestWeightChange: Decimal? {
+            guard let first = datedHistorySessions.first, let last = datedHistorySessions.last,
+                  first.id != last.id
+            else { return nil }
+            return last.bestWeight - first.bestWeight
+        }
     }
 
     private(set) var state: Loadable<Detail> = .idle

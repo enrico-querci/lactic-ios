@@ -99,3 +99,29 @@ The debug gallery includes list and detail fixtures. Launch with
 `--programme-design-preview --programme-list` for browsing, or omit
 `--programme-list` for detail. Both routes use synthetic data and are excluded
 from Release.
+
+## History and progress
+
+History opens with lifetime training metrics, then separates unfinished work
+from completed sessions. A session is a full-card navigation target with its
+workout name, date, duration, and note; no database identifiers are exposed as
+display labels. The API includes this context directly, while the client keeps
+a best-effort workout fetch for compatibility during a rolling deployment.
+
+Session summaries treat the performed work as the source of truth. The hero
+shows sets, repetitions, volume, and duration; exercise cards preserve workout
+order, surface both session and exercise notes, and link to the exercise's own
+progress when an exercise identifier is available. Set values use monospaced
+digits and stack at accessibility sizes.
+
+Exercise progress combines the catalog reference with the client's training
+record. Its chart plots the heaviest set per completed session rather than each
+individual set, keeping the trend readable. Summary metrics, change since the
+first recorded session, personal-best treatment, and grouped recent sets use
+the same data returned by exercise history. Older servers that omit session
+context still render a flat recent-set list.
+
+The debug gallery includes all three states. Launch with
+`--history-design-preview` for History, then add `--history-session` or
+`--history-exercise` for the corresponding detail. All use synthetic data and
+are excluded from Release.

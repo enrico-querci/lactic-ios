@@ -9,6 +9,9 @@ import LacticCore
 public struct WorkoutSession: Codable, Hashable, Sendable, Identifiable {
     public let id: Int
     public let workoutID: Int
+    /// Added to the history payload so a session row can remain useful even
+    /// after its programme is no longer active.
+    public let workoutName: String?
     public let startedAt: Date?
     public let completedAt: Date?
     public let notes: String?
@@ -16,6 +19,7 @@ public struct WorkoutSession: Codable, Hashable, Sendable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case id, notes
         case workoutID = "workout_id"
+        case workoutName = "workout_name"
         case startedAt = "started_at"
         case completedAt = "completed_at"
     }
@@ -30,6 +34,7 @@ public struct WorkoutSession: Codable, Hashable, Sendable, Identifiable {
 public struct WorkoutSessionDetail: Codable, Hashable, Sendable, Identifiable {
     public let id: Int
     public let workoutID: Int
+    public let workoutName: String?
     public let startedAt: Date?
     public let completedAt: Date?
     public let notes: String?
@@ -38,6 +43,7 @@ public struct WorkoutSessionDetail: Codable, Hashable, Sendable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case id, notes
         case workoutID = "workout_id"
+        case workoutName = "workout_name"
         case startedAt = "started_at"
         case completedAt = "completed_at"
         case exerciseLogs = "exercise_logs"
@@ -59,12 +65,17 @@ public struct WorkoutSessionDetail: Codable, Hashable, Sendable, Identifiable {
 public struct ExerciseLog: Codable, Hashable, Sendable, Identifiable {
     public let id: Int
     public let workoutExerciseID: Int
+    public let exerciseID: Int?
+    public let exerciseName: String?
+    public let position: String?
     public let notes: String?
     public let photoURL: String?
 
     enum CodingKeys: String, CodingKey {
-        case id, notes
+        case id, notes, position
         case workoutExerciseID = "workout_exercise_id"
+        case exerciseID = "exercise_id"
+        case exerciseName = "exercise_name"
         case photoURL = "photo_url"
     }
 }
@@ -74,13 +85,18 @@ public struct ExerciseLog: Codable, Hashable, Sendable, Identifiable {
 public struct ExerciseLogDetail: Codable, Hashable, Sendable, Identifiable {
     public let id: Int
     public let workoutExerciseID: Int
+    public let exerciseID: Int?
+    public let exerciseName: String?
+    public let position: String?
     public let notes: String?
     public let photoURL: String?
     public let setLogs: [SetLog]
 
     enum CodingKeys: String, CodingKey {
-        case id, notes
+        case id, notes, position
         case workoutExerciseID = "workout_exercise_id"
+        case exerciseID = "exercise_id"
+        case exerciseName = "exercise_name"
         case photoURL = "photo_url"
         case setLogs = "set_logs"
     }
@@ -98,9 +114,15 @@ public struct SetLog: Codable, Hashable, Sendable, Identifiable {
     public let position: Int
     @LenientDecimal public var weightKg: Decimal
     public let reps: Int
+    /// Present on exercise-history responses. Nested session sets omit these
+    /// additive context fields.
+    public let workoutSessionID: Int?
+    public let performedAt: Date?
 
     enum CodingKeys: String, CodingKey {
         case id, position, reps
         case weightKg = "weight_kg"
+        case workoutSessionID = "workout_session_id"
+        case performedAt = "performed_at"
     }
 }

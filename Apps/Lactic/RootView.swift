@@ -18,6 +18,8 @@ struct RootView: View {
                 NavigationStack { HomeDesignPreview() }
             } else if ProcessInfo.processInfo.arguments.contains("--workout-design-preview") {
                 NavigationStack { WorkoutDesignPreview() }
+            } else if ProcessInfo.processInfo.arguments.contains("--history-design-preview") {
+                NavigationStack { HistoryDesignPreview() }
             } else {
                 sessionContent
             }
