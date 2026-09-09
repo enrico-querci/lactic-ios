@@ -33,6 +33,23 @@ the direction. The debug component gallery documents typography and palette.
 Existing contrast tests protect text on page/card surfaces, button labels,
 status badges, and disabled-state hierarchy.
 
+## Home dashboard
+
+Home is a training launchpad, not a duplicate programme browser. The first
+graphite panel is always the most useful action: resume an unfinished workout,
+or start the next workout in programme order. It includes enough prescription
+detail to make the decision without opening another screen.
+
+The current programme follows with progress and the coach's guidance. Recent
+activity is deliberately compact and only includes completed sessions; an
+unfinished session belongs in the hero. Every card is a direct navigation
+target, and pull to refresh reloads the complete dashboard.
+
+The empty state uses the same graphite brand moment without implying an error.
+The debug gallery includes a Home preview backed by synthetic data. Launch with
+`--home-design-preview` for the next-workout state, or add `--home-resume` for
+the in-progress state. Neither route exists in Release.
+
 ## Workout execution
 
 The workout overview uses a graphite panel for the session name and counts.

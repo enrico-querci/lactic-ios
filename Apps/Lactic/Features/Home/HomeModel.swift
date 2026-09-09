@@ -14,11 +14,15 @@ final class HomeModel: LoadableSource {
     struct Snapshot: Sendable, Equatable {
         var assignment: ProgramAssignment?
         var program: ProgramDetail?
+        var featuredExerciseCount: Int?
+        var featuredTargetSets: Int?
         var sessions: [WorkoutSession]
 
         /// An unfinished session, if there is one. Resuming beats starting.
         var resumable: WorkoutSession? {
-            sessions.first { $0.isInProgress }
+            sessions
+                .filter(\.isInProgress)
+                .max { ($0.startedAt ?? .distantPast) < ($1.startedAt ?? .distantPast) }
         }
 
         /// The first workout in programme order that has no completed session.
@@ -37,7 +41,27 @@ final class HomeModel: LoadableSource {
         }
 
         var recent: [WorkoutSession] {
-            Array(sessions.sorted { ($0.startedAt ?? .distantPast) > ($1.startedAt ?? .distantPast) }.prefix(3))
+            Array(
+                sessions
+                    .filter { !$0.isInProgress }
+                    .sorted { ($0.startedAt ?? .distantPast) > ($1.startedAt ?? .distantPast) }
+                    .prefix(3)
+            )
+        }
+
+        var completedWorkoutCount: Int {
+            guard let program else { return 0 }
+            let programmeWorkoutIDs = Set(program.weeks.flatMap(\.workouts).map(\.id))
+            let completed = Set(sessions.filter { !$0.isInProgress }.map(\.workoutID))
+            return programmeWorkoutIDs.intersection(completed).count
+        }
+
+        var totalWorkoutCount: Int {
+            program?.weeks.reduce(0) { $0 + $1.workouts.count } ?? 0
+        }
+
+        func workoutName(for workoutID: Int) -> String? {
+            program?.weeks.flatMap(\.workouts).first { $0.id == workoutID }?.name
         }
 
         var isEmpty: Bool {
@@ -78,7 +102,22 @@ final class HomeModel: LoadableSource {
                 program = try? await client.send(ClientAPI.program(id: assignment.program.id))
             }
 
-            state = .loaded(Snapshot(assignment: assignment, program: program, sessions: sessions))
+            var snapshot = Snapshot(
+                assignment: assignment,
+                program: program,
+                featuredExerciseCount: nil,
+                featuredTargetSets: nil,
+                sessions: sessions
+            )
+            let featuredWorkoutID = snapshot.resumable?.workoutID ?? snapshot.upNext?.workout.id
+            if let featuredWorkoutID {
+                if let detail: WorkoutDetail = try? await client.send(ClientAPI.workout(id: featuredWorkoutID)) {
+                    snapshot.featuredExerciseCount = detail.workoutExercises.count
+                    snapshot.featuredTargetSets = detail.workoutExercises.reduce(0) { $0 + $1.sets }
+                }
+            }
+
+            state = .loaded(snapshot)
         } catch {
             state = .failed((error as? APIError)?.message ?? error.localizedDescription)
         }
