@@ -20,8 +20,16 @@ struct RootView: View {
                     .background(LacticColor.surface)
             case .signedOut:
                 SignInView()
-            case .signedIn:
-                ClientShell()
+            case .signedIn(let user):
+                // A user has exactly one role, assigned by the server. A coach
+                // gets 403 from every client endpoint, so routing them into the
+                // client shell shows an error on every screen instead of an
+                // explanation.
+                if user.role == .coach {
+                    CoachAccountView(user: user)
+                } else {
+                    ClientShell()
+                }
             }
         }
         .animation(.default, value: environment.session.phase)

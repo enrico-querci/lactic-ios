@@ -194,6 +194,23 @@
         }
       }
     },
+    "Coaching tools live in Lactic Studio, which runs in the browser today.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coaching tools live in Lactic Studio, which runs in the browser today."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gli strumenti per i coach sono in Lactic Studio, che per ora funziona nel browser."
+          }
+        }
+      }
+    },
     "Completed": {
       "extractionState": "manual",
       "localizations": {
@@ -639,6 +656,23 @@
     "Lactic": {
       "shouldTranslate": false
     },
+    "Lactic is where your clients follow the programmes you write.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lactic is where your clients follow the programmes you write."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lactic è l'app in cui i tuoi clienti seguono i programmi che scrivi."
+          }
+        }
+      }
+    },
     "Language": {
       "extractionState": "manual",
       "localizations": {
@@ -822,6 +856,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quando il tuo coach ti assegnerà un programma lo troverai qui."
+          }
+        }
+      }
+    },
+    "Open the coach dashboard": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the coach dashboard"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri la dashboard coach"
           }
         }
       }
@@ -1179,6 +1230,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inizia il %@"
+          }
+        }
+      }
+    },
+    "This is a coach account": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is a coach account"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questo è un account coach"
           }
         }
       }
