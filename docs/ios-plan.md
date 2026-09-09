@@ -113,7 +113,7 @@ land before any external TestFlight or submission. Its blockers, parked:
 - **Rest timer today is minimal**: manual start only, `setInterval`, no sound, haptics, background continuation or wake lock, and it dies on unmount. Coach defaults are `rest_seconds: 90`, `sets: 3`, `reps: 10`.
 - **The web never built** session notes, per-exercise notes, or execution photos, though the API supports all three and `AGENTS.md` §4.1 lists them as client features. History detail renders `Exercise #<id>` because the session serializer carries no exercise name, and the exercise-history screen has no inbound link at all.
 - **Dark mode is deliberately absent on the web** — a starter `prefers-color-scheme` block once made mid-workout inputs unreadable (`lactic-web/app/globals.css:15-36`). iOS users expect dark mode, so build it properly rather than mirroring light-only.
-- **Palette to port** (light): surface `#FAFAFA`, card `#FFFFFF`, border `#E4E4E7`, text `#18181B` / `#71717A` / `#A1A1AA`, accent `#18181B`, danger `#DC2626`, success `#15803D`, warning `#A16207`, info `#1D4ED8`. Radii 6/8/pill.
+- **Visual direction:** the original web-derived grayscale palette has been replaced on iOS by chalk, graphite, and lime. See [design-system.md](design-system.md) for current semantic colors, system typography, and 14/20/pill radii.
 - **Invitation links point at the web** (`${FRONTEND_URL}/invite/<token>`) and `lactic-web/public/` has **no** `apple-app-site-association`, so Universal Links need a separate web change plus the Apple Team ID.
 - **Telemetry may carry only `{id, role}`** — never email or name, because client records are real gym members' PII.
 
@@ -273,10 +273,10 @@ Sources/LacticKit/
 
 ### `LacticUI` — design system + shared components
 
-The web has no design system to port (two CSS variables and stock Tailwind), so
-`LacticUI` defines one from the palette above with a real dark mode via semantic
-asset-catalog colors. SF Pro for text; **monospaced digits** for the timer and
-set inputs.
+`LacticUI` defines the shared [visual system](design-system.md), with adaptive
+semantic colors for light and dark appearances. Native SF text styles provide
+Dynamic Type, with heavier headings and **monospaced digits** for the timer
+and set inputs.
 
 Components: `LacticButton` (primary/secondary/danger × sm/md), `LoadingView`,
 `EmptyStateView`, `ErrorStateView` (message + Retry — the web's rationale is that

@@ -29,61 +29,37 @@ struct ColorPair: Sendable {
 
 /// The palette, as semantic roles rather than raw colours.
 ///
-/// Light values started from `lactic-web`, which is stock Tailwind zinc plus a
-/// few accents, so the two clients stay recognisably one product. They are not
-/// copied blindly: the web's muted text is zinc-400 on near-white, which is
-/// 2.46:1 and fails WCAG AA outright.
-///
-/// The dark values are designed rather than inverted. The web ships light-only
-/// on purpose — a starter `prefers-color-scheme` block once left mid-workout
-/// inputs unreadable — but on iOS a missing dark mode is conspicuous.
+/// Chalk and graphite surfaces with an electric lime identity. Interactive
+/// green deepens in light mode so small labels remain readable.
 public enum LacticColor {
     // MARK: - Surfaces
 
-    static let surfacePair = ColorPair(light: 0xFAFAFA, dark: 0x09090B)
-    /// Cards and rows. Lighter than the page on dark, not whiter — and lifted
-    /// from the obvious zinc-900 because at 1.12:1 a card had no visible edge
-    /// at all under bright ambient light, which is the condition this app is
-    /// actually used in.
-    static let surfaceElevatedPair = ColorPair(light: 0xFFFFFF, dark: 0x1F1F25)
-    static let surfacePressedPair = ColorPair(light: 0xF4F4F5, dark: 0x2A2A31)
+    static let surfacePair = ColorPair(light: 0xF5F6F0, dark: 0x10130F)
+    /// Lifted surfaces keep cards distinct in dark mode under gym lighting.
+    static let surfaceElevatedPair = ColorPair(light: 0xFFFFFF, dark: 0x22271F)
+    static let surfacePressedPair = ColorPair(light: 0xEAEDE3, dark: 0x30372B)
 
     /// Stronger on dark than the light value's mirror image, for the same
     /// reason: a hairline that reads indoors disappears on a gym floor.
-    static let borderPair = ColorPair(light: 0xE4E4E7, dark: 0x3F3F46)
-    static let borderStrongPair = ColorPair(light: 0xD4D4D8, dark: 0x52525B)
+    static let borderPair = ColorPair(light: 0xDCE1D5, dark: 0x444D3E)
+    static let borderStrongPair = ColorPair(light: 0xBAC3B1, dark: 0x65725B)
 
     // MARK: - Text
 
-    static let textPrimaryPair = ColorPair(light: 0x18181B, dark: 0xFAFAFA)
-    static let textSecondaryPair = ColorPair(light: 0x52525B, dark: 0xA1A1AA)
-    /// The weakest text that still carries meaning — an empty state's
-    /// explanation, a field hint. Both values clear AA on the page *and* on a
-    /// card, which is the stricter of the two: an elevated surface is lighter,
-    /// so dark-mode text loses contrast there. The first dark value chosen
-    /// passed on the page at 5.23 and failed on a card at 4.31, which is
-    /// exactly the kind of gap that survives being eyeballed.
-    ///
-    /// The web's zinc-400 (#A1A1AA) fails outright at 2.46:1, which is why its
-    /// empty states read as washed out.
-    static let textMutedPair = ColorPair(light: 0x71717A, dark: 0x8A8A94)
-    static let textOnAccentPair = ColorPair(light: 0xFAFAFA, dark: 0x18181B)
+    static let textPrimaryPair = ColorPair(light: 0x192118, dark: 0xF4F6EE)
+    static let textSecondaryPair = ColorPair(light: 0x505B49, dark: 0xB5BEAB)
+    /// Hints and supporting copy still clear AA on both pages and cards.
+    static let textMutedPair = ColorPair(light: 0x697360, dark: 0x99A38F)
+    static let textOnAccentPair = ColorPair(light: 0xFFFFFF, dark: 0x192118)
 
     // MARK: - Accent
 
-    static let accentPair = ColorPair(light: 0x18181B, dark: 0xFAFAFA)
-    static let accentPressedPair = ColorPair(light: 0x3F3F46, dark: 0xE4E4E7)
+    static let accentPair = ColorPair(light: 0x466B12, dark: 0xCCF36B)
+    static let accentPressedPair = ColorPair(light: 0x36530E, dark: 0xB7DE56)
 
-    /// Disabled controls are styled explicitly rather than by fading an enabled
-    /// one. A blanket `.opacity(0.5)` inverted the hierarchy on dark: the accent
-    /// is near-white there, so a half-faded primary button composited to
-    /// 5.18:1 against the page while an *enabled* secondary button sat at
-    /// 1.12:1 — the disabled control was the loudest thing on screen.
-    /// Quieter than an *enabled* secondary button, measured rather than
-    /// assumed: the first values chosen were still louder than it (dark 1.34
-    /// vs 1.21 against the page), so the fill-level inversion survived the
-    /// first fix even though the perceived one did not.
-    static let surfaceDisabledPair = ColorPair(light: 0xF6F6F7, dark: 0x161619)
+    /// Explicit disabled colors keep unavailable actions quieter than both
+    /// enabled button styles, without compositing the bright accent.
+    static let surfaceDisabledPair = ColorPair(light: 0xF3F4EE, dark: 0x191D16)
     static let textDisabledPair = ColorPair(light: 0xA1A1AA, dark: 0x71717A)
 
     // MARK: - Status
@@ -100,6 +76,11 @@ public enum LacticColor {
 
     static let infoPair = ColorPair(light: 0x1D4ED8, dark: 0x60A5FA)
     static let infoSurfacePair = ColorPair(light: 0xDBEAFE, dark: 0x11203F)
+
+    /// Identity colors for hero panels; always pair hero text with heroSurface.
+    public static let brand = Color(rgbHex: 0xCCF36B)
+    public static let heroSurface = Color(rgbHex: 0x192118)
+    public static let textOnHero = Color(rgbHex: 0xF4F6EE)
 
     // MARK: - Public surface
 

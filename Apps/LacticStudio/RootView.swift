@@ -7,13 +7,20 @@ import SwiftUI
 /// and the feature screens land.
 struct RootView: View {
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: LacticSpacing.lg) {
+            Image(systemName: "dumbbell.fill")
+                .font(.lacticDisplay)
+                .foregroundStyle(LacticColor.brand)
+                .accessibilityHidden(true)
             Text("Lactic Studio")
-                .font(.largeTitle.bold())
+                .font(.lacticDisplay)
             Text("Coach")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+                .font(.lacticEyebrow)
+                .foregroundStyle(LacticColor.brand)
         }
+        .foregroundStyle(LacticColor.textOnHero)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(LacticColor.heroSurface)
     }
 }
 

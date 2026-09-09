@@ -8,7 +8,7 @@ public enum LacticSpacing {
     public static let sm: CGFloat = 8
     /// 12 pt. Between rows in a list.
     public static let md: CGFloat = 12
-    /// 16 pt. Screen margins and card padding, matching the web's `p-4`.
+    /// 16 pt. Standard content spacing.
     public static let lg: CGFloat = 16
     /// 24 pt. Between sections.
     public static let xl: CGFloat = 24
@@ -17,10 +17,10 @@ public enum LacticSpacing {
 }
 
 public enum LacticRadius {
-    /// 6 pt — controls, matching the web's `rounded-md`.
-    public static let control: CGFloat = 6
-    /// 8 pt — cards, matching `rounded-lg`.
-    public static let card: CGFloat = 8
+    /// 14 pt. Comfortable, substantial controls.
+    public static let control: CGFloat = 14
+    /// 20 pt. Soft card edges against the graphite and chalk surfaces.
+    public static let card: CGFloat = 20
     /// Chips and badges, matching `rounded-full`.
     public static let pill: CGFloat = 999
 }

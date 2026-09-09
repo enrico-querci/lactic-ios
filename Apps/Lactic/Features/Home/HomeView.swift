@@ -57,20 +57,20 @@ struct HomeView: View {
     private func resumeCard(_ session: WorkoutSession, snapshot: HomeModel.Snapshot) -> some View {
         VStack(alignment: .leading, spacing: LacticSpacing.sm) {
             Text("Workout in progress")
-                .font(.lacticCaption)
-                .foregroundStyle(LacticColor.textOnAccent.opacity(0.7))
+                .font(.lacticEyebrow)
+                .foregroundStyle(LacticColor.brand)
             Text(workoutName(for: session.workoutID, in: snapshot) ?? String(localized: "Resume"))
                 .font(.lacticTitle)
-                .foregroundStyle(LacticColor.textOnAccent)
+                .foregroundStyle(LacticColor.textOnHero)
             if let started = session.startedAt {
                 Text("Started \(Formatters.dateTime(started, locale: environment.locale))")
                     .font(.lacticCaption)
-                    .foregroundStyle(LacticColor.textOnAccent.opacity(0.7))
+                    .foregroundStyle(LacticColor.textOnHero)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(LacticSpacing.lg)
-        .background(LacticColor.accent)
+        .padding(LacticSpacing.xl)
+        .background(LacticColor.heroSurface)
         .clipShape(RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous))
     }
 
@@ -84,8 +84,19 @@ struct HomeView: View {
                 ProgramDetailView(programID: assignment.program.id)
             } label: {
                 VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+                    HStack {
+                        Image(systemName: "figure.strengthtraining.traditional")
+                            .font(.lacticTitle)
+                            .foregroundStyle(LacticColor.accent)
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.lacticHeadline)
+                            .foregroundStyle(LacticColor.textMuted)
+                    }
+                    .accessibilityHidden(true)
+
                     Text(assignment.program.name)
-                        .font(.lacticBody.weight(.medium))
+                        .font(.lacticTitle)
                         .foregroundStyle(LacticColor.textPrimary)
 
                     if let next = snapshot.upNext {
@@ -99,7 +110,7 @@ struct HomeView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(LacticSpacing.lg)
+                .padding(LacticSpacing.xl)
                 .background(LacticColor.surfaceElevated)
                 .clipShape(RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous))
                 .overlay {
