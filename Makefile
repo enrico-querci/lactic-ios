@@ -59,6 +59,9 @@ lint: ## Check formatting and lint rules without changing anything
 	swiftformat --lint .
 	swiftlint lint --quiet
 
+# `format` applies changes; `lint` is what CI runs. They are not the same
+# check — a rule SwiftFormat cannot auto-fix passes `format` silently and fails
+# `lint`, which is exactly how a formatting failure reached CI once.
 format: ## Apply formatting
 	swiftformat .
 	swiftlint --fix --quiet

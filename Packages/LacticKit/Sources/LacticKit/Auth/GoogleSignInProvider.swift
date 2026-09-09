@@ -68,15 +68,21 @@ public enum GoogleSignInProvider {
                     throw Failure.missingIDToken
                 }
                 return token
-            } catch let error as NSError
-                where error.domain == kGIDSignInErrorDomain
-                && error.code == GIDSignInError.canceled.rawValue {
-                throw Failure.cancelled
+            } catch {
+                throw isCancellation(error) ? Failure.cancelled : error
             }
         }
 
         public static func signOut() {
             GIDSignIn.sharedInstance.signOut()
+        }
+
+        /// Backing out of Google's sheet arrives as a domain error rather than
+        /// `CancellationError`, and is not worth reporting to the user.
+        private static func isCancellation(_ error: any Error) -> Bool {
+            let error = error as NSError
+            return error.domain == kGIDSignInErrorDomain
+                && error.code == GIDSignInError.canceled.rawValue
         }
 
         /// Google needs a presenter, and there is no environment hook for one.
