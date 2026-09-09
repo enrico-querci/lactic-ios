@@ -11,6 +11,18 @@ struct RootView: View {
     @Environment(AppEnvironment.self) private var environment
 
     var body: some View {
+        #if DEBUG
+            if ProcessInfo.processInfo.arguments.contains("--workout-design-preview") {
+                NavigationStack { WorkoutDesignPreview() }
+            } else {
+                sessionContent
+            }
+        #else
+            sessionContent
+        #endif
+    }
+
+    private var sessionContent: some View {
         Group {
             switch environment.session.phase {
             case .restoring:
