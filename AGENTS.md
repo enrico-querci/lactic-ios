@@ -79,8 +79,7 @@ order:
    in-progress, and completed states. Synthetic DEBUG fixtures cover both the
    list and detail without authentication or live API data.
 
-The first three PRs have passing GitHub lint/test checks; the fourth has passed
-the same local suite and awaits its GitHub run. The client and Studio Debug
+All four PRs have passing GitHub lint/test checks. The client and Studio Debug
 schemes, the Lactic Release configuration, and all three package suites pass
 locally. Home, workout, and programme fixtures have been visually checked in
 light and dark appearances and at accessibility Dynamic Type sizes. DEBUG-only
