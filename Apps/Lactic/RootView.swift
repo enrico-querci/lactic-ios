@@ -12,7 +12,9 @@ struct RootView: View {
 
     var body: some View {
         #if DEBUG
-            if ProcessInfo.processInfo.arguments.contains("--home-design-preview") {
+            if ProcessInfo.processInfo.arguments.contains("--programme-design-preview") {
+                NavigationStack { ProgrammeDesignPreview() }
+            } else if ProcessInfo.processInfo.arguments.contains("--home-design-preview") {
                 NavigationStack { HomeDesignPreview() }
             } else if ProcessInfo.processInfo.arguments.contains("--workout-design-preview") {
                 NavigationStack { WorkoutDesignPreview() }

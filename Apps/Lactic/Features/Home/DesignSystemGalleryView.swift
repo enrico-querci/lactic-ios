@@ -18,6 +18,12 @@
                     NavigationLink("Home preview") { HomeDesignPreview() }
                         .font(.lacticHeadline)
                         .foregroundStyle(LacticColor.accent)
+                    NavigationLink("Programmes preview") { ProgrammeDesignPreview(mode: .list) }
+                        .font(.lacticHeadline)
+                        .foregroundStyle(LacticColor.accent)
+                    NavigationLink("Programme detail preview") { ProgrammeDesignPreview(mode: .detail) }
+                        .font(.lacticHeadline)
+                        .foregroundStyle(LacticColor.accent)
 
                     section("Typography") {
                         VStack(alignment: .leading, spacing: LacticSpacing.sm) {

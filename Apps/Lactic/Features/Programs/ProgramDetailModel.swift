@@ -11,7 +11,53 @@ import Observation
 @MainActor
 @Observable
 final class ProgramDetailModel: LoadableSource {
-    private(set) var state: Loadable<ProgramDetail> = .idle
+    struct Snapshot: Sendable, Equatable {
+        let program: ProgramDetail
+        let sessions: [WorkoutSession]
+
+        var totalWorkoutCount: Int {
+            program.weeks.reduce(0) { $0 + $1.workouts.count }
+        }
+
+        var completedWorkoutCount: Int {
+            programmeWorkoutIDs.intersection(completedWorkoutIDs).count
+        }
+
+        var inProgressWorkoutIDs: Set<Int> {
+            Set(sessions.filter(\.isInProgress).map(\.workoutID))
+        }
+
+        func progress(in week: Week) -> (completed: Int, total: Int) {
+            let workoutIDs = Set(week.workouts.map(\.id))
+            return (workoutIDs.intersection(completedWorkoutIDs).count, workoutIDs.count)
+        }
+
+        func status(for workoutID: Int) -> WorkoutStatus {
+            if sessions.contains(where: { $0.workoutID == workoutID && $0.isInProgress }) {
+                return .inProgress
+            }
+            if completedWorkoutIDs.contains(workoutID) {
+                return .completed
+            }
+            return .upcoming
+        }
+
+        private var programmeWorkoutIDs: Set<Int> {
+            Set(program.weeks.flatMap(\.workouts).map(\.id))
+        }
+
+        var completedWorkoutIDs: Set<Int> {
+            Set(sessions.filter { !$0.isInProgress }.map(\.workoutID))
+        }
+    }
+
+    enum WorkoutStatus: Sendable, Equatable {
+        case completed
+        case inProgress
+        case upcoming
+    }
+
+    private(set) var state: Loadable<Snapshot> = .idle
 
     private let client: APIClient
     private let programID: Int
@@ -31,8 +77,10 @@ final class ProgramDetailModel: LoadableSource {
     func reload() async {
         state = .loading
         do {
-            let detail: ProgramDetail = try await client.send(ClientAPI.program(id: programID))
-            state = .loaded(detail)
+            async let programTask: ProgramDetail = client.send(ClientAPI.program(id: programID))
+            async let sessionsTask: [WorkoutSession] = client.send(ClientAPI.workoutSessions)
+            let (program, sessions) = try await (programTask, sessionsTask)
+            state = .loaded(Snapshot(program: program, sessions: sessions))
         } catch {
             state = .failed((error as? APIError)?.message ?? error.localizedDescription)
         }

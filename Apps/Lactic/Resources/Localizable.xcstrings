@@ -1,6 +1,97 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%lld active programmes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "%lld active programmes" } },
+        "it": { "stringUnit": { "state": "translated", "value": "%lld programmi attivi" } }
+      }
+    },
+    "%lld of %lld complete": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "%lld of %lld complete" } },
+        "it": { "stringUnit": { "state": "translated", "value": "%lld completati su %lld" } }
+      }
+    },
+    "1 active programme": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "1 active programme" } },
+        "it": { "stringUnit": { "state": "translated", "value": "1 programma attivo" } }
+      }
+    },
+    "Built by your coach. Ready when you are.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Built by your coach. Ready when you are." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Creati dal tuo coach. Pronti quando vuoi." } }
+      }
+    },
+    "Opens this programme": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Opens this programme" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Apre questo programma" } }
+      }
+    },
+    "Programme detail preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Programme detail preview" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Anteprima dettaglio programma" } }
+      }
+    },
+    "Programmes preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Programmes preview" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Anteprima programmi" } }
+      }
+    },
+    "Training plan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Training plan" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Piano di allenamento" } }
+      }
+    },
+    "Upcoming": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Upcoming" } },
+        "it": { "stringUnit": { "state": "translated", "value": "In programma" } }
+      }
+    },
+    "View programme": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "View programme" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Visualizza programma" } }
+      }
+    },
+    "Weeks": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Weeks" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Settimane" } }
+      }
+    },
+    "Workouts": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Workouts" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Allenamenti" } }
+      }
+    },
+    "Your training": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Your training" } },
+        "it": { "stringUnit": { "state": "translated", "value": "I tuoi programmi" } }
+      }
+    },
     "%lld exercises · %lld target sets": {
       "extractionState": "manual",
       "localizations": {

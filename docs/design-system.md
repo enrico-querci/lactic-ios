@@ -76,3 +76,26 @@ The debug gallery includes a Workout preview backed by synthetic data and a
 network-blocking transport. Launch with `--workout-design-preview` to open it
 without authentication; add `--workout-design-timer` for the active timer.
 Preview writes are never persisted, and both routes are excluded from Release.
+
+## Programme browsing and detail
+
+The programme list opens with a compact graphite summary, then gives each
+active assignment a full card. Programme status, start date, description, and
+coach guidance are visible before navigation; the entire card remains the
+single interaction target.
+
+Programme detail combines the plan structure with real session history. Its
+hero reports week and workout counts plus distinct completed-workout progress.
+Each week repeats that progress locally, and every workout is marked upcoming,
+in progress, or completed. An unfinished session wins over earlier completed
+sessions for the same workout so the next useful action is never obscured.
+
+Workout rows use a lime weekday tile, clear prescription counts, and wrapping
+muscle-volume chips. They navigate into the existing execution flow without
+adding a second start or resume model. Pull to refresh reloads the programme and
+session history together.
+
+The debug gallery includes list and detail fixtures. Launch with
+`--programme-design-preview --programme-list` for browsing, or omit
+`--programme-list` for detail. Both routes use synthetic data and are excluded
+from Release.
