@@ -36,8 +36,22 @@ struct SettingsView: View {
                 }
 
                 #if DEBUG
-                    Section("Developer") {
+                    Section {
+                        Picker("Server", selection: serverBinding) {
+                            ForEach(AppEnvironment.Server.allCases) { server in
+                                Text(server.title).tag(server)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+
                         NavigationLink("Design system") { DesignSystemGalleryView() }
+                    } header: {
+                        Text("Developer")
+                    } footer: {
+                        // A session from one server is meaningless to the
+                        // other, so switching signs out rather than leaving a
+                        // token that fails confusingly on the next request.
+                        Text("Switching servers signs you out. Release builds always use production.")
                     }
                 #endif
 
@@ -82,6 +96,15 @@ struct SettingsView: View {
             }
         }
     }
+
+    #if DEBUG
+        private var serverBinding: Binding<AppEnvironment.Server> {
+            Binding(
+                get: { environment.server },
+                set: { newValue in Task { await environment.applyServer(newValue) } }
+            )
+        }
+    #endif
 
     private var languageBinding: Binding<AppLocale> {
         Binding(

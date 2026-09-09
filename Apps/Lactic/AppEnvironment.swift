@@ -27,19 +27,65 @@ final class AppEnvironment {
     }
 
     private static let localeKey = "app_locale"
+    private static let serverKey = "api_server"
+
+    #if DEBUG
+        /// Which API a DEBUG build talks to.
+        ///
+        /// Release builds are always production and have no picker: the choice
+        /// exists so a development build can be pointed at the real server to
+        /// exercise things a local one cannot, like a Google client id that only
+        /// production has configured.
+        enum Server: String, CaseIterable, Identifiable {
+            case local
+            case production
+
+            var id: String {
+                rawValue
+            }
+
+            var title: String {
+                switch self {
+                case .local: "Local"
+                case .production: "Production"
+                }
+            }
+
+            var url: URL {
+                switch self {
+                case .local: URL(string: "http://localhost:3000")!
+                case .production: URL(string: "https://lactic-api-production.up.railway.app")!
+                }
+            }
+        }
+
+        private(set) var server: Server
+    #endif
 
     init() {
         let stored = UserDefaults.standard.string(forKey: Self.localeKey)
         let initial = stored.flatMap(AppLocale.init(rawValue:)) ?? .deviceDefault
         locale = initial
 
+        #if DEBUG
+            let storedServer = UserDefaults.standard.string(forKey: Self.serverKey)
+            let initialServer = storedServer.flatMap(Server.init(rawValue:)) ?? .local
+            server = initialServer
+            let serverBox = ServerBox(initialServer.url)
+        #endif
+
         // Read through a box rather than capturing `self`, which does not exist
         // yet, and re-read on every request so a language switch takes effect
         // without rebuilding the client.
         let localeBox = LocaleBox(initial)
-        let client = APIClient(
-            configuration: Self.configuration(localeBox: localeBox)
-        )
+        #if DEBUG
+            let client = APIClient(
+                configuration: Self.configuration(localeBox: localeBox, serverBox: serverBox)
+            )
+            self.serverBox = serverBox
+        #else
+            let client = APIClient(configuration: Self.configuration(localeBox: localeBox))
+        #endif
         self.client = client
         session = SessionStore(client: client)
         outbox = Outbox(client: client)
@@ -49,6 +95,22 @@ final class AppEnvironment {
     }
 
     @ObservationIgnored private let localeBox: LocaleBox
+    #if DEBUG
+        @ObservationIgnored private let serverBox: ServerBox
+
+        /// Switching servers signs out.
+        ///
+        /// A refresh token issued by one server is meaningless to the other, so
+        /// keeping the session would produce a confusing 401 on the next request
+        /// rather than an obvious "you are signed out".
+        func applyServer(_ newValue: Server) async {
+            guard newValue != server else { return }
+            await session.signOut()
+            server = newValue
+            serverBox.value = newValue.url
+            UserDefaults.standard.set(newValue.rawValue, forKey: Self.serverKey)
+        }
+    #endif
 
     /// Keeps the value the API client reads in step with the published one.
     func applyLocale(_ newValue: AppLocale) {
@@ -56,16 +118,19 @@ final class AppEnvironment {
         localeBox.value = newValue
     }
 
-    private static func configuration(localeBox: LocaleBox) -> APIConfiguration {
-        let provider: @Sendable () -> String = { localeBox.value.headerValue }
-        #if DEBUG
-            // A local server during development. Info.plist's
-            // NSAllowsLocalNetworking is what permits plain HTTP to localhost.
-            return APIConfiguration.localDevelopment(locale: provider)
-        #else
-            return APIConfiguration.production(locale: provider)
-        #endif
-    }
+    #if DEBUG
+        private static func configuration(localeBox: LocaleBox, serverBox: ServerBox) -> APIConfiguration {
+            APIConfiguration(
+                baseURL: serverBox.value,
+                resolveBaseURL: { serverBox.value },
+                locale: { localeBox.value.headerValue }
+            )
+        }
+    #else
+        private static func configuration(localeBox: LocaleBox) -> APIConfiguration {
+            APIConfiguration.production(locale: { localeBox.value.headerValue })
+        }
+    #endif
 }
 
 /// A tiny thread-safe holder, so the API client's locale closure has something
@@ -83,3 +148,21 @@ final class LocaleBox: @unchecked Sendable {
         set { lock.withLock { storage = newValue } }
     }
 }
+
+#if DEBUG
+    /// Mirrors LocaleBox: something thread-safe for the API client's closure to
+    /// read that outlives the initializer.
+    final class ServerBox: @unchecked Sendable {
+        private let lock = NSLock()
+        private var storage: URL
+
+        init(_ value: URL) {
+            storage = value
+        }
+
+        var value: URL {
+            get { lock.withLock { storage } }
+            set { lock.withLock { storage = newValue } }
+        }
+    }
+#endif
