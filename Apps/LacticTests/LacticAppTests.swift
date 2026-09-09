@@ -28,6 +28,21 @@ import Testing
     #expect(snapshot.workoutName(for: 5) == "Arms & Shoulders")
 }
 
+@Test func programmeSnapshotDerivesProgressAndWorkoutStatus() throws {
+    let program = try JSONCoding.decoder.decode(ProgramDetail.self, from: Data(programJSON.utf8))
+    let sessions = try JSONCoding.decoder.decode([WorkoutSession].self, from: Data(sessionsJSON.utf8))
+    let snapshot = ProgramDetailModel.Snapshot(program: program, sessions: sessions)
+    let firstWeek = try #require(program.orderedWeeks.first)
+
+    #expect(snapshot.totalWorkoutCount == 4)
+    #expect(snapshot.completedWorkoutCount == 1)
+    #expect(snapshot.progress(in: firstWeek).completed == 1)
+    #expect(snapshot.progress(in: firstWeek).total == 2)
+    #expect(snapshot.status(for: 2) == .completed)
+    #expect(snapshot.status(for: 3) == .upcoming)
+    #expect(snapshot.status(for: 4) == .inProgress)
+}
+
 private let programJSON = """
 {
   "id": 2,
