@@ -151,7 +151,7 @@ struct SignInView: View {
 
                 Text("Uses the API's dev_login route, which does not exist in production.")
                     .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(LacticColor.textMuted)
             }
         }
 
