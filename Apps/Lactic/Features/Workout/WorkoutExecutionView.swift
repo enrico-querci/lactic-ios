@@ -26,7 +26,7 @@ struct WorkoutExecutionView: View {
         // rest of the app and quietly drain the battery.
         .onDisappear {
             RestAlerts.setKeepScreenAwake(false)
-            RestAlerts.cancelAll()
+            Task { await RestAlerts.cancelAll() }
         }
         .onChange(of: model?.isSessionActive ?? false) { _, isActive in
             RestAlerts.setKeepScreenAwake(isActive)
