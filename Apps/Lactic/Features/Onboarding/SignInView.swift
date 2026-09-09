@@ -2,12 +2,7 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
-/// Sign-in.
-///
-/// Only the development path exists so far. Google Sign-In is order-of-work
-/// step 8 and Sign in with Apple lands at the App Store gate, where guideline
-/// 4.8 makes it mandatory once Google is offered. Both slot in beside this
-/// through the same `SessionStore` calls.
+/// Google sign-in with a debug-only local development path.
 struct SignInView: View {
     @Environment(AppEnvironment.self) private var environment
 
@@ -16,43 +11,60 @@ struct SignInView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        VStack(spacing: 24) {
-            Spacer()
+        ScrollView {
+            VStack(alignment: .leading, spacing: LacticSpacing.xxl) {
+                brandHeader
 
-            VStack(spacing: 8) {
-                Text("Lactic")
-                    .font(.largeTitle.bold())
-                Text("Follow your programme, log your sets.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
+                VStack(spacing: LacticSpacing.md) {
+                    googleButton
 
-            Spacer()
+                    if let errorMessage {
+                        Text(errorMessage)
+                            .font(.lacticCaption)
+                            .foregroundStyle(LacticColor.danger)
+                            .multilineTextAlignment(.center)
+                    }
 
-            VStack(spacing: LacticSpacing.md) {
-                googleButton
-
-                if let errorMessage {
-                    Text(errorMessage)
-                        .font(.lacticCaption)
-                        .foregroundStyle(LacticColor.danger)
-                        .multilineTextAlignment(.center)
+                    // Sign in with Apple lands at the App Store gate: guideline 4.8
+                    // requires an equivalent privacy-preserving option once Google
+                    // is offered, so this build is not submittable as it stands.
+                    #if DEBUG
+                        serverPicker
+                            .padding(.top, LacticSpacing.lg)
+                        developmentSignIn
+                    #endif
                 }
-
-                // Sign in with Apple lands at the App Store gate: guideline 4.8
-                // requires an equivalent privacy-preserving option once Google
-                // is offered, so this build is not submittable as it stands.
-                #if DEBUG
-                    serverPicker
-                        .padding(.top, LacticSpacing.lg)
-                    developmentSignIn
-                #endif
             }
-
-            Spacer()
+            .frame(maxWidth: 480)
+            .padding(LacticSpacing.xl)
+            .frame(maxWidth: .infinity)
         }
-        .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(LacticColor.surface)
+    }
+
+    private var brandHeader: some View {
+        VStack(alignment: .leading, spacing: LacticSpacing.xl) {
+            Image(systemName: "dumbbell.fill")
+                .font(.lacticTitle)
+                .foregroundStyle(LacticColor.heroSurface)
+                .padding(LacticSpacing.lg)
+                .background(LacticColor.brand, in: RoundedRectangle(cornerRadius: LacticRadius.control))
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+                Text("Lactic")
+                    .font(.lacticDisplay)
+                    .foregroundStyle(LacticColor.textOnHero)
+                Text("Follow your programme, log your sets.")
+                    .font(.lacticBody)
+                    .foregroundStyle(LacticColor.textOnHero)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(LacticSpacing.xxl)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(LacticColor.heroSurface, in: RoundedRectangle(cornerRadius: LacticRadius.card))
     }
 
     private var googleButton: some View {
@@ -135,13 +147,11 @@ struct SignInView: View {
                         Text("Sign in").frame(maxWidth: .infinity)
                     }
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .disabled(isWorking || email.isEmpty)
+                .lacticButton(.secondary, isEnabled: !isWorking && !email.isEmpty)
 
                 Text("Uses the API's dev_login route, which does not exist in production.")
                     .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(LacticColor.textMuted)
             }
         }
 

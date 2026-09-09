@@ -12,6 +12,25 @@
         var body: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: LacticSpacing.xl) {
+                    section("Typography") {
+                        VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+                            Text("Lactic").font(.lacticDisplay)
+                            Text("Upper body strength").font(.lacticTitle)
+                            Text("Your next session").font(.lacticHeadline)
+                            Text("Follow your programme, log your sets.").font(.lacticBody)
+                            Text("72.5 kg × 8").font(.lacticNumeric)
+                            Text("01:30").font(.lacticTimer)
+                        }
+                    }
+
+                    section("Palette") {
+                        HStack(spacing: LacticSpacing.sm) {
+                            swatch("Lime", color: LacticColor.brand)
+                            swatch("Graphite", color: LacticColor.heroSurface)
+                            swatch("Accent", color: LacticColor.accent)
+                        }
+                    }
+
                     section("Buttons") {
                         VStack(spacing: LacticSpacing.sm) {
                             Button("Start workout") {}.lacticButton()
@@ -74,6 +93,17 @@
                     .font(.lacticHeadline)
                     .foregroundStyle(LacticColor.textPrimary)
                 content()
+            }
+        }
+
+        private func swatch(_ title: String, color: Color) -> some View {
+            VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+                RoundedRectangle(cornerRadius: LacticRadius.control)
+                    .fill(color)
+                    .frame(height: 64)
+                Text(title)
+                    .font(.lacticCaption)
+                    .foregroundStyle(LacticColor.textSecondary)
             }
         }
     }

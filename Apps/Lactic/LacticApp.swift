@@ -1,4 +1,5 @@
 import LacticKit
+import LacticUI
 import SwiftUI
 
 @main
@@ -8,6 +9,8 @@ struct LacticApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .tint(LacticColor.accent)
+                .foregroundStyle(LacticColor.textPrimary)
                 .environment(environment)
                 // Drives the app's own strings from the in-app switcher rather
                 // than the device language. Without this the client picks
