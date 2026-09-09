@@ -14,6 +14,7 @@ struct ExerciseCard: View {
 
     @State private var isEditingNotes = false
     @State private var noteDraft = ""
+    @State private var restDeadline: Date?
 
     var body: some View {
         VStack(alignment: .leading, spacing: LacticSpacing.md) {
@@ -149,15 +150,44 @@ struct ExerciseCard: View {
     private var actions: some View {
         HStack(spacing: LacticSpacing.sm) {
             Button("Add set") {
-                Task { await recorder.addSet(to: workoutExercise) }
+                Task { await logSet() }
             }
             .lacticButton(.secondary, size: .small)
             .fixedSize()
 
             Spacer(minLength: LacticSpacing.sm)
 
-            RestTimerView(duration: workoutExercise.effectiveRestSeconds)
+            RestTimerView(
+                duration: workoutExercise.effectiveRestSeconds,
+                deadline: $restDeadline,
+                onFinished: finishRest
+            )
         }
+    }
+
+    /// Logs the set and starts the rest, because those are one action.
+    ///
+    /// Reaching for the phone a second time to press "rest" right after a heavy
+    /// set is exactly the interaction worth removing; the timer can still be
+    /// started or skipped by hand.
+    private func logSet() async {
+        await recorder.addSet(to: workoutExercise)
+
+        let deadline = Date().addingTimeInterval(TimeInterval(workoutExercise.effectiveRestSeconds))
+        restDeadline = deadline
+        await RestAlerts.schedule(
+            for: String(workoutExercise.id),
+            at: deadline,
+            exerciseName: workoutExercise.exercise.name
+        )
+    }
+
+    /// Runs when the countdown reaches zero **or** the client skips it. Either
+    /// way the pending notification has to go: firing it afterwards would
+    /// announce a rest they have already finished.
+    private func finishRest() {
+        RestAlerts.cancel(for: String(workoutExercise.id))
+        RestAlerts.playFinishedHaptic()
     }
 
     @ViewBuilder

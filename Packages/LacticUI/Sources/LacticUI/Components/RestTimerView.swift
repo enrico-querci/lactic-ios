@@ -13,24 +13,30 @@ import SwiftUI
 /// workout polish and are not here yet.
 public struct RestTimerView: View {
     private let duration: Int
-    private let onFinished: (() -> Void)?
+    @Binding private var deadline: Date?
+    private let onFinished: () -> Void
 
-    @State private var deadline: Date?
     @State private var now = Date()
 
     /// One tick per second is enough for a mm:ss readout, and far cheaper than
     /// a display-linked timer for something that sits on screen for minutes.
     private let tick = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-    public init(duration: Int, onFinished: (() -> Void)? = nil) {
+    /// The deadline is a binding so the workout screen can start the timer
+    /// itself when a set is logged. Owning it internally would mean the timer
+    /// could only ever be started by tapping it, and reaching for the phone to
+    /// press "rest" immediately after a heavy set is exactly the interaction
+    /// worth removing.
+    public init(duration: Int, deadline: Binding<Date?>, onFinished: @escaping () -> Void = {}) {
         self.duration = duration
+        _deadline = deadline
         self.onFinished = onFinished
     }
 
     public var body: some View {
         Group {
-            if let deadline {
-                running(until: deadline)
+            if deadline != nil {
+                running
             } else {
                 Button("Rest \(duration)s") { start() }
                     .lacticButton(.secondary, size: .small)
@@ -46,12 +52,7 @@ public struct RestTimerView: View {
         }
     }
 
-    public func start() {
-        deadline = Date().addingTimeInterval(TimeInterval(duration))
-        now = Date()
-    }
-
-    private func running(until _: Date) -> some View {
+    private var running: some View {
         HStack(spacing: LacticSpacing.sm) {
             Text(formatted)
                 .font(.lacticTimer)
@@ -74,16 +75,24 @@ public struct RestTimerView: View {
         String(format: "%d:%02d", remaining / 60, remaining % 60)
     }
 
+    private func start() {
+        deadline = Date().addingTimeInterval(TimeInterval(duration))
+        now = Date()
+    }
+
     private func finish() {
         deadline = nil
-        onFinished?()
+        onFinished()
     }
 }
 
 #Preview("Rest timer") {
-    VStack(spacing: LacticSpacing.lg) {
-        RestTimerView(duration: 90)
-        RestTimerView(duration: 8)
+    @Previewable @State var idle: Date?
+    @Previewable @State var running: Date? = Date().addingTimeInterval(85)
+
+    return VStack(spacing: LacticSpacing.lg) {
+        RestTimerView(duration: 90, deadline: $idle)
+        RestTimerView(duration: 90, deadline: $running)
     }
     .padding()
     .background(LacticColor.surface)
