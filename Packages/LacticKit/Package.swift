@@ -13,15 +13,19 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../LacticCore"),
-        // GoogleSignIn-iOS is added here at order-of-work step 8. Sign in with
-        // Apple needs no dependency (AuthenticationServices) and arrives at the
-        // App Store gate, since guideline 4.8 makes it mandatory once Google
-        // ships. See docs/ios-plan.md.
+        // The only third-party dependency in the project, per AGENTS.md 6.1.
+        // Sign in with Apple needs none (AuthenticationServices) and arrives at
+        // the App Store gate, where guideline 4.8 makes it mandatory once
+        // Google ships. See docs/ios-plan.md.
+        .package(url: "https://github.com/google/GoogleSignIn-iOS", from: "8.0.0"),
     ],
     targets: [
         .target(
             name: "LacticKit",
-            dependencies: [.product(name: "LacticCore", package: "LacticCore")],
+            dependencies: [
+                .product(name: "LacticCore", package: "LacticCore"),
+                .product(name: "GoogleSignIn", package: "GoogleSignIn-iOS"),
+            ],
             swiftSettings: .lactic
         ),
         .testTarget(

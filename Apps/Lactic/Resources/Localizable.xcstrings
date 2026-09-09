@@ -1,19 +1,19 @@
 {
   "sourceLanguage": "en",
   "strings": {
-    "%1$@ kg × %2$lld": {
+    "%@ kg × %lld": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ kg × %2$lld"
+            "value": "%@ kg × %lld"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ kg × %2$lld"
+            "value": "%@ kg × %lld"
           }
         }
       }
@@ -207,6 +207,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Completato"
+          }
+        }
+      }
+    },
+    "Continue with Google": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue with Google"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continua con Google"
           }
         }
       }
@@ -622,12 +639,6 @@
     "Lactic": {
       "shouldTranslate": false
     },
-    "Lactic Studio": {
-      "shouldTranslate": false
-    },
-    "LacticStudio": {
-      "shouldTranslate": false
-    },
     "Language": {
       "extractionState": "manual",
       "localizations": {
@@ -645,19 +656,19 @@
         }
       }
     },
-    "Last time: %1$@ kg × %2$lld": {
+    "Last time: %@ kg × %lld": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Last time: %1$@ kg × %2$lld"
+            "value": "Last time: %@ kg × %lld"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'ultima volta: %1$@ kg × %2$lld"
+            "value": "L'ultima volta: %@ kg × %lld"
           }
         }
       }
@@ -1189,19 +1200,19 @@
         }
       }
     },
-    "Up next: %1$@ · Week %2$lld": {
+    "Up next: %@ · Week %lld": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Up next: %1$@ · Week %2$lld"
+            "value": "Up next: %@ · Week %lld"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prossimo: %1$@ · Settimana %2$lld"
+            "value": "Prossimo: %@ · Settimana %lld"
           }
         }
       }

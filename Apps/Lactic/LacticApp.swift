@@ -16,6 +16,11 @@ struct LacticApp: App {
                 // the surrounding interface stays in whatever language the
                 // phone is set to — two languages on one screen.
                 .environment(\.locale, environment.locale.foundationLocale)
+                // Google's flow returns through the reversed-client-id scheme
+                // declared in Info.plist.
+                .onOpenURL { url in
+                    GoogleSignInProvider.handle(url)
+                }
         }
     }
 }

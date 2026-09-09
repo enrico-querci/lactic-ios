@@ -1,4 +1,5 @@
 import LacticKit
+import LacticUI
 import SwiftUI
 
 /// Sign-in.
@@ -28,18 +29,59 @@ struct SignInView: View {
 
             Spacer()
 
-            #if DEBUG
-                developmentSignIn
-            #else
-                Text("Sign-in is not available in this build yet.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            #endif
+            VStack(spacing: LacticSpacing.md) {
+                googleButton
+
+                if let errorMessage {
+                    Text(errorMessage)
+                        .font(.lacticCaption)
+                        .foregroundStyle(LacticColor.danger)
+                        .multilineTextAlignment(.center)
+                }
+
+                // Sign in with Apple lands at the App Store gate: guideline 4.8
+                // requires an equivalent privacy-preserving option once Google
+                // is offered, so this build is not submittable as it stands.
+                #if DEBUG
+                    developmentSignIn
+                        .padding(.top, LacticSpacing.lg)
+                #endif
+            }
 
             Spacer()
         }
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var googleButton: some View {
+        Button(action: signInWithGoogle) {
+            HStack(spacing: LacticSpacing.sm) {
+                Image(systemName: "g.circle.fill")
+                    .accessibilityHidden(true)
+                Text("Continue with Google")
+            }
+        }
+        .lacticButton(isEnabled: !isWorking)
+    }
+
+    private func signInWithGoogle() {
+        isWorking = true
+        errorMessage = nil
+        Task {
+            do {
+                try await environment.session.signInWithGoogle()
+            } catch GoogleSignInProvider.Failure.cancelled {
+                // Backing out of the Google sheet is not an error worth
+                // reporting; the user knows what they did.
+                errorMessage = nil
+            } catch let error as APIError {
+                errorMessage = error.message
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+            isWorking = false
+        }
     }
 
     #if DEBUG
@@ -67,13 +109,6 @@ struct SignInView: View {
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .disabled(isWorking || email.isEmpty)
-
-                if let errorMessage {
-                    Text(errorMessage)
-                        .font(.footnote)
-                        .foregroundStyle(.red)
-                        .accessibilityAddTraits(.isStaticText)
-                }
 
                 Text("Uses the API's dev_login route, which does not exist in production.")
                     .font(.caption2)

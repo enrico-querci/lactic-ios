@@ -13,3 +13,22 @@ INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait
 INFOPLIST_KEY_CFBundleDisplayName = Lactic
 INFOPLIST_KEY_UILaunchScreen_Generation = YES
 INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES
+
+// Google Sign-In.
+//
+// None of these are secrets: an iOS OAuth client has no client secret, and a
+// client id ships inside the app binary anyway. They live here rather than in
+// source so the reversed id and the URL scheme that must match it cannot drift
+// apart — Info.plist reads GID_REVERSED_CLIENT_ID directly.
+//
+// GIDServerClientID is the *web* client. Setting it makes Google issue the ID
+// token with `aud` set to the server client, which is the single audience
+// lactic-api already verifies against, so the backend needs no change. Both
+// clients are in Google Cloud project 235345338249; that is what makes it work.
+GID_CLIENT_ID = 235345338249-0qfa9avcuh03buq9ir4u79og487ro99k.apps.googleusercontent.com
+GID_REVERSED_CLIENT_ID = com.googleusercontent.apps.235345338249-0qfa9avcuh03buq9ir4u79og487ro99k
+GID_SERVER_CLIENT_ID = 235345338249-m1880n3a01jcl7v5jb5nqe7m887d7g45.apps.googleusercontent.com
+
+// Read by Info.plist through build-setting substitution. INFOPLIST_KEY_ only
+// injects keys Xcode knows about, so these arbitrary ones have to be declared
+// in the plist itself.

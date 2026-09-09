@@ -4,6 +4,22 @@
 <dict>
 	<!-- The rest of Info.plist is generated from INFOPLIST_KEY_* settings in
 	     Configs/*.xcconfig; only keys with no build-setting equivalent live here. -->
+	<key>GIDClientID</key>
+	<string>$(GID_CLIENT_ID)</string>
+	<key>GIDServerClientID</key>
+	<string>$(GID_SERVER_CLIENT_ID)</string>
+	<!-- Google's sign-in flow returns to the app through this scheme. The
+	     value comes from GID_REVERSED_CLIENT_ID in Configs/Lactic.xcconfig, so
+	     it cannot drift from the client id declared beside it. -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>$(GID_REVERSED_CLIENT_ID)</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<!-- Permits http://localhost:3000, the local Rails API used for

@@ -87,12 +87,37 @@ public final class SessionStore: TokenProviding {
         phase = .signedIn(user)
     }
 
+    // Google's flow needs a UIKit presenter, so it exists only where UIKit
+    // does. The package also builds for macOS purely so `swift test` can run on
+    // the host without a simulator.
+    #if canImport(UIKit)
+        /// Signs in with Google.
+        ///
+        /// The ID token goes straight to the API, which verifies it against
+        /// Google's public keys. Nothing here trusts the token's contents.
+        public func signInWithGoogle(invitationToken: String? = nil) async throws {
+            let idToken = try await GoogleSignInProvider.idToken()
+            // Logged so the serverClientID assumption can be checked against a
+            // real token rather than taken on trust: this should be the *web*
+            // client id, which is the single audience the API verifies.
+            let audience = GoogleSignInProvider.audience(of: idToken) ?? "unknown"
+            AppLog.auth.info("Google ID token audience: \(audience, privacy: .public)")
+            try await signIn(provider: "google", idToken: idToken, invitationToken: invitationToken)
+        }
+    #endif
+
     public func signOut() async {
         if let token = storedRefreshToken, !token.isEmpty {
             // Best effort: the endpoint always answers 204 and revokes only the
             // token presented, so a failure here costs nothing locally.
             _ = try? await client.sendIgnoringResponse(try ClientAPI.signOut(refreshToken: token))
         }
+        // Also end Google's own session, or the next sign-in silently reuses
+        // the same account with no chooser — surprising on a shared phone, and
+        // wrong when a client is switching accounts to accept an invitation.
+        #if canImport(UIKit)
+            GoogleSignInProvider.signOut()
+        #endif
         await clearSession()
     }
 
