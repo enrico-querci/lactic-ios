@@ -51,23 +51,37 @@ public protocol LoadableSource: AnyObject {
 /// routinely, and a blank screen is indistinguishable from "you have no
 /// programmes" — a much more alarming thing for a client to conclude.
 public struct LoadableView<Source: LoadableSource, Content: View>: View {
-    private let source: Source
+    private let source: Source?
     private let content: (Source.Value) -> Content
 
-    public init(_ source: Source, @ViewBuilder content: @escaping (Source.Value) -> Content) {
+    /// Accepts an **optional** source deliberately.
+    ///
+    /// These screens create their model inside `.task`, so it is nil on the
+    /// first render. Writing `Group { if let model { LoadableView(model) } }`
+    /// and hanging `.task` off the Group looks equivalent and is not: with no
+    /// else branch the Group resolves to nothing, SwiftUI never materialises
+    /// it, and the `.task` that would have created the model never runs. The
+    /// screen stays blank forever — a deadlock, not a race, so it never
+    /// resolves on its own.
+    ///
+    /// That shipped once, in the workout execution screen. Handling nil here
+    /// means no screen needs the conditional wrapper, so the shape cannot recur.
+    public init(_ source: Source?, @ViewBuilder content: @escaping (Source.Value) -> Content) {
         self.source = source
         self.content = content
     }
 
     public var body: some View {
-        switch source.state {
-        case .idle, .loading:
+        switch source?.state {
+        case .none, .idle, .loading:
             LoadingView()
         case .loaded(let value):
             content(value)
         case .failed(let message):
             ErrorStateView(message: message) {
-                Task { await source.reload() }
+                if let source {
+                    Task { await source.reload() }
+                }
             }
             .padding(LacticSpacing.lg)
         }

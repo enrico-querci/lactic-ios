@@ -13,6 +13,10 @@ import SwiftUI
 final class AppEnvironment {
     let client: APIClient
     let session: SessionStore
+    /// Owned by the environment rather than a screen: the queue has to outlive
+    /// the workout view, so a set logged just before the app is backgrounded
+    /// still drains.
+    let outbox: Outbox
 
     /// The app's own locale choice, which drives `Accept-Language` and so
     /// decides which language the API translates exercise content into. Starts
@@ -38,6 +42,7 @@ final class AppEnvironment {
         )
         self.client = client
         session = SessionStore(client: client)
+        outbox = Outbox(client: client)
         self.localeBox = localeBox
 
         Task { await client.setTokenProvider(session) }

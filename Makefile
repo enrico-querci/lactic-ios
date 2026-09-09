@@ -14,8 +14,13 @@ PACKAGES  := LacticCore LacticKit LacticUI
 # CI passes a UDID it discovered from `simctl list devices available`.
 DESTINATION ?= platform=iOS Simulator,name=$(SIMULATOR),OS=$(IOS)
 
+# simctl addresses devices by UDID or the literal "booted", never by the
+# xcodebuild destination string — passing SIMULATOR here would put a UDID into
+# `name=`, which matches nothing.
+DEVICE ?= booted
+
 .DEFAULT_GOAL := help
-.PHONY: help project build test test-packages lint format clean
+.PHONY: help project build test test-packages install lint format clean
 
 help: ## Show this help
 	@grep -E '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
@@ -40,6 +45,15 @@ test: project test-packages ## Run package tests and both app test schemes
 		echo "--- testing $$scheme ---"; \
 		xcodebuild test -project $(PROJECT) -scheme $$scheme -destination "$(DESTINATION)" -quiet || exit 1; \
 	done
+
+install: build ## Build and install Lactic on the booted simulator
+	@app="$$(xcodebuild -project $(PROJECT) -scheme Lactic -destination "$(DESTINATION)" \
+		-showBuildSettings 2>/dev/null \
+		| awk -F' = ' '/ BUILT_PRODUCTS_DIR = /{d=$$2} / FULL_PRODUCT_NAME = /{n=$$2} END{print d "/" n}')"; \
+	test -d "$$app" || { echo "product not found at $$app"; exit 1; }; \
+	xcrun simctl uninstall $(DEVICE) com.enricoquerci.lactic 2>/dev/null; \
+	xcrun simctl install $(DEVICE) "$$app"; \
+	echo "installed $$(basename "$$app") built $$(stat -f '%Sm' -t '%H:%M:%S' "$$app/Lactic")"
 
 lint: ## Check formatting and lint rules without changing anything
 	swiftformat --lint .

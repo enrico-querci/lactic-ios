@@ -10,11 +10,9 @@ struct ExerciseDetailView: View {
     @State private var model: ExerciseDetailModel?
 
     var body: some View {
-        Group {
+        LoadableView(model) { detail in
             if let model {
-                LoadableView(model) { detail in
-                    content(detail, model: model)
-                }
+                content(detail, model: model)
             }
         }
         .background(LacticColor.surface)

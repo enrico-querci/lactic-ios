@@ -10,14 +10,8 @@ struct ProgramDetailView: View {
     @State private var model: ProgramDetailModel?
 
     var body: some View {
-        Group {
-            if let model {
-                LoadableView(model) { program in
-                    content(program)
-                }
-            } else {
-                LoadingView()
-            }
+        LoadableView(model) { program in
+            content(program)
         }
         .background(LacticColor.surface)
         .navigationTitle(model?.state.value?.name ?? "")
@@ -58,18 +52,21 @@ struct ProgramDetailView: View {
                     .foregroundStyle(LacticColor.textMuted)
             } else {
                 ForEach(week.orderedWorkouts) { workout in
-                    WorkoutRow(workout: workout, locale: environment.locale)
+                    NavigationLink {
+                        WorkoutExecutionView(workoutID: workout.id, assignmentID: assignmentID)
+                    } label: {
+                        WorkoutRow(workout: workout, locale: environment.locale)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
     }
 }
 
-/// A workout as it appears inside a programme.
-///
-/// Not a navigation link yet: opening one starts the execution screen, which is
-/// pass 6C. Kept as a plain row rather than a dead link so it does not look
-/// tappable and do nothing.
+/// A workout as it appears inside a programme. Tapping one opens the execution
+/// screen, carrying the assignment id — a session belongs to an assignment, and
+/// the workout payload has no way to supply it.
 private struct WorkoutRow: View {
     let workout: Workout
     let locale: AppLocale
