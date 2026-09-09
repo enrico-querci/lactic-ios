@@ -1,6 +1,83 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%lld exercises · %lld target sets": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "%lld exercises · %lld target sets" } },
+        "it": { "stringUnit": { "state": "translated", "value": "%lld esercizi · %lld serie previste" } }
+      }
+    },
+    "%lld of %lld workouts completed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "%lld of %lld workouts completed" } },
+        "it": { "stringUnit": { "state": "translated", "value": "%lld allenamenti completati su %lld" } }
+      }
+    },
+    "Home preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Home preview" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Anteprima Home" } }
+      }
+    },
+    "Once your coach assigns a programme, your next workout will appear here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Once your coach assigns a programme, your next workout will appear here." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Quando il tuo coach assegnerà un programma, il prossimo allenamento apparirà qui." } }
+      }
+    },
+    "Opens this workout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Opens this workout" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Apre questo allenamento" } }
+      }
+    },
+    "Ready when your coach is": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Ready when your coach is" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Pronto quando lo è il tuo coach" } }
+      }
+    },
+    "Resume workout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Resume workout" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Riprendi allenamento" } }
+      }
+    },
+    "Returns to your active workout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Returns to your active workout" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Torna all'allenamento attivo" } }
+      }
+    },
+    "Up next": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Up next" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Prossimo" } }
+      }
+    },
+    "Week %lld · %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Week %lld · %@" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Settimana %lld · %@" } }
+      }
+    },
+    "Workout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Workout" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Allenamento" } }
+      }
+    },
     "Done": {
       "extractionState": "manual",
       "localizations": {

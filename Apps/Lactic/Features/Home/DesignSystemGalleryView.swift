@@ -15,6 +15,9 @@
                     NavigationLink("Workout preview") { WorkoutDesignPreview() }
                         .font(.lacticHeadline)
                         .foregroundStyle(LacticColor.accent)
+                    NavigationLink("Home preview") { HomeDesignPreview() }
+                        .font(.lacticHeadline)
+                        .foregroundStyle(LacticColor.accent)
 
                     section("Typography") {
                         VStack(alignment: .leading, spacing: LacticSpacing.sm) {
