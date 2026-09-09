@@ -21,37 +21,38 @@ private let aliceClient = User(
 struct SessionStoreTests {
     private static let refreshKey = "refresh_token"
 
-    private func makeStore(storage: InMemoryStorage) -> SessionStore {
+    private func makeStore(
+        storage: InMemoryStorage,
+        handler: @escaping @Sendable (URLRequest) -> StubTransport.Response
+    ) -> (SessionStore, StubTransport) {
+        let transport = StubTransport(handler: handler)
         let client = APIClient(
             configuration: APIConfiguration(baseURL: URL(string: "https://api.test")!) { "en" },
-            session: StubURLProtocol.session()
+            session: transport.session
         )
         let store = SessionStore(client: client, keychain: storage)
         Task { await client.setTokenProvider(store) }
-        return store
+        return (store, transport)
     }
 
     @Test func startsRestoringSoTheUIDoesNotFlashSignIn() {
-        #expect(makeStore(storage: InMemoryStorage()).phase == .restoring)
+        let (store, _) = makeStore(storage: InMemoryStorage()) { _ in .json("{}") }
+        #expect(store.phase == .restoring)
     }
 
     @Test func restoreWithNoStoredTokenSignsOut() async {
-        let store = makeStore(storage: InMemoryStorage())
-        StubURLProtocol.configure { _ in .json("{}") }
+        let (store, transport) = makeStore(storage: InMemoryStorage()) { _ in .json("{}") }
 
         await store.restore()
 
         #expect(store.phase == .signedOut)
-        #expect(StubURLProtocol.requests.isEmpty, "no stored token means nothing to ask the server")
+        #expect(transport.requests.isEmpty, "no stored token means nothing to ask the server")
     }
 
     @Test func devLoginPersistsTheRefreshTokenAndLoadsTheFullUser() async throws {
         let storage = InMemoryStorage()
-        let store = makeStore(storage: storage)
-        StubURLProtocol.configure { request in
-            request.url?.path.hasSuffix("/me") == true
-                ? .json(meBody)
-                : .json(authBody)
+        let (store, transport) = makeStore(storage: storage) { request in
+            request.url?.path.hasSuffix("/me") == true ? .json(meBody) : .json(authBody)
         }
 
         try await store.signInWithDevLogin(email: "alice@example.com")
@@ -61,7 +62,7 @@ struct SessionStoreTests {
         #expect(await store.currentAccessToken() == "access-1")
         // /me is fetched rather than synthesised: the auth response's user has
         // no avatar_url.
-        #expect(StubURLProtocol.requestCount(forPathSuffix: "/me") == 1)
+        #expect(transport.requestCount(forPathSuffix: "/me") == 1)
     }
 
     /// The API destroys the old refresh-token row when it issues a new pair, so
@@ -69,8 +70,7 @@ struct SessionStoreTests {
     /// server has already invalidated.
     @Test func concurrentRefreshesCollapseIntoOneRequest() async throws {
         let storage = InMemoryStorage([Self.refreshKey: "refresh-0"])
-        let store = makeStore(storage: storage)
-        StubURLProtocol.configure { _ in
+        let (store, transport) = makeStore(storage: storage) { _ in
             .json(#"{"access_token":"access-2","refresh_token":"refresh-2"}"#)
         }
 
@@ -85,7 +85,7 @@ struct SessionStoreTests {
         }
 
         #expect(
-            StubURLProtocol.requestCount(forPathSuffix: "/auth/refresh") == 1,
+            transport.requestCount(forPathSuffix: "/auth/refresh") == 1,
             "eight callers, one refresh"
         )
         #expect(tokens.allSatisfy { $0 == "access-2" })
@@ -97,8 +97,9 @@ struct SessionStoreTests {
 
     @Test func aRejectedRefreshEndsTheSession() async throws {
         let storage = InMemoryStorage([Self.refreshKey: "expired"])
-        let store = makeStore(storage: storage)
-        StubURLProtocol.configure { _ in .json(#"{"error":"Invalid refresh token"}"#, status: 401) }
+        let (store, _) = makeStore(storage: storage) { _ in
+            .json(#"{"error":"Invalid refresh token"}"#, status: 401)
+        }
 
         let token = try await store.refreshAccessToken()
 
@@ -109,8 +110,7 @@ struct SessionStoreTests {
 
     @Test func restoreRecoversAnExistingSession() async throws {
         let storage = InMemoryStorage([Self.refreshKey: "refresh-0"])
-        let store = makeStore(storage: storage)
-        StubURLProtocol.configure { request in
+        let (store, _) = makeStore(storage: storage) { request in
             request.url?.path.hasSuffix("/me") == true
                 ? .json(meBody)
                 : .json(#"{"access_token":"access-3","refresh_token":"refresh-3"}"#)
@@ -124,8 +124,7 @@ struct SessionStoreTests {
 
     @Test func signOutClearsEverythingEvenIfTheServerCallFails() async throws {
         let storage = InMemoryStorage([Self.refreshKey: "refresh-0"])
-        let store = makeStore(storage: storage)
-        StubURLProtocol.configure { _ in .json(#"{"error":"boom"}"#, status: 500) }
+        let (store, _) = makeStore(storage: storage) { _ in .json(#"{"error":"boom"}"#, status: 500) }
 
         await store.signOut()
 

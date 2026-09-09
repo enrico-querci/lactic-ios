@@ -1,11 +1,15 @@
 import Foundation
 
-/// Intercepts `URLSession` traffic so `APIClient` can be exercised end to end
-/// without a server.
+/// A `URLSession` whose responses are scripted, for testing `APIClient` without
+/// a server.
 ///
-/// Registered on an ephemeral configuration rather than globally, so a test
-/// cannot leak responses into another one.
-final class StubURLProtocol: URLProtocol, @unchecked Sendable {
+/// Each instance is isolated. An earlier version kept the handler and the
+/// recorded requests in statics, which worked while only one suite used it and
+/// then silently cross-contaminated the moment a second one existed — Swift
+/// Testing runs suites in parallel, so an auth request from one suite turned up
+/// in another's assertions. Isolation is by a token carried in a header the
+/// session adds to every request.
+final class StubTransport: @unchecked Sendable {
     struct Response {
         let status: Int
         let body: Data
@@ -22,35 +26,67 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
         }
     }
 
-    /// Shared because URLProtocol is instantiated by URLSession, which gives no
-    /// hook to inject per-test state. Guarded by a lock and reset between tests.
-    private static let lock = NSLock()
-    private nonisolated(unsafe) static var handler: (@Sendable (URLRequest) -> Response)?
-    private nonisolated(unsafe) static var recorded: [URLRequest] = []
+    static let headerName = "X-Stub-Transport"
 
-    static func configure(_ handler: @escaping @Sendable (URLRequest) -> Response) {
-        lock.withLock {
-            self.handler = handler
-            recorded = []
-        }
+    private static let registryLock = NSLock()
+    private nonisolated(unsafe) static var registry: [String: StubTransport] = [:]
+
+    private let token = UUID().uuidString
+    private let lock = NSLock()
+    private var handler: @Sendable (URLRequest) -> Response
+    private var recorded: [URLRequest] = []
+
+    let session: URLSession
+
+    init(handler: @escaping @Sendable (URLRequest) -> Response) {
+        self.handler = handler
+
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [StubURLProtocol.self]
+        configuration.httpAdditionalHeaders = [Self.headerName: token]
+        session = URLSession(configuration: configuration)
+
+        Self.registryLock.withLock { Self.registry[token] = self }
     }
 
-    static var requests: [URLRequest] {
+    deinit {
+        let token = token
+        Self.registryLock.withLock { Self.registry[token] = nil }
+    }
+
+    /// Replaces the scripted responses mid-test.
+    func respond(with handler: @escaping @Sendable (URLRequest) -> Response) {
+        lock.withLock { self.handler = handler }
+    }
+
+    var requests: [URLRequest] {
         lock.withLock { recorded }
     }
 
-    static func requestCount(forPathSuffix suffix: String) -> Int {
-        requests.filter { $0.url?.path.hasSuffix(suffix) == true }.count
+    var paths: [String] {
+        requests.compactMap(\.url?.path)
     }
 
-    static func session() -> URLSession {
-        let configuration = URLSessionConfiguration.ephemeral
-        configuration.protocolClasses = [StubURLProtocol.self]
-        return URLSession(configuration: configuration)
+    func requestCount(forPathSuffix suffix: String) -> Int {
+        paths.filter { $0.hasSuffix(suffix) }.count
     }
 
-    override class func canInit(with _: URLRequest) -> Bool {
-        true
+    static func transport(for request: URLRequest) -> StubTransport? {
+        guard let token = request.value(forHTTPHeaderField: headerName) else { return nil }
+        return registryLock.withLock { registry[token] }
+    }
+
+    fileprivate func handle(_ request: URLRequest) -> Response {
+        lock.withLock {
+            recorded.append(request)
+            return handler(request)
+        }
+    }
+}
+
+final class StubURLProtocol: URLProtocol, @unchecked Sendable {
+    override class func canInit(with request: URLRequest) -> Bool {
+        StubTransport.transport(for: request) != nil
     }
 
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {
@@ -58,10 +94,11 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
     }
 
     override func startLoading() {
-        let response = Self.lock.withLock { () -> Response in
-            Self.recorded.append(request)
-            return Self.handler?(request) ?? Response(status: 500)
+        guard let transport = StubTransport.transport(for: request) else {
+            client?.urlProtocol(self, didFailWithError: URLError(.badURL))
+            return
         }
+        let response = transport.handle(request)
 
         guard let url = request.url,
               let http = HTTPURLResponse(
