@@ -1,4 +1,5 @@
 import LacticKit
+import LacticUI
 import SwiftUI
 
 /// Routes on session state.
@@ -16,10 +17,11 @@ struct RootView: View {
                 ProgressView()
                     .controlSize(.large)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(LacticColor.surface)
             case .signedOut:
                 SignInView()
-            case .signedIn(let user):
-                SignedInPlaceholderView(user: user)
+            case .signedIn:
+                ClientShell()
             }
         }
         .animation(.default, value: environment.session.phase)
