@@ -10,6 +10,14 @@
 				<string>$(GID_REVERSED_CLIENT_ID)</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.enricoquerci.lactic.invite</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lactic</string>
+			</array>
+		</dict>
 	</array>
 	<key>GIDClientID</key>
 	<string>$(GID_CLIENT_ID)</string>

@@ -10,6 +10,15 @@ public enum AuthPhase: Equatable, Sendable {
     case restoring
     case signedOut
     case signedIn(User)
+
+    /// The signed-in user, if there is one. Saves every caller that only needs
+    /// the user from restating the switch.
+    public var user: User? {
+        if case .signedIn(let user) = self {
+            return user
+        }
+        return nil
+    }
 }
 
 /// Owns the session: which user is signed in, and the tokens that prove it.
@@ -119,6 +128,19 @@ public final class SessionStore: TokenProviding {
             GoogleSignInProvider.signOut()
         #endif
         await clearSession()
+    }
+
+    /// Replaces the signed-in user after the server changes their record.
+    ///
+    /// Today that means accepting an invitation, which sets `coach_id` — the
+    /// thing that makes the client experience usable at all. The accept
+    /// response carries the updated user, so this avoids a second `/me`.
+    ///
+    /// Ignored while signed out: there is no session to update, and adopting a
+    /// user here would fabricate one that no token backs.
+    public func adopt(_ user: User) {
+        guard case .signedIn = phase else { return }
+        phase = .signedIn(user)
     }
 
     // MARK: - TokenProviding

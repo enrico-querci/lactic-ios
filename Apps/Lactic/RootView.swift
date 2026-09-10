@@ -30,27 +30,40 @@ struct RootView: View {
 
     private var sessionContent: some View {
         Group {
-            switch environment.session.phase {
-            case .restoring:
-                ProgressView()
-                    .controlSize(.large)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(LacticColor.surface)
-            case .signedOut:
-                SignInView()
-            case .signedIn(let user):
-                // A user has exactly one role, assigned by the server. A coach
-                // gets 403 from every client endpoint, so routing them into the
-                // client shell shows an error on every screen instead of an
-                // explanation.
-                if user.role == .coach {
-                    CoachAccountView(user: user)
-                } else {
-                    ClientShell()
-                }
+            // Ahead of the phase switch, but behind `restoring`: the step an
+            // invitation offers depends on who is signed in, and during restore
+            // that is not yet known — a signed-in client would briefly be told
+            // to sign in.
+            if environment.session.phase != .restoring, let token = environment.pendingInvitationToken {
+                InvitationView(token: token)
+            } else {
+                phaseContent
             }
         }
         .animation(.default, value: environment.session.phase)
         .task { await environment.session.restore() }
+    }
+
+    @ViewBuilder
+    private var phaseContent: some View {
+        switch environment.session.phase {
+        case .restoring:
+            ProgressView()
+                .controlSize(.large)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(LacticColor.surface)
+        case .signedOut:
+            SignInView()
+        case .signedIn(let user):
+            // A user has exactly one role, assigned by the server. A coach
+            // gets 403 from every client endpoint, so routing them into the
+            // client shell shows an error on every screen instead of an
+            // explanation.
+            if user.role == .coach {
+                CoachAccountView(user: user)
+            } else {
+                ClientShell()
+            }
+        }
     }
 }

@@ -26,6 +26,44 @@ final class AppEnvironment {
         didSet { UserDefaults.standard.set(locale.rawValue, forKey: Self.localeKey) }
     }
 
+    /// Set when an invitation link is opened, and routed on ahead of the
+    /// session phase.
+    ///
+    /// An invitation is what decides whether somebody becomes a client at all
+    /// (AGENTS.md §2.3), so it outranks whatever the current session is: it
+    /// applies signed out, signed in as a different client, and signed in as a
+    /// coach.
+    var pendingInvitationToken: String?
+
+    // Seeds a pending invitation from the launch arguments.
+    //
+    // Universal Links need an Apple Team ID, and iOS prompts before handing a
+    // custom-scheme URL to the app, so neither can be driven headlessly.
+    // `--invite <token>` reaches the same screen through the same code path,
+    // alongside the `--*-design-preview` routes.
+    #if DEBUG
+        func seedInvitationFromLaunchArguments() {
+            let arguments = ProcessInfo.processInfo.arguments
+            guard let flag = arguments.firstIndex(of: "--invite"),
+                  case let next = arguments.index(after: flag), next < arguments.endIndex
+            else { return }
+            pendingInvitationToken = InvitationLink.token(fromPastedText: arguments[next])
+        }
+    #endif
+
+    /// Returns whether the URL was an invitation link, so the caller can tell
+    /// it apart from a URL nothing in the app owns.
+    @discardableResult
+    func openInvitation(from url: URL) -> Bool {
+        guard let token = InvitationLink.token(from: url) else { return false }
+        pendingInvitationToken = token
+        return true
+    }
+
+    func dismissInvitation() {
+        pendingInvitationToken = nil
+    }
+
     private static let localeKey = "app_locale"
     private static let serverKey = "api_server"
 

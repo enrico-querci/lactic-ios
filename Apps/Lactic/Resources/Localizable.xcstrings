@@ -1,2132 +1,2973 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "%lld active programmes": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "%lld active programmes" } },
-        "it": { "stringUnit": { "state": "translated", "value": "%lld programmi attivi" } }
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ kg" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kg"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kg"
+          }
+        }
+      }
+    },
+    "%@ kg volume" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kg volume"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kg di volume"
+          }
+        }
+      }
+    },
+    "%@ kg × %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kg × %lld"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kg × %lld"
+          }
+        }
+      }
+    },
+    "%@ kg × %lld reps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kg × %lld reps"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kg × %lld rip."
+          }
+        }
+      }
+    },
+    "%@, %lld sets" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, %lld sets"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, %lld serie"
+          }
+        }
+      }
+    },
+    "%lld" : {
+      "shouldTranslate" : false
+    },
+    "%lld active programmes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld active programmes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld programmi attivi"
+          }
+        }
+      }
+    },
+    "%lld change(s) could not be saved." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld change(s) could not be saved."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non è stato possibile salvare %lld modifiche."
+          }
+        }
+      }
+    },
+    "%lld exercises" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld exercises"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld esercizi"
+          }
+        }
+      }
+    },
+    "%lld exercises · %lld target sets" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld exercises · %lld target sets"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld esercizi · %lld serie previste"
+          }
+        }
+      }
+    },
+    "%lld of %lld complete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld of %lld complete"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld completati su %lld"
+          }
+        }
+      }
+    },
+    "%lld of %lld sets logged" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld of %lld sets logged"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld serie registrate su %lld"
+          }
+        }
       }
     },
-    "%lld of %lld complete": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "%lld of %lld complete" } },
-        "it": { "stringUnit": { "state": "translated", "value": "%lld completati su %lld" } }
+    "%lld of %lld workouts completed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld of %lld workouts completed"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld allenamenti completati su %lld"
+          }
+        }
       }
     },
-    "1 active programme": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "1 active programme" } },
-        "it": { "stringUnit": { "state": "translated", "value": "1 programma attivo" } }
+    "%lld seconds of rest remaining" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld seconds of rest remaining"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld secondi di recupero rimanenti"
+          }
+        }
       }
     },
-    "Built by your coach. Ready when you are.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Built by your coach. Ready when you are." } },
-        "it": { "stringUnit": { "state": "translated", "value": "Creati dal tuo coach. Pronti quando vuoi." } }
+    "%lld sets logged" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sets logged"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld serie registrate"
+          }
+        }
       }
     },
-    "Opens this programme": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Opens this programme" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Apre questo programma" } }
+    "%lld sets · %lld reps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sets · %lld reps"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld serie · %lld ripetizioni"
+          }
+        }
       }
     },
-    "Programme detail preview": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Programme detail preview" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Anteprima dettaglio programma" } }
+    "%lld target sets" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld target sets"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld serie previste"
+          }
+        }
       }
+    },
+    "%lld." : {
+      "shouldTranslate" : false
     },
-    "Programmes preview": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Programmes preview" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Anteprima programmi" } }
+    "+%@ kg since first session" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%@ kg since first session"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%@ kg dalla prima sessione"
+          }
+        }
       }
     },
-    "Training plan": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Training plan" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Piano di allenamento" } }
+    "1 active programme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 active programme"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 programma attivo"
+          }
+        }
       }
     },
-    "Upcoming": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Upcoming" } },
-        "it": { "stringUnit": { "state": "translated", "value": "In programma" } }
+    "Accept invitation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accept invitation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accetta l'invito"
+          }
+        }
       }
     },
-    "View programme": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "View programme" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Visualizza programma" } }
+    "Account" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account"
+          }
+        }
       }
     },
-    "Weeks": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Weeks" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Settimane" } }
+    "Active" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attivo"
+          }
+        }
       }
     },
-    "Workouts": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Workouts" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Allenamenti" } }
+    "Add a note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a note"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi una nota"
+          }
+        }
       }
     },
-    "Your training": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Your training" } },
-        "it": { "stringUnit": { "state": "translated", "value": "I tuoi programmi" } }
+    "Add set" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add set"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi serie"
+          }
+        }
       }
     },
-    "%lld exercises · %lld target sets": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "%lld exercises · %lld target sets" } },
-        "it": { "stringUnit": { "state": "translated", "value": "%lld esercizi · %lld serie previste" } }
+    "Also selects the language your coach's exercise library is shown in." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Also selects the language your coach's exercise library is shown in."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imposta anche la lingua in cui vedi la libreria esercizi del tuo coach."
+          }
+        }
       }
     },
-    "%lld of %lld workouts completed": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "%lld of %lld workouts completed" } },
-        "it": { "stringUnit": { "state": "translated", "value": "%lld allenamenti completati su %lld" } }
+    "Best weight" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Best weight"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso migliore"
+          }
+        }
       }
     },
-    "Home preview": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Home preview" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Anteprima Home" } }
+    "Best weight trend" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Best weight trend"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Andamento del peso migliore"
+          }
+        }
       }
     },
-    "Once your coach assigns a programme, your next workout will appear here.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Once your coach assigns a programme, your next workout will appear here." } },
-        "it": { "stringUnit": { "state": "translated", "value": "Quando il tuo coach assegnerà un programma, il prossimo allenamento apparirà qui." } }
+    "Built by your coach. Ready when you are." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Built by your coach. Ready when you are."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creati dal tuo coach. Pronti quando vuoi."
+          }
+        }
       }
     },
-    "Opens this workout": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Opens this workout" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Apre questo allenamento" } }
+    "Cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annulla"
+          }
+        }
       }
     },
-    "Ready when your coach is": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Ready when your coach is" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Pronto quando lo è il tuo coach" } }
+    "Coach" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach"
+          }
+        }
       }
     },
-    "Resume workout": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Resume workout" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Riprendi allenamento" } }
+    "Coaching tools live in Lactic Studio, which runs in the browser today." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coaching tools live in Lactic Studio, which runs in the browser today."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gli strumenti per i coach sono in Lactic Studio, che per ora funziona nel browser."
+          }
+        }
       }
     },
-    "Returns to your active workout": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Returns to your active workout" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Torna all'allenamento attivo" } }
+    "Completed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completato"
+          }
+        }
       }
     },
-    "Up next": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Up next" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Prossimo" } }
+    "Completed session" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed session"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessione completata"
+          }
+        }
       }
     },
-    "Week %lld · %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Week %lld · %@" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Settimana %lld · %@" } }
+    "Completed sessions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed sessions"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessioni completate"
+          }
+        }
       }
     },
-    "Workout": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Workout" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Allenamento" } }
+    "Continue with Google" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue with Google"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continua con Google"
+          }
+        }
       }
     },
-    "Done": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Done" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Fine" } }
+    "Current programme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current programme"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programma attuale"
+          }
+        }
       }
     },
-    "reps": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "reps" } },
-        "it": { "stringUnit": { "state": "translated", "value": "rip." } }
+    "Date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        }
       }
     },
-    "Log set": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log set"
+    "Delete account" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete account"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Registra serie"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina account"
           }
         }
       }
     },
-    "Log extra set": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log extra set"
+    "Delete everything" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete everything"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Registra serie extra"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina tutto"
           }
         }
       }
     },
-    "Log your first set after you finish it. Adjust weight and reps below.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log your first set after you finish it. Adjust weight and reps below."
+    "Delete set" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete set"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Registra la prima serie dopo averla completata. Modifica peso e ripetizioni qui sotto."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina serie"
           }
         }
       }
     },
-    "%lld of %lld sets logged": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld of %lld sets logged"
+    "Delete set %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete set %lld"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld serie registrate su %lld"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina serie %lld"
           }
         }
       }
     },
-    "Target reached": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Target reached"
+    "Delete your account?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete your account?"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Obiettivo raggiunto"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuoi eliminare il tuo account?"
           }
         }
       }
     },
-    "Set %lld, logged": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Set %lld, logged"
+    "Demonstration unavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demonstration unavailable"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serie %lld, registrata"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimostrazione non disponibile"
           }
         }
       }
     },
-    "Weight for set %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Weight for set %lld"
+    "Dismiss" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dismiss"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Peso per la serie %lld"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiudi"
           }
         }
       }
     },
-    "Reps for set %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reps for set %lld"
+    "Done" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ripetizioni per la serie %lld"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fine"
           }
         }
       }
     },
-    "Options for set %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Options for set %lld"
+    "Duration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Opzioni per la serie %lld"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durata"
           }
         }
       }
     },
-    "Delete set": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete set"
+    "Duration %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration %@"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elimina serie"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durata %@"
           }
         }
       }
     },
-    "Weight": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Weight"
+    "Email" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Peso"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email"
           }
         }
       }
     },
-    "Reps": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reps"
+    "English" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "English"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ripetizioni"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "English"
           }
         }
       }
     },
-    "Rest": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rest"
+    "Every workout in this programme is done." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every workout in this programme is done."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recupero"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai completato tutti gli allenamenti di questo programma."
           }
         }
       }
     },
-    "Your workout": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your workout"
+    "Exercise" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exercise"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il tuo allenamento"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esercizio"
           }
         }
       }
     },
-    "%lld exercises": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld exercises"
+    "Exercise %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exercise %@"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld esercizi"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esercizio %@"
           }
         }
       }
     },
-    "%lld sets logged": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld sets logged"
+    "Exercise progress" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exercise progress"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld serie registrate"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progressi esercizio"
           }
         }
       }
     },
-    "%lld target sets": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld target sets"
+    "Exercise progress preview" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exercise progress preview"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld serie previste"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteprima progressi esercizio"
           }
         }
       }
     },
-    "Workout preview": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Workout preview"
+    "Exercises" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exercises"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Anteprima allenamento"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esercizi"
           }
         }
       }
     },
-    "%@ kg × %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ kg × %lld"
+    "Finish workout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish workout"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ kg × %lld"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termina allenamento"
           }
         }
       }
     },
-    "%@, %lld sets": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@, %lld sets"
+    "First time doing this" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First time doing this"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@, %lld serie"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "È la prima volta che lo fai"
           }
         }
       }
     },
-    "%lld": {
-      "shouldTranslate": false
+    "Follow your programme, log your sets." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follow your programme, log your sets."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segui il tuo programma, registra le tue serie."
+          }
+        }
+      }
     },
-    "%lld change(s) could not be saved.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld change(s) could not be saved."
+    "For %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For %@"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Non è stato possibile salvare %lld modifiche."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per %@"
           }
         }
       }
     },
-    "%lld seconds of rest remaining": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld seconds of rest remaining"
+    "From %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From %@"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld secondi di recupero rimanenti"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da %@"
           }
         }
       }
     },
-    "%lld.": {
-      "shouldTranslate": false
+    "From %@ to %@ kilograms" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From %@ to %@ kilograms"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da %@ a %@ chilogrammi"
+          }
+        }
+      }
     },
-    "Account": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Account"
+    "Hide demonstration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide demonstration"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Account"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascondi dimostrazione"
           }
         }
       }
     },
-    "Active": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Active"
+    "History" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Attivo"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storico"
           }
         }
       }
     },
-    "Add a note": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add a note"
+    "History preview" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History preview"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi una nota"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteprima storico"
           }
         }
       }
     },
-    "Add set": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add set"
+    "Home" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi serie"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
           }
         }
       }
     },
-    "Also selects the language your coach's exercise library is shown in.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Also selects the language your coach's exercise library is shown in."
+    "Home preview" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home preview"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imposta anche la lingua in cui vedi la libreria esercizi del tuo coach."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteprima Home"
           }
         }
       }
     },
-    "Cancel": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancel"
+    "How did it feel?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How did it feel?"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Annulla"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come è andata?"
           }
         }
       }
     },
-    "Coach": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Coach"
+    "How did the whole session go?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How did the whole session go?"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Coach"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com'è andato l'allenamento?"
           }
         }
       }
     },
-    "Coaching tools live in Lactic Studio, which runs in the browser today.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Coaching tools live in Lactic Studio, which runs in the browser today."
+    "How to do it" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How to do it"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gli strumenti per i coach sono in Lactic Studio, che per ora funziona nel browser."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come si esegue"
           }
         }
       }
     },
-    "Completed": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Completed"
+    "In progress" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In progress"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Completato"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In corso"
           }
         }
       }
     },
-    "Continue with Google": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continue with Google"
+    "Invitation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invitation"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continua con Google"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invito"
           }
         }
       }
     },
-    "Current programme": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Current programme"
+    "Italiano" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Italiano"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Programma attuale"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Italiano"
           }
         }
       }
     },
-    "Delete account": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete account"
+    "Lactic" : {
+      "shouldTranslate" : false
+    },
+    "Lactic is where your clients follow the programmes you write." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lactic is where your clients follow the programmes you write."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elimina account"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lactic è l'app in cui i tuoi clienti seguono i programmi che scrivi."
           }
         }
       }
     },
-    "Delete everything": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete everything"
+    "Language" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elimina tutto"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lingua"
           }
         }
       }
     },
-    "Delete set %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete set %lld"
+    "Last time: %@ kg × %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last time: %@ kg × %lld"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elimina serie %lld"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'ultima volta: %@ kg × %lld"
           }
         }
       }
     },
-    "Delete your account?": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete your account?"
+    "Level with your first session" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Level with your first session"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vuoi eliminare il tuo account?"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come nella prima sessione"
           }
         }
       }
     },
-    "Demonstration unavailable": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Demonstration unavailable"
+    "Loading demonstration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading demonstration"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dimostrazione non disponibile"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caricamento dimostrazione"
           }
         }
       }
     },
-    "Dismiss": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dismiss"
+    "Log extra set" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log extra set"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chiudi"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registra serie extra"
           }
         }
       }
     },
-    "Duration %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Duration %@"
+    "Log set" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log set"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Durata %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registra serie"
           }
         }
       }
     },
-    "Email": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Email"
+    "Log this exercise to start tracking your progress." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log this exercise to start tracking your progress."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Email"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registra questo esercizio per iniziare a monitorare i tuoi progressi."
           }
         }
       }
     },
-    "English": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "English"
+    "Log your first set after you finish it. Adjust weight and reps below." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log your first set after you finish it. Adjust weight and reps below."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "English"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registra la prima serie dopo averla completata. Modifica peso e ripetizioni qui sotto."
           }
         }
       }
     },
-    "Every workout in this programme is done.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every workout in this programme is done."
+    "Logged set" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logged set"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hai completato tutti gli allenamenti di questo programma."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie registrata"
           }
         }
       }
     },
-    "Exercise": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Exercise"
+    "Name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esercizio"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome"
           }
         }
       }
     },
-    "Exercise %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Exercise %@"
+    "Next set: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next set: %@"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esercizio %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossima serie: %@"
           }
         }
       }
     },
-    "Finish workout": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Finish workout"
+    "No programmes yet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No programmes yet"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Termina allenamento"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ancora nessun programma"
           }
         }
       }
     },
-    "First time doing this": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "First time doing this"
+    "No progress data" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No progress data"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "È la prima volta che lo fai"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun dato sui progressi"
           }
         }
       }
     },
-    "Follow your programme, log your sets.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Follow your programme, log your sets."
+    "No sets were logged in this session." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No sets were logged in this session."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Segui il tuo programma, registra le tue serie."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna serie registrata in questa sessione."
           }
         }
       }
     },
-    "Hide demonstration": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hide demonstration"
+    "No workouts in this week." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No workouts in this week."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nascondi dimostrazione"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun allenamento in questa settimana."
           }
         }
       }
     },
-    "History": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "History"
+    "No workouts logged yet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No workouts logged yet"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Storico"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ancora nessun allenamento registrato"
           }
         }
       }
     },
-    "Home": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Home"
+    "Not now" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not now"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Home"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non ora"
           }
         }
       }
     },
-    "How did it feel?": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "How did it feel?"
+    "Not started" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not started"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Come è andata?"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non iniziato"
           }
         }
       }
     },
-    "How did the whole session go?": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "How did the whole session go?"
+    "Nothing here yet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing here yet"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Com'è andato l'allenamento?"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ancora niente qui"
           }
         }
       }
     },
-    "How to do it": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "How to do it"
+    "Once your coach assigns a programme it will show up here." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Once your coach assigns a programme it will show up here."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Come si esegue"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando il tuo coach ti assegnerà un programma lo troverai qui."
           }
         }
       }
     },
-    "In progress": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "In progress"
+    "Once your coach assigns a programme, your next workout will appear here." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Once your coach assigns a programme, your next workout will appear here."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "In corso"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando il tuo coach assegnerà un programma, il prossimo allenamento apparirà qui."
           }
         }
       }
     },
-    "Italiano": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Italiano"
+    "Open the coach dashboard" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the coach dashboard"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Italiano"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri la dashboard coach"
           }
         }
       }
     },
-    "Lactic": {
-      "shouldTranslate": false
+    "Opens exercise progress" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens exercise progress"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apre i progressi dell'esercizio"
+          }
+        }
+      }
     },
-    "Lactic is where your clients follow the programmes you write.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lactic is where your clients follow the programmes you write."
+    "Opens this programme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens this programme"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lactic è l'app in cui i tuoi clienti seguono i programmi che scrivi."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apre questo programma"
           }
         }
       }
     },
-    "Language": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Language"
+    "Opens this session" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens this session"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lingua"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apre questa sessione"
           }
         }
       }
     },
-    "Last time: %@ kg × %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Last time: %@ kg × %lld"
+    "Opens this workout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens this workout"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L'ultima volta: %@ kg × %lld"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apre questo allenamento"
           }
         }
       }
     },
-    "Loading demonstration": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Loading demonstration"
+    "Options for set %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Options for set %lld"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Caricamento dimostrazione"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opzioni per la serie %lld"
           }
         }
       }
     },
-    "Name": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Name"
+    "Paused" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paused"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nome"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In pausa"
           }
         }
       }
     },
-    "Next set: %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next set: %@"
+    "Permanently removes your account, your programme assignments and every workout you have logged. This cannot be undone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently removes your account, your programme assignments and every workout you have logged. This cannot be undone."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prossima serie: %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina definitivamente il tuo account, i programmi assegnati e tutti gli allenamenti registrati. L'operazione non è reversibile."
           }
         }
       }
     },
-    "No programmes yet": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No programmes yet"
+    "Personal best" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personal best"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ancora nessun programma"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Record personale"
           }
         }
       }
     },
-    "No workouts in this week.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No workouts in this week."
+    "Programme detail preview" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programme detail preview"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessun allenamento in questa settimana."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteprima dettaglio programma"
           }
         }
       }
     },
-    "No workouts logged yet": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No workouts logged yet"
+    "Programmes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programmes"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ancora nessun allenamento registrato"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programmi"
           }
         }
       }
     },
-    "Not started": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Not started"
+    "Programmes preview" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programmes preview"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Non iniziato"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteprima programmi"
           }
         }
       }
     },
-    "Nothing here yet": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nothing here yet"
+    "Progress built one session at a time." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progress built one session at a time."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ancora niente qui"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I progressi si costruiscono un allenamento alla volta."
           }
         }
       }
     },
-    "Once your coach assigns a programme it will show up here.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Once your coach assigns a programme it will show up here."
+    "Ready when your coach is" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ready when your coach is"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quando il tuo coach ti assegnerà un programma lo troverai qui."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto quando lo è il tuo coach"
           }
         }
       }
     },
-    "Open the coach dashboard": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open the coach dashboard"
+    "Recent activity" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent activity"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apri la dashboard coach"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attività recente"
           }
         }
       }
     },
-    "Paused": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paused"
+    "Recent sets" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent sets"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "In pausa"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie recenti"
           }
         }
       }
     },
-    "Permanently removes your account, your programme assignments and every workout you have logged. This cannot be undone.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permanently removes your account, your programme assignments and every workout you have logged. This cannot be undone."
+    "Recent training" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent training"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elimina definitivamente il tuo account, i programmi assegnati e tutti gli allenamenti registrati. L'operazione non è reversibile."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allenamenti recenti"
           }
         }
       }
     },
-    "Programmes": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Programmes"
+    "Reps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reps"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Programmi"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripetizioni"
           }
         }
       }
     },
-    "Recent activity": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recent activity"
+    "Reps for set %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reps for set %lld"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Attività recente"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripetizioni per la serie %lld"
           }
         }
       }
     },
-    "Rest %llds": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rest %llds"
+    "Rest" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rest"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recupero %lld s"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recupero"
           }
         }
       }
     },
-    "Rest is over": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rest is over"
+    "Rest %llds" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rest %llds"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recupero terminato"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recupero %lld s"
           }
         }
       }
     },
-    "Resume": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Resume"
+    "Rest is over" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rest is over"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Riprendi"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recupero terminato"
           }
         }
       }
     },
-    "Save note": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save note"
+    "Resume" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salva nota"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riprendi"
           }
         }
       }
     },
-    "Saving…": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saving…"
+    "Resume workout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume workout"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salvataggio…"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riprendi allenamento"
           }
         }
       }
     },
-    "Session": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Session"
+    "Returns to your active workout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Returns to your active workout"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allenamento"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Torna all'allenamento attivo"
           }
         }
       }
     },
-    "Session notes": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Session notes"
+    "Save note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save note"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Note dell'allenamento"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salva nota"
           }
         }
       }
     },
-    "Sessions you complete will appear here.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sessions you complete will appear here."
+    "Saving…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saving…"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gli allenamenti che completi compariranno qui."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvataggio…"
           }
         }
       }
     },
-    "Set %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Set %lld"
+    "Session" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serie %lld"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allenamento"
           }
         }
       }
     },
-    "Settings": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Settings"
+    "Session in progress" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session in progress"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impostazioni"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessione in corso"
           }
         }
       }
     },
-    "Show demonstration": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show demonstration"
+    "Session note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session note"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostra dimostrazione"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nota della sessione"
           }
         }
       }
     },
-    "Sign out": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign out"
+    "Session notes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session notes"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esci"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note dell'allenamento"
           }
         }
       }
     },
-    "Skip": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Skip"
+    "Session summary preview" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session summary preview"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salta"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteprima riepilogo sessione"
           }
         }
       }
     },
-    "Start workout": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start workout"
+    "Sessions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inizia allenamento"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessioni"
           }
         }
       }
     },
-    "Started %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Started %@"
+    "Sessions you complete will appear here." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions you complete will appear here."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Iniziato %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gli allenamenti che completi compariranno qui."
           }
         }
       }
     },
-    "Starting…": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Starting…"
+    "Set %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set %lld"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avvio…"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie %lld"
           }
         }
       }
     },
-    "Starts %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Starts %@"
+    "Set %lld, logged" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set %lld, logged"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inizia il %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie %lld, registrata"
           }
         }
       }
     },
-    "This is a coach account": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This is a coach account"
+    "Sets" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sets"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Questo è un account coach"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serie"
           }
         }
       }
     },
-    "Try again": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Try again"
+    "Settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Riprova"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni"
           }
         }
       }
     },
-    "Up next: %@ · Week %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Up next: %@ · Week %lld"
+    "Show demonstration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show demonstration"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prossimo: %@ · Settimana %lld"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra dimostrazione"
           }
         }
       }
     },
-    "Week %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Week %lld"
+    "Sign out" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign out"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Settimana %lld"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esci"
           }
         }
       }
     },
-    "Workout in progress": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Workout in progress"
+    "Skip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allenamento in corso"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salta"
           }
         }
       }
     },
-    "You have not logged this exercise yet.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You have not logged this exercise yet."
+    "Start workout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start workout"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Non hai ancora registrato questo esercizio."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizia allenamento"
           }
         }
       }
     },
-    "+%@ kg since first session": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "+%@ kg since first session" } },
-        "it": { "stringUnit": { "state": "translated", "value": "+%@ kg dalla prima sessione" } }
+    "Started %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Started %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniziato %@"
+          }
+        }
       }
     },
-    "%@ kg volume": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "%@ kg volume" } },
-        "it": { "stringUnit": { "state": "translated", "value": "%@ kg di volume" } }
+    "Starting…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starting…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avvio…"
+          }
+        }
       }
     },
-    "%lld sets · %lld reps": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "%lld sets · %lld reps" } },
-        "it": { "stringUnit": { "state": "translated", "value": "%lld serie · %lld ripetizioni" } }
+    "Starts %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starts %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizia il %@"
+          }
+        }
       }
     },
-    "Best weight": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Best weight" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Peso migliore" } }
+    "Target reached" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target reached"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obiettivo raggiunto"
+          }
+        }
       }
     },
-    "Best weight trend": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Best weight trend" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Andamento del peso migliore" } }
+    "This invitation is no longer available. Ask your coach to send a new one." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This invitation is no longer available. Ask your coach to send a new one."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo invito non è più valido. Chiedi al tuo coach di inviarne uno nuovo."
+          }
+        }
       }
     },
-    "Completed session": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Completed session" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Sessione completata" } }
+    "This is a coach account" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is a coach account"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo è un account coach"
+          }
+        }
       }
     },
-    "Completed sessions": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Completed sessions" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Sessioni completate" } }
+    "Total reps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total reps"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripetizioni totali"
+          }
+        }
       }
     },
-    "Date": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Date" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Data" } }
+    "Training plan" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Training plan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piano di allenamento"
+          }
+        }
       }
     },
-    "Duration": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Duration" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Durata" } }
+    "Training record" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Training record"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registro allenamenti"
+          }
+        }
       }
     },
-    "Exercise progress": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Exercise progress" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Progressi esercizio" } }
+    "Training time" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Training time"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempo di allenamento"
+          }
+        }
       }
     },
-    "Exercise progress preview": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Exercise progress preview" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Anteprima progressi esercizio" } }
+    "Try again" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riprova"
+          }
+        }
       }
     },
-    "Exercises": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Exercises" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Esercizi" } }
+    "Up next" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up next"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimo"
+          }
+        }
       }
     },
-    "From %@ to %@ kilograms": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "From %@ to %@ kilograms" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Da %@ a %@ chilogrammi" } }
+    "Up next: %@ · Week %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up next: %@ · Week %lld"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimo: %@ · Settimana %lld"
+          }
+        }
       }
     },
-    "History preview": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "History preview" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Anteprima storico" } }
+    "Upcoming" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upcoming"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In programma"
+          }
+        }
       }
     },
-    "Level with your first session": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Level with your first session" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Come nella prima sessione" } }
+    "View programme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View programme"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualizza programma"
+          }
+        }
       }
     },
-    "Log this exercise to start tracking your progress.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Log this exercise to start tracking your progress." } },
-        "it": { "stringUnit": { "state": "translated", "value": "Registra questo esercizio per iniziare a monitorare i tuoi progressi." } }
+    "Volume" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume"
+          }
+        }
       }
     },
-    "Logged set": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Logged set" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Serie registrata" } }
+    "We could not find that invitation. Check the link or code." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We could not find that invitation. Check the link or code."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non abbiamo trovato questo invito. Controlla il link o il codice."
+          }
+        }
       }
     },
-    "No progress data": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "No progress data" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Nessun dato sui progressi" } }
+    "Week %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Week %lld"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settimana %lld"
+          }
+        }
       }
     },
-    "No sets were logged in this session.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "No sets were logged in this session." } },
-        "it": { "stringUnit": { "state": "translated", "value": "Nessuna serie registrata in questa sessione." } }
+    "Week %lld · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Week %lld · %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settimana %lld · %@"
+          }
+        }
       }
     },
-    "Opens exercise progress": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Opens exercise progress" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Apre i progressi dell'esercizio" } }
+    "Weeks" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weeks"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settimane"
+          }
+        }
       }
     },
-    "Opens this session": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Opens this session" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Apre questa sessione" } }
+    "Weight" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weight"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso"
+          }
+        }
       }
     },
-    "Personal best": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Personal best" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Record personale" } }
+    "Weight for set %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weight for set %lld"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso per la serie %lld"
+          }
+        }
       }
     },
-    "Progress built one session at a time.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Progress built one session at a time." } },
-        "it": { "stringUnit": { "state": "translated", "value": "I progressi si costruiscono un allenamento alla volta." } }
+    "Workout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allenamento"
+          }
+        }
       }
     },
-    "Recent sets": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Recent sets" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Serie recenti" } }
+    "Workout in progress" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout in progress"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allenamento in corso"
+          }
+        }
       }
     },
-    "Recent training": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Recent training" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Allenamenti recenti" } }
+    "Workout preview" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout preview"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteprima allenamento"
+          }
+        }
       }
     },
-    "Session in progress": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Session in progress" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Sessione in corso" } }
+    "Workouts" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workouts"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allenamenti"
+          }
+        }
       }
     },
-    "Session note": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Session note" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Nota della sessione" } }
+    "You appear to be offline." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You appear to be offline."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembra che tu sia offline."
+          }
+        }
       }
     },
-    "Session summary preview": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Session summary preview" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Anteprima riepilogo sessione" } }
+    "You are signed in as %@, but this invitation is for %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You are signed in as %@, but this invitation is for %@."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai effettuato l'accesso come %@, ma questo invito è per %@."
+          }
+        }
       }
     },
-    "Sessions": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Sessions" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Sessioni" } }
+    "You are signed in as a coach. A coach account cannot accept a client invitation." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You are signed in as a coach. A coach account cannot accept a client invitation."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai effettuato l'accesso come coach. Un account coach non può accettare l'invito di un cliente."
+          }
+        }
       }
     },
-    "Sets": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Sets" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Serie" } }
+    "You have not logged this exercise yet." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have not logged this exercise yet."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non hai ancora registrato questo esercizio."
+          }
+        }
       }
     },
-    "Total reps": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Total reps" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Ripetizioni totali" } }
+    "Your assignments and logged workouts are deleted too. This cannot be undone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your assignments and logged workouts are deleted too. This cannot be undone."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verranno eliminati anche i programmi assegnati e gli allenamenti registrati. L'operazione non è reversibile."
+          }
+        }
       }
     },
-    "Training record": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Training record" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Registro allenamenti" } }
+    "Your coach has not assigned one yet." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your coach has not assigned one yet."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo coach non te ne ha ancora assegnato uno."
+          }
+        }
       }
     },
-    "Training time": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Training time" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Tempo di allenamento" } }
+    "Your heaviest set in each session" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your heaviest set in each session"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La serie più pesante di ogni sessione"
+          }
+        }
       }
     },
-    "Volume": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Volume" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Volume" } }
+    "Your history" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your history"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo storico"
+          }
+        }
       }
     },
-    "Your heaviest set in each session": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Your heaviest set in each session" } },
-        "it": { "stringUnit": { "state": "translated", "value": "La serie più pesante di ogni sessione" } }
+    "Your training" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your training"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I tuoi programmi"
+          }
+        }
       }
     },
-    "−%@ kg since first session": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "−%@ kg since first session" } },
-        "it": { "stringUnit": { "state": "translated", "value": "−%@ kg dalla prima sessione" } }
+    "Your workout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your workout"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo allenamento"
+          }
+        }
       }
     },
-    "Your assignments and logged workouts are deleted too. This cannot be undone.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your assignments and logged workouts are deleted too. This cannot be undone."
+    "reps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reps"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verranno eliminati anche i programmi assegnati e gli allenamenti registrati. L'operazione non è reversibile."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rip."
           }
         }
       }
     },
-    "Your coach has not assigned one yet.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your coach has not assigned one yet."
+    "× %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "× %lld"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il tuo coach non te ne ha ancora assegnato uno."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "× %lld"
           }
         }
       }
     },
-    "Your history": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your history"
+    "−%@ kg since first session" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "−%@ kg since first session"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il tuo storico"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "−%@ kg dalla prima sessione"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
