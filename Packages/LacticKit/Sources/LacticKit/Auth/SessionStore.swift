@@ -43,11 +43,18 @@ public final class SessionStore: TokenProviding {
     @ObservationIgnored private let client: APIClient
     @ObservationIgnored private var refreshTask: Task<String?, any Error>?
 
+    /// Derived from the bundle id so each app keeps its own session rather
+    /// than sharing a literal. For the client app this resolves to exactly the
+    /// string that was hardcoded here before, so no stored token is orphaned.
+    public static var defaultKeychainService: String {
+        "\(Bundle.main.bundleIdentifier ?? "com.enricoquerci.lactic").session"
+    }
+
     private static let refreshTokenKey = "refresh_token"
 
     public init(
         client: APIClient,
-        keychain: any SecureStorage = KeychainStore(service: "com.enricoquerci.lactic.session")
+        keychain: any SecureStorage = KeychainStore(service: SessionStore.defaultKeychainService)
     ) {
         self.client = client
         self.keychain = keychain

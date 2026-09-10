@@ -17,3 +17,19 @@ INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPo
 INFOPLIST_KEY_CFBundleDisplayName = Lactic Studio
 INFOPLIST_KEY_UILaunchScreen_Generation = YES
 INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES
+
+// Google Sign-In.
+//
+// None of these are secrets: an iOS OAuth client has no client secret, and a
+// client id ships inside the app binary anyway. They live here rather than in
+// source so the reversed id and the URL scheme that must match it cannot drift
+// apart — Info.plist reads GID_REVERSED_CLIENT_ID directly.
+//
+// GID_CLIENT_ID is Studio's own iOS client, registered against this target's
+// bundle id. GID_SERVER_CLIENT_ID is deliberately the *same web client* the
+// client app uses: it is the single audience `Auth::GoogleVerifier` accepts,
+// so a second one would be rejected. All three live in Google Cloud project
+// 235345338249, which is what makes the pairing work.
+GID_CLIENT_ID = 235345338249-25eqv54f69t57g991kunoihk621844ph.apps.googleusercontent.com
+GID_REVERSED_CLIENT_ID = com.googleusercontent.apps.235345338249-25eqv54f69t57g991kunoihk621844ph
+GID_SERVER_CLIENT_ID = 235345338249-m1880n3a01jcl7v5jb5nqe7m887d7g45.apps.googleusercontent.com
