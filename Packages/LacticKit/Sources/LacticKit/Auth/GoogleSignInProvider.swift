@@ -86,6 +86,7 @@ public enum GoogleSignInProvider {
         }
 
         /// Google needs a presenter, and there is no environment hook for one.
+        @MainActor
         private static func topViewController() -> UIViewController? {
             let scene = UIApplication.shared.connectedScenes
                 .compactMap { $0 as? UIWindowScene }

@@ -1,3 +1,4 @@
+import Foundation
 import LacticKit
 import LacticUI
 import Observation
@@ -10,7 +11,32 @@ import Observation
 @MainActor
 @Observable
 final class HistoryModel: LoadableSource {
-    private(set) var state: Loadable<[WorkoutSession]> = .idle
+    struct Snapshot: Sendable, Equatable {
+        let sessions: [WorkoutSession]
+
+        var completed: [WorkoutSession] {
+            sessions.filter { !$0.isInProgress }
+        }
+
+        var inProgress: [WorkoutSession] {
+            sessions.filter(\.isInProgress)
+        }
+
+        var totalTrainingTime: TimeInterval {
+            completed.reduce(0) { total, session in
+                guard let startedAt = session.startedAt, let completedAt = session.completedAt else {
+                    return total
+                }
+                return total + completedAt.timeIntervalSince(startedAt)
+            }
+        }
+
+        var distinctWorkoutCount: Int {
+            Set(completed.map(\.workoutID)).count
+        }
+    }
+
+    private(set) var state: Loadable<Snapshot> = .idle
 
     private let client: APIClient
 
@@ -29,7 +55,13 @@ final class HistoryModel: LoadableSource {
         state = .loading
         do {
             let sessions: [WorkoutSession] = try await client.send(ClientAPI.workoutSessions)
-            state = .loaded(sessions.sorted { ($0.startedAt ?? .distantPast) > ($1.startedAt ?? .distantPast) })
+            state = .loaded(
+                Snapshot(
+                    sessions: sessions.sorted {
+                        ($0.startedAt ?? .distantPast) > ($1.startedAt ?? .distantPast)
+                    }
+                )
+            )
         } catch {
             state = .failed((error as? APIError)?.message ?? error.localizedDescription)
         }
@@ -45,11 +77,42 @@ final class HistoryModel: LoadableSource {
 @MainActor
 @Observable
 final class SessionDetailModel: LoadableSource {
+    struct ExerciseReference: Sendable, Equatable {
+        let exerciseID: Int?
+        let name: String?
+        let position: String?
+    }
+
     struct Detail: Sendable, Equatable {
         let session: WorkoutSessionDetail
-        /// Exercise name by workout-exercise id, when the workout could be read.
-        let exerciseNames: [Int: String]
-        let positions: [Int: String]
+        let workoutName: String?
+        let exerciseReferences: [Int: ExerciseReference]
+
+        var orderedExerciseLogs: [ExerciseLogDetail] {
+            session.exerciseLogs.sorted { lhs, rhs in
+                let lhsPosition = exerciseReferences[lhs.workoutExerciseID]?.position ?? ""
+                let rhsPosition = exerciseReferences[rhs.workoutExerciseID]?.position ?? ""
+                return lhsPosition.localizedStandardCompare(rhsPosition) == .orderedAscending
+            }
+        }
+
+        var totalSetCount: Int {
+            session.exerciseLogs.reduce(0) { $0 + $1.setLogs.count }
+        }
+
+        var totalReps: Int {
+            session.exerciseLogs.flatMap(\.setLogs).reduce(0) { $0 + $1.reps }
+        }
+
+        var totalVolumeKg: Decimal {
+            session.exerciseLogs.flatMap(\.setLogs).reduce(Decimal.zero) { total, set in
+                total + set.weightKg * Decimal(set.reps)
+            }
+        }
+
+        func reference(for log: ExerciseLogDetail) -> ExerciseReference? {
+            exerciseReferences[log.workoutExerciseID]
+        }
     }
 
     private(set) var state: Loadable<Detail> = .idle
@@ -74,18 +137,37 @@ final class SessionDetailModel: LoadableSource {
         do {
             let session: WorkoutSessionDetail = try await client.send(ClientAPI.workoutSession(id: sessionID))
 
-            // Best effort: a workout can be unreachable if the coach removed it,
-            // and history should still render rather than fail wholesale.
-            var names: [Int: String] = [:]
-            var positions: [Int: String] = [:]
-            if let workout: WorkoutDetail = try? await client.send(ClientAPI.workout(id: session.workoutID)) {
-                for entry in workout.workoutExercises {
-                    names[entry.id] = entry.exercise.name
-                    positions[entry.id] = entry.position
-                }
+            // New servers carry display context directly. Keep one best-effort
+            // workout fallback so history remains useful during a rolling API
+            // deployment and for records created before the additive fields.
+            let needsWorkoutFallback = session.workoutName == nil || session.exerciseLogs.contains {
+                $0.exerciseID == nil || $0.exerciseName == nil || $0.position == nil
+            }
+            let workout: WorkoutDetail? = if needsWorkoutFallback {
+                try? await client.send(ClientAPI.workout(id: session.workoutID))
+            } else {
+                nil
             }
 
-            state = .loaded(Detail(session: session, exerciseNames: names, positions: positions))
+            let workoutEntries = Dictionary(
+                uniqueKeysWithValues: (workout?.workoutExercises ?? []).map { ($0.id, $0) }
+            )
+            let references = session.exerciseLogs.reduce(into: [Int: ExerciseReference]()) { result, log in
+                let fallback = workoutEntries[log.workoutExerciseID]
+                result[log.workoutExerciseID] = ExerciseReference(
+                    exerciseID: log.exerciseID ?? fallback?.exercise.id,
+                    name: log.exerciseName ?? fallback?.exercise.name,
+                    position: log.position ?? fallback?.position
+                )
+            }
+
+            state = .loaded(
+                Detail(
+                    session: session,
+                    workoutName: session.workoutName ?? workout?.name,
+                    exerciseReferences: references
+                )
+            )
         } catch {
             state = .failed((error as? APIError)?.message ?? error.localizedDescription)
         }

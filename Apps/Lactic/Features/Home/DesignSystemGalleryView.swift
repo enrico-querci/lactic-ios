@@ -24,6 +24,15 @@
                     NavigationLink("Programme detail preview") { ProgrammeDesignPreview(mode: .detail) }
                         .font(.lacticHeadline)
                         .foregroundStyle(LacticColor.accent)
+                    NavigationLink("History preview") { HistoryDesignPreview(mode: .history) }
+                        .font(.lacticHeadline)
+                        .foregroundStyle(LacticColor.accent)
+                    NavigationLink("Session summary preview") { HistoryDesignPreview(mode: .session) }
+                        .font(.lacticHeadline)
+                        .foregroundStyle(LacticColor.accent)
+                    NavigationLink("Exercise progress preview") { HistoryDesignPreview(mode: .exercise) }
+                        .font(.lacticHeadline)
+                        .foregroundStyle(LacticColor.accent)
 
                     section("Typography") {
                         VStack(alignment: .leading, spacing: LacticSpacing.sm) {

@@ -66,10 +66,15 @@ struct ModelDecodingTests {
     @Test func decodesSessionsAndTheirNestedLogs() throws {
         let sessions = try Fixture.decode([WorkoutSession].self, from: "client_workout_sessions")
         #expect(!sessions.isEmpty)
+        #expect(sessions.allSatisfy { $0.workoutName != nil })
 
         let detail = try Fixture.decode(WorkoutSessionDetail.self, from: "client_workout_session_extended")
+        #expect(detail.workoutName == "Upper A")
         #expect(!detail.exerciseLogs.isEmpty)
         let log = try #require(detail.exerciseLogs.first)
+        #expect(log.exerciseID == 143)
+        #expect(log.exerciseName == "Bent-Over Barbell Row")
+        #expect(log.position == "A")
         #expect(!log.setLogs.isEmpty)
         #expect(log.orderedSets.map(\.position) == log.orderedSets.map(\.position).sorted())
         #expect(log.setLogs.allSatisfy { $0.weightKg > 0 })
@@ -80,6 +85,8 @@ struct ModelDecodingTests {
         let sets = try Fixture.decode([SetLog].self, from: "client_exercise_history")
         #expect(!sets.isEmpty)
         #expect(sets.allSatisfy { $0.reps > 0 })
+        #expect(sets.allSatisfy { $0.workoutSessionID != nil })
+        #expect(sets.allSatisfy { $0.performedAt != nil })
     }
 
     /// The detail view is a superset; the list view genuinely omits the extra

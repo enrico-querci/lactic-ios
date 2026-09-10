@@ -43,6 +43,28 @@ import Testing
     #expect(snapshot.status(for: 4) == .inProgress)
 }
 
+@Test func historySnapshotDerivesSummaryMetrics() throws {
+    let sessions = try JSONCoding.decoder.decode([WorkoutSession].self, from: Data(sessionsJSON.utf8))
+    let snapshot = HistoryModel.Snapshot(sessions: sessions)
+
+    #expect(snapshot.completed.count == 2)
+    #expect(snapshot.inProgress.count == 2)
+    #expect(snapshot.distinctWorkoutCount == 1)
+    #expect(snapshot.totalTrainingTime == 6600)
+}
+
+@Test func exerciseProgressGroupsSetsBySessionAndDerivesChange() throws {
+    let exercise = try JSONCoding.decoder.decode(ExerciseDetail.self, from: Data(exerciseJSON.utf8))
+    let history = try JSONCoding.decoder.decode([SetLog].self, from: Data(exerciseHistoryJSON.utf8))
+    let detail = ExerciseDetailModel.Detail(exercise: exercise, history: history)
+
+    #expect(detail.historySessions.count == 2)
+    #expect(detail.historySessions.first?.sets.count == 2)
+    #expect(detail.bestWeight == Decimal(string: "80"))
+    #expect(detail.totalReps == 30)
+    #expect(detail.bestWeightChange == Decimal(string: "5"))
+}
+
 private let programJSON = """
 {
   "id": 2,
@@ -71,5 +93,27 @@ private let sessionsJSON = """
   {"id": 4, "completed_at": null, "notes": null, "started_at": "2026-09-09T16:15:00.000Z", "workout_id": 5},
   {"id": 2, "completed_at": "2026-09-08T11:45:00.000Z", "notes": null,
    "started_at": "2026-09-08T11:00:00.000Z", "workout_id": 2}
+]
+"""
+
+private let exerciseJSON = """
+{
+  "id": 145, "active": true, "animation_url": null, "assignable": true, "category": "strength",
+  "description": "A foundational lower-body movement.", "difficulty": "intermediate",
+  "equipment": [{"key":"barbell","name":"Barbell"}], "force": "push", "has_animation": false,
+  "instructions": ["Brace.", "Squat.", "Stand."], "is_custom": false, "locale": "en",
+  "mechanic": "compound", "muscle_group": "Quadriceps", "name": "Back Squat",
+  "prescription_type": "repetitions",
+  "primary_muscle": {"key":"quads","name":"Quadriceps","region":"Upper Legs"},
+  "secondary_muscles": [], "thumbnail_url": null, "video_url": null
+}
+"""
+
+private let exerciseHistoryJSON = """
+[
+  {"id":1,"position":1,"weight_kg":"72.5","reps":8,"workout_session_id":10,"performed_at":"2026-09-01T18:00:00.000Z"},
+  {"id":2,"position":2,"weight_kg":"75","reps":8,"workout_session_id":10,"performed_at":"2026-09-01T18:00:00.000Z"},
+  {"id":3,"position":1,"weight_kg":"80","reps":7,"workout_session_id":11,"performed_at":"2026-09-08T18:00:00.000Z"},
+  {"id":4,"position":2,"weight_kg":"80","reps":7,"workout_session_id":11,"performed_at":"2026-09-08T18:00:00.000Z"}
 ]
 """

@@ -111,7 +111,7 @@ land before any external TestFlight or submission. Its blockers, parked:
 - **Never POST a set of zeros** — a new set is pre-filled from the coach's target because the server 422s on `reps <= 0` (`page.tsx:139-153`).
 - **Exercise logs are created lazily** — the first set for an exercise POSTs `/client/exercise_logs`, then `/client/set_logs` references it. That dependency is exactly what the outbox must model.
 - **Rest timer today is minimal**: manual start only, `setInterval`, no sound, haptics, background continuation or wake lock, and it dies on unmount. Coach defaults are `rest_seconds: 90`, `sets: 3`, `reps: 10`.
-- **The web never built** session notes, per-exercise notes, or execution photos, though the API supports all three and `AGENTS.md` §4.1 lists them as client features. History detail renders `Exercise #<id>` because the session serializer carries no exercise name, and the exercise-history screen has no inbound link at all.
+- **The web never built** session notes, per-exercise notes, or execution photos, though the API supports all three and `AGENTS.md` §4.1 lists them as client features. The iOS History work closes the display-context gap through `lactic-api#51`, while the web still renders `Exercise #<id>` and has no inbound link to exercise history.
 - **Dark mode is deliberately absent on the web** — a starter `prefers-color-scheme` block once made mid-workout inputs unreadable (`lactic-web/app/globals.css:15-36`). iOS users expect dark mode, so build it properly rather than mirroring light-only.
 - **Visual direction:** the original web-derived grayscale palette has been replaced on iOS by chalk, graphite, and lime. See [design-system.md](design-system.md) for current semantic colors, system typography, and 14/20/pill radii.
 - **Invitation links point at the web** (`${FRONTEND_URL}/invite/<token>`) and `lactic-web/public/` has **no** `apple-app-site-association`, so Universal Links need a separate web change plus the Apple Team ID.
@@ -305,8 +305,8 @@ control — they are tapped with chalky hands, mid-set.
 | **Programs / detail** | `GET /client/programs`, `GET /client/programs/:id` | Weeks by `position`, workouts by `day`, volume chips, status badge. Carries `assignment_id` forward and **persists it** — the session serializer never returns it. |
 | **Workout execution** | `GET /client/workouts/:id`, `GET/POST/PATCH /client/workout_sessions`, `POST/PATCH /client/exercise_logs`, `POST/PATCH/DELETE /client/set_logs` | The core screen. Resume detection, exercise cards ordered by the `A`–`Z` position, target line (`sets × reps`, RIR, suggested weight, coach notes), "last time" assist, on-demand animation, set rows, unbounded extra sets, session completion. All writes go through `WorkoutRecorder`; new sets pre-fill from the coach's target, never zeros. |
 | **Rest timer** | — | Deadline-based (store the end `Date`; never trust a ticking timer), **auto-start on set completion** with the per-exercise `rest_seconds` (90 default), plus haptics, an optional sound, a scheduled `UNNotificationRequest` so it fires when backgrounded, and `isIdleTimerDisabled` while a session is active. A Live Activity is the natural follow-up and is listed as optional. |
-| **History / detail** | `GET /client/workout_sessions`, `GET /client/workout_sessions/:id` | Sorted client-side by `started_at` desc. Resolves exercise names by cross-referencing the workout rather than rendering `Exercise #<id>` as the web does. |
-| **Exercise detail** | `GET /client/exercises/:id`, `…/history` | Reachable from a workout row *and* from history — the web has no inbound link. Localized description and instructions, muscles/equipment, on-demand animation, full weight history (flat, ungroupable — a known API limitation). |
+| **History / detail** | `GET /client/workout_sessions`, `GET /client/workout_sessions/:id` | Sorted client-side by `started_at` desc. API responses now carry workout name plus localized exercise id/name/position; an optional workout fetch preserves rolling-deployment compatibility. |
+| **Exercise detail** | `GET /client/exercises/:id`, `…/history` | Reachable from a workout row *and* from history — the web has no inbound link. Localized reference content, on-demand animation, summary metrics, a per-session best-weight chart, and recent sets grouped by session. |
 | **Settings** | `PATCH /me`, `DELETE /client/account` | Language switcher (drives `Accept-Language`; persists to the server only if the API PR adds `locale` to `PATCH /me`), units, sign out, and account deletion behind a confirmation. |
 
 Beyond the web and cheap because the API already supports them: **session notes
@@ -354,7 +354,7 @@ consuming screen is built keeps the change and its consumer reviewable together.
 | Change | Ships with |
 | --- | --- |
 | Permit `:locale` in `MeController#me_params` so the app can persist language (the column exists and is first in the resolution order; `Accept-Language` works meanwhile) | Settings screen |
-| Add the exercise name to the workout-session serializer so history detail need not render `Exercise #<id>` | History detail screen |
+| ~~Add workout/exercise display context to session payloads and session/date context to exercise history~~ — **SHIPPED in `lactic-api#51`** | History and progress screens |
 | `include ErrorHandling` in `AuthController` — a first-sign-in `RecordInvalid` currently escapes as a plain 500 with a non-JSON body | **Google Sign-In (now)** — real sign-up starts creating users |
 | `Auth::GoogleVerifier` accepting a `GOOGLE_CLIENT_IDS` list — **only if** the iOS token's `aud` proves to be the iOS client id rather than the `serverClientID`. Verify before writing it; it may be unnecessary | **Google Sign-In (now)**, if needed at all |
 

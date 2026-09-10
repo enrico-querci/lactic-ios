@@ -1824,6 +1824,258 @@
         }
       }
     },
+    "+%@ kg since first session": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "+%@ kg since first session" } },
+        "it": { "stringUnit": { "state": "translated", "value": "+%@ kg dalla prima sessione" } }
+      }
+    },
+    "%@ kg volume": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "%@ kg volume" } },
+        "it": { "stringUnit": { "state": "translated", "value": "%@ kg di volume" } }
+      }
+    },
+    "%lld sets · %lld reps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "%lld sets · %lld reps" } },
+        "it": { "stringUnit": { "state": "translated", "value": "%lld serie · %lld ripetizioni" } }
+      }
+    },
+    "Best weight": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Best weight" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Peso migliore" } }
+      }
+    },
+    "Best weight trend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Best weight trend" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Andamento del peso migliore" } }
+      }
+    },
+    "Completed session": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Completed session" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Sessione completata" } }
+      }
+    },
+    "Completed sessions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Completed sessions" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Sessioni completate" } }
+      }
+    },
+    "Date": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Date" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Data" } }
+      }
+    },
+    "Duration": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Duration" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Durata" } }
+      }
+    },
+    "Exercise progress": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Exercise progress" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Progressi esercizio" } }
+      }
+    },
+    "Exercise progress preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Exercise progress preview" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Anteprima progressi esercizio" } }
+      }
+    },
+    "Exercises": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Exercises" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Esercizi" } }
+      }
+    },
+    "From %@ to %@ kilograms": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "From %@ to %@ kilograms" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Da %@ a %@ chilogrammi" } }
+      }
+    },
+    "History preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "History preview" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Anteprima storico" } }
+      }
+    },
+    "Level with your first session": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Level with your first session" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Come nella prima sessione" } }
+      }
+    },
+    "Log this exercise to start tracking your progress.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Log this exercise to start tracking your progress." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Registra questo esercizio per iniziare a monitorare i tuoi progressi." } }
+      }
+    },
+    "Logged set": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Logged set" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Serie registrata" } }
+      }
+    },
+    "No progress data": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No progress data" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessun dato sui progressi" } }
+      }
+    },
+    "No sets were logged in this session.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No sets were logged in this session." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessuna serie registrata in questa sessione." } }
+      }
+    },
+    "Opens exercise progress": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Opens exercise progress" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Apre i progressi dell'esercizio" } }
+      }
+    },
+    "Opens this session": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Opens this session" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Apre questa sessione" } }
+      }
+    },
+    "Personal best": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Personal best" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Record personale" } }
+      }
+    },
+    "Progress built one session at a time.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Progress built one session at a time." } },
+        "it": { "stringUnit": { "state": "translated", "value": "I progressi si costruiscono un allenamento alla volta." } }
+      }
+    },
+    "Recent sets": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Recent sets" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Serie recenti" } }
+      }
+    },
+    "Recent training": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Recent training" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Allenamenti recenti" } }
+      }
+    },
+    "Session in progress": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Session in progress" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Sessione in corso" } }
+      }
+    },
+    "Session note": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Session note" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nota della sessione" } }
+      }
+    },
+    "Session summary preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Session summary preview" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Anteprima riepilogo sessione" } }
+      }
+    },
+    "Sessions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Sessions" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Sessioni" } }
+      }
+    },
+    "Sets": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Sets" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Serie" } }
+      }
+    },
+    "Total reps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Total reps" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Ripetizioni totali" } }
+      }
+    },
+    "Training record": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Training record" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Registro allenamenti" } }
+      }
+    },
+    "Training time": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Training time" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Tempo di allenamento" } }
+      }
+    },
+    "Volume": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Volume" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Volume" } }
+      }
+    },
+    "Your heaviest set in each session": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Your heaviest set in each session" } },
+        "it": { "stringUnit": { "state": "translated", "value": "La serie più pesante di ogni sessione" } }
+      }
+    },
+    "−%@ kg since first session": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "−%@ kg since first session" } },
+        "it": { "stringUnit": { "state": "translated", "value": "−%@ kg dalla prima sessione" } }
+      }
+    },
     "Your assignments and logged workouts are deleted too. This cannot be undone.": {
       "extractionState": "manual",
       "localizations": {
