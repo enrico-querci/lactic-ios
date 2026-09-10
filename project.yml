@@ -126,7 +126,7 @@ schemes:
     test:
       config: Debug
       gatherCoverageData: true
-      targets: [LacticTests]
+      targets: [LacticTests, LacticFlowTests]
     profile:
       config: Release
     analyze:

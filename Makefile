@@ -40,11 +40,21 @@ test-packages: ## Run the Swift Package tests on the host (fast, no simulator)
 		(cd Packages/$$package && swift test) || exit 1; \
 	done
 
+# LacticFlowTests is skipped here on purpose: it drives the real app against a
+# seeded lactic-api on localhost:3000, so it cannot run unattended. Run it with
+# `make test-flow` once the server is up.
 test: project test-packages ## Run package tests and both app test schemes
 	@for scheme in Lactic LacticStudio; do \
 		echo "--- testing $$scheme ---"; \
-		xcodebuild test -project $(PROJECT) -scheme $$scheme -destination "$(DESTINATION)" -quiet || exit 1; \
+		xcodebuild test -project $(PROJECT) -scheme $$scheme -destination "$(DESTINATION)" \
+			-skip-testing:LacticFlowTests -quiet || exit 1; \
 	done
+
+test-flow: project ## Drive the client loop on the simulator (needs a seeded API on :3000)
+	@curl -sf -o /dev/null http://localhost:3000/up \
+		|| { echo "lactic-api is not answering on :3000 — start it and run bin/rails dev:seed"; exit 1; }
+	xcodebuild test -project $(PROJECT) -scheme Lactic -destination "$(DESTINATION)" \
+		-only-testing:LacticFlowTests/ClientLoopTests/testTheCoreLoop -quiet
 
 install: build ## Build and install Lactic on the booted simulator
 	@app="$$(xcodebuild -project $(PROJECT) -scheme Lactic -destination "$(DESTINATION)" \

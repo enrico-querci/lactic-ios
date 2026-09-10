@@ -26,6 +26,21 @@ final class AppEnvironment {
         didSet { UserDefaults.standard.set(locale.rawValue, forKey: Self.localeKey) }
     }
 
+    /// Sends anything the outbox is still holding.
+    ///
+    /// The outbox is only otherwise drained by `WorkoutRecorder`'s own
+    /// mutations, so work queued before the app was killed sat untouched until
+    /// the client happened to log another set in that same workout — the exact
+    /// failure the outbox exists to prevent. Draining on launch and on every
+    /// return to the foreground covers "signal came back while the app was in
+    /// the background", which is the common case in a gym.
+    ///
+    /// Requires a session: every queued operation is an authenticated write.
+    func drainOutbox() {
+        guard case .signedIn = session.phase else { return }
+        Task { await outbox.drain() }
+    }
+
     /// Set when an invitation link is opened, and routed on ahead of the
     /// session phase.
     ///

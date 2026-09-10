@@ -4,6 +4,8 @@ import SwiftUI
 
 @main
 struct LacticApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+
     @State private var environment = AppEnvironment()
 
     var body: some Scene {
@@ -24,6 +26,13 @@ struct LacticApp: App {
             #if DEBUG
                 .task { environment.seedInvitationFromLaunchArguments() }
             #endif
+                .onChange(of: scenePhase) { _, phase in
+                    // Coming back to the foreground is when signal has usually
+                    // returned, so it is the moment to retry queued writes.
+                    if phase == .active {
+                        environment.drainOutbox()
+                    }
+                }
                 .onOpenURL { url in
                     // Google first: it owns the reversed-client-id scheme and
                     // returns false for anything it did not issue.

@@ -133,8 +133,13 @@ final class ClientLoopTests: XCTestCase {
         Thread.sleep(forTimeInterval: 3)
     }
 
-    /// Server **down**: resume and log two more sets, which can only queue.
-    /// Ending the test terminates the app — the force quit.
+    /// Signs in while the API is reachable, waits for it to be stopped
+    /// externally, then logs two sets that can only queue. Ending the test
+    /// terminates the app — the force quit.
+    ///
+    /// Deliberately does not *launch* offline: `restore()` currently signs out
+    /// on any failure (see docs/ios-plan.md), which would eject the client
+    /// before any of this could be exercised.
     func testOfflinePhase2Queued() {
         let app = launch()
         XCTAssertTrue(signIn(app))
@@ -143,17 +148,43 @@ final class ClientLoopTests: XCTestCase {
         ).firstMatch
         XCTAssertTrue(resume.waitForExistence(timeout: 20), "no resume affordance on Home")
         resume.tap()
-        // Already in progress, so the overview may go straight to logging.
         if app.buttons["Start workout"].waitForExistence(timeout: 5) {
             app.buttons["Start workout"].tap()
         }
         let logSet = app.buttons["Log set"].firstMatch
-        XCTAssertTrue(logSet.waitForExistence(timeout: 20), "no Log set control while offline")
+        XCTAssertTrue(logSet.waitForExistence(timeout: 20), "no Log set control")
+
+        XCTAssertTrue(waitForAPIToStop(), "the API was still reachable; nothing would queue")
+
         for _ in 1 ... 2 {
             logSet.tap()
             Thread.sleep(forTimeInterval: 2)
         }
-        Thread.sleep(forTimeInterval: 3)
+        // Long enough for any retry backoff to give up rather than succeed late.
+        Thread.sleep(forTimeInterval: 5)
+    }
+
+    /// Polls the local API until it stops answering, so the offline window is
+    /// observed rather than guessed at with a sleep.
+    private func waitForAPIToStop(timeout: TimeInterval = 120) -> Bool {
+        let url = URL(string: "http://localhost:3000/up")!
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            var reachable = true
+            let done = DispatchSemaphore(value: 0)
+            var request = URLRequest(url: url)
+            request.timeoutInterval = 3
+            URLSession(configuration: .ephemeral).dataTask(with: request) { _, response, error in
+                reachable = error == nil && (response as? HTTPURLResponse)?.statusCode == 200
+                done.signal()
+            }.resume()
+            _ = done.wait(timeout: .now() + 5)
+            if !reachable {
+                return true
+            }
+            Thread.sleep(forTimeInterval: 2)
+        }
+        return false
     }
 
     /// Server back up: relaunch and touch nothing. If queued work only drains

@@ -439,14 +439,14 @@ either way. Nothing before that point is blocked by them.
 > production currently has zero linked clients, so without it the client app has
 > no way to onboard anybody new. Say so if you would rather it stayed out.
 
-## Open defects found by running the app
+## Defects found by running the app
 
 Both found on 2026-09-10 by `Apps/LacticFlowTests`, the first time the client
 loop was driven end to end. Both are business logic, both are invisible to the
 unit tests, and together they mean the durable-outbox design does not currently
 deliver what it was built for.
 
-### 1. An offline launch signs the client out — permanently
+### 1. An offline launch signs the client out — ACCEPTED, not fixed
 
 `SessionStore.restore()` treats *every* failure as "signed out", including a
 transport error, and `clearSession()` deletes the refresh token from the
@@ -455,13 +455,21 @@ flight — is returned to the sign-in screen and has to authenticate with Google
 again. Reproduced by stopping the local API and launching: the app shows the
 sign-in screen with a valid session behind it.
 
-The fix is not a one-liner, because `restore()` also fetches `/me`, which needs
-the network to produce a `User`. Either the last-known user is cached locally
-and restored optimistically, or `AuthPhase` grows an offline case. That is a
-product decision about holding identity on the device, so it is written down
-here rather than patched in passing.
+**Accepted on 2026-09-10**: being ejected is annoying but not destructive, so
+it is not worth the fix yet. Nothing is lost — `SessionStore` never touches the
+outbox, and queued operations live in a file under Application Support that
+survives both sign-out and relaunch. The client signs in again and their work
+is still delivered.
 
-### 2. Nothing drains the outbox at launch
+Two things to know before revisiting it. The fix is not a one-liner: `restore()`
+also fetches `/me`, which needs the network to produce a `User`, so either the
+last-known user is cached on the device and restored optimistically, or
+`AuthPhase` grows an offline case — a product decision about holding identity
+locally. And while this stands, an offline *launch* cannot be exercised at all,
+which is why `testOfflinePhase2Queued` goes offline mid-session rather than at
+launch.
+
+### 2. Nothing drained the outbox at launch — FIXED
 
 `AppEnvironment` constructs the `Outbox` and never calls `drain()`. The only
 drains are inside `WorkoutRecorder`'s own mutations, so operations queued
@@ -470,8 +478,17 @@ workout and log *another* set. The data is not lost — `OutboxState` persists �
 but it is never delivered, which is precisely the failure the outbox exists to
 prevent. Its unit tests miss this because they call `drain()` directly.
 
-Defect 1 currently masks defect 2: with the API unreachable the app cannot get
-past sign-in, so the queued work is unreachable too.
+Fixed by `AppEnvironment.drainOutbox()`, called once a session is restored and
+again on every return to the foreground — the latter being the common case in a
+gym, where signal returns while the app is backgrounded. It is a no-op when
+signed out, since every queued operation is an authenticated write.
+
+Proven end to end by `testOfflinePhase1Online` / `Phase2Queued` /
+`Phase3RelaunchOnly`, checked against Postgres between phases: one set online
+(server: 1), two logged with the API stopped (server: still 1), then a force
+quit and a relaunch that touches nothing at all (server: 3, positions 1-3, no
+duplicates). Nothing else could have delivered them — no recorder is created on
+Home.
 
 ## Verification
 
