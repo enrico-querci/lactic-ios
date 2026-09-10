@@ -439,6 +439,40 @@ either way. Nothing before that point is blocked by them.
 > production currently has zero linked clients, so without it the client app has
 > no way to onboard anybody new. Say so if you would rather it stayed out.
 
+## Open defects found by running the app
+
+Both found on 2026-09-10 by `Apps/LacticFlowTests`, the first time the client
+loop was driven end to end. Both are business logic, both are invisible to the
+unit tests, and together they mean the durable-outbox design does not currently
+deliver what it was built for.
+
+### 1. An offline launch signs the client out — permanently
+
+`SessionStore.restore()` treats *every* failure as "signed out", including a
+transport error, and `clearSession()` deletes the refresh token from the
+keychain. So a client who opens the app with no signal — a gym basement, a
+flight — is returned to the sign-in screen and has to authenticate with Google
+again. Reproduced by stopping the local API and launching: the app shows the
+sign-in screen with a valid session behind it.
+
+The fix is not a one-liner, because `restore()` also fetches `/me`, which needs
+the network to produce a `User`. Either the last-known user is cached locally
+and restored optimistically, or `AuthPhase` grows an offline case. That is a
+product decision about holding identity on the device, so it is written down
+here rather than patched in passing.
+
+### 2. Nothing drains the outbox at launch
+
+`AppEnvironment` constructs the `Outbox` and never calls `drain()`. The only
+drains are inside `WorkoutRecorder`'s own mutations, so operations queued
+before a force quit sit untouched until the client happens to open that same
+workout and log *another* set. The data is not lost — `OutboxState` persists —
+but it is never delivered, which is precisely the failure the outbox exists to
+prevent. Its unit tests miss this because they call `drain()` directly.
+
+Defect 1 currently masks defect 2: with the API unreachable the app cannot get
+past sign-in, so the queued work is unreachable too.
+
 ## Verification
 
 - `make lint && make test` green; `xcodebuild build` green for both schemes.

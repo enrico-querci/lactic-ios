@@ -63,6 +63,15 @@ targetTemplates:
         # Without this the bundle has no Info.plist and codesign refuses it,
         # so `xcodebuild test` fails before a single test runs.
         GENERATE_INFOPLIST_FILE: YES
+
+  # UI tests drive the real app through XCUIApplication, which only exists in
+  # XCTest — Swift Testing has no equivalent. That is the one exception to
+  # AGENTS.md 6.1's "Swift Testing, not XCTest".
+  AppFlowTests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - Apps/${target_name}
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
@@ -79,6 +88,15 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.enricoquerci.lactic.tests
+    dependencies:
+      - target: Lactic
+
+  LacticFlowTests:
+    templates: [AppFlowTests]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.enricoquerci.lactic.flowtests
+        TEST_TARGET_NAME: Lactic
     dependencies:
       - target: Lactic
 
@@ -102,6 +120,7 @@ schemes:
       targets:
         Lactic: all
         LacticTests: [test]
+        LacticFlowTests: [test]
     run:
       config: Debug
     test:
