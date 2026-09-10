@@ -18,7 +18,7 @@ is a workout-management ecosystem for coaches and their clients.
 
 | Product | Audience | Platform | Purpose | Current state |
 | --- | --- | --- | --- | --- |
-| **Lactic** | Client | iOS | Follow assigned programs and log workouts | Core flows implemented; visual redesign landed through `lactic-ios#1`-`#4`; see `docs/ios-plan.md` |
+| **Lactic** | Client | iOS | Follow assigned programs and log workouts | Core flows implemented; visual redesign landed through `lactic-ios#1`-`#5`; see `docs/ios-plan.md` |
 | **Lactic Studio** | Coach/Admin | Web today; iOS/iPadOS planned | Manage clients and create training programs | Coach routes (`/coach/**`) in Lactic Web are implemented and deployed; a native app is a product target |
 | **Lactic Web** | Coach and client | Web | Browser access to both role-specific experiences | Implemented and deployed |
 | **Lactic API** | All clients | Rails API | Shared auth, business logic, persistence, email, and REST API | Implemented and deployed |
@@ -55,7 +55,7 @@ The latest completed milestone is Lactic Studio subscription billing via Revenue
 
 ### 1.2 Current iOS milestone
 
-As of **2026-09-09**, the Lactic client has completed and merged four visual
+As of **2026-09-10**, the Lactic client has completed and merged five visual
 implementation increments, landed in order:
 
 1. `lactic-ios#1` (`codex/lactic-visual-foundation` onto `main`) establishes
@@ -77,23 +77,31 @@ implementation increments, landed in order:
    week/workout hierarchy, volume summaries, and session-derived upcoming,
    in-progress, and completed states. Synthetic DEBUG fixtures cover both the
    list and detail without authentication or live API data.
+5. `lactic-ios#5` (`codex/history-progress-design` onto `main`) redesigns History,
+   completed-session summaries, and exercise progress with lifetime metrics,
+   workout and exercise names, performed-set volume, grouped recent sessions,
+   personal bests, and a best-weight trend chart. The additive API context ships
+   in `lactic-api#51`; optional decoding plus a workout fallback keeps rolling
+   deployment safe.
 
-All four PRs have passing GitHub lint/test checks. The client and Studio Debug
+All five PRs have passing GitHub lint/test checks. The client and Studio Debug
 schemes, the Lactic Release configuration, and all three package suites pass
-locally. Home, workout, and programme fixtures have been visually checked in
-light and dark appearances and at accessibility Dynamic Type sizes. DEBUG-only
+locally. Home, workout, programme, history, session, and exercise-progress
+fixtures have been visually checked in light and dark appearances and at
+accessibility Dynamic Type sizes. DEBUG-only
 synthetic routes (`--workout-design-preview`, optional
 `--workout-design-timer`; `--home-design-preview`, optional `--home-resume`;
-and `--programme-design-preview`, optional `--programme-list`) keep that review
-independent of authentication and live API data.
+`--programme-design-preview`, optional `--programme-list`; and
+`--history-design-preview`, optional `--history-session` or
+`--history-exercise`) keep that review independent of authentication and live
+API data.
 
-The next client visual sequence is history and session/exercise progress, then
-Settings and remaining onboarding/account states. The native Lactic Studio
-target is still a branded placeholder and is a larger product milestone after
-the client surfaces. Automated device taps were not available during the visual
-pass, so workout logging/deletion and dashboard/programme navigation still need
-hands-on interaction verification even though their models, builds, and
-screenshot states pass.
+The next client visual sequence is Settings and remaining onboarding/account
+states. The native Lactic Studio target is still a branded placeholder and is a
+larger product milestone after the client surfaces. Automated device taps were
+not available during the visual pass, so workout logging/deletion and client
+navigation still need hands-on interaction verification even though their
+models, builds, and screenshot states pass.
 
 ---
 
@@ -354,15 +362,21 @@ WorkoutSession
 
 - `id`, `client_id`, `workout_id`, `program_assignment_id`.
 - `started_at`, `completed_at`, and client notes.
+- History responses also serialize the associated `workout_name` so clients do
+  not need an extra request just to label a session.
 
 #### ExerciseLog
 
 - `id`, `workout_session_id`, `workout_exercise_id`.
 - Client notes and optional execution photo URL.
+- Session-detail responses include the related exercise's id and localized name
+  plus workout position for display and navigation.
 
 #### SetLog
 
 - `id`, `exercise_log_id`, `position`, `weight_kg`, and performed `reps`.
+- Exercise-history responses add the workout-session id and performed date so
+  flat set rows can be grouped and charted without changing persistence.
 
 ### 3.3 Computed values
 
@@ -630,7 +644,7 @@ npm run build
 - Coach/client chat.
 - Push notifications.
 - Android application.
-- Advanced analytics and progress charts.
+- Advanced analytics beyond the shipped per-exercise best-weight trend.
 - Supersets and linked exercises.
 - Photo/video object storage and upload pipeline.
 - **Session and per-exercise notes UI in the web portal.** The API has
