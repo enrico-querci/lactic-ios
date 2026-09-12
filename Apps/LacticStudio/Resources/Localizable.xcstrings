@@ -1,0 +1,44 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Coach": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Coach" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Coach" } }
+      }
+    },
+    "Continue with Google": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Continue with Google" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Continua con Google" } }
+      }
+    },
+    "Lactic Studio": {
+      "shouldTranslate": false
+    },
+    "Lactic Studio is for coaches. Use the Lactic app to follow your programme.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Lactic Studio is for coaches. Use the Lactic app to follow your programme." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Lactic Studio è per i coach. Usa l'app Lactic per seguire il tuo programma." } }
+      }
+    },
+    "Sign out": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Sign out" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Esci" } }
+      }
+    },
+    "This is a client account": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "This is a client account" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Questo è un account cliente" } }
+      }
+    }
+  },
+  "version": "1.0"
+}
