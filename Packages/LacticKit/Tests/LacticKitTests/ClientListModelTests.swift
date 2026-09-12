@@ -83,6 +83,7 @@ struct ClientListModelTests {
     }
 
     @Test func aNewInvitationJoinsTheListWithoutAReload() async {
+        let slotsUsed = Counter(values: [0, 1])
         let (model, transport) = make { request in
             let path = request.url?.path ?? ""
             if request.httpMethod == "POST", path.hasSuffix("/client_invitations") {
@@ -94,14 +95,15 @@ struct ClientListModelTests {
             if path.hasSuffix("/client_invitations") {
                 return .json("[]")
             }
-            return .json(subscriptionBody(used: 0, limit: 3))
+            return .json(subscriptionBody(used: slotsUsed.next(), limit: 3))
         }
         await model.load()
         let invited = await model.invite(email: "new@example.com")
 
         #expect(invited)
         #expect(model.pendingInvitations.map(\.email) == ["new@example.com"])
-        // Merged in, not re-fetched: only the create should have been sent.
+        #expect(model.subscription?.clientSlotsUsed == 1)
+        // The roster is merged rather than re-fetched; only one create is sent.
         let creates = transport.requests.filter {
             $0.httpMethod == "POST" && $0.url?.path.hasSuffix("/client_invitations") == true
         }

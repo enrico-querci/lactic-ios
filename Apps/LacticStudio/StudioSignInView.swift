@@ -2,10 +2,8 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
-/// Coach sign-in.
-///
-/// Unstyled beyond the shared tokens: the visual pass for Studio has not
-/// happened, and the shape worth keeping is the auth path, not the layout.
+/// Coach sign-in, using the same graphite and electric-lime identity as the
+/// client app but with a workspace-oriented iPad composition.
 struct StudioSignInView: View {
     @Environment(StudioEnvironment.self) private var environment
 
@@ -16,24 +14,117 @@ struct StudioSignInView: View {
     #endif
 
     var body: some View {
-        VStack(spacing: LacticSpacing.lg) {
-            Text("Lactic Studio")
-                .font(.lacticDisplay)
-            Text("Coach")
-                .font(.lacticEyebrow)
-                .foregroundStyle(LacticColor.brand)
+        ScrollView {
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .center, spacing: LacticSpacing.xl) {
+                    brandPanel
+                        .frame(minWidth: 360, maxWidth: .infinity)
+                    signInCard
+                        .frame(minWidth: 360, maxWidth: 460)
+                }
 
-            if let errorMessage {
-                Text(errorMessage)
-                    .font(.lacticCaption)
-                    .foregroundStyle(LacticColor.danger)
-                    .multilineTextAlignment(.center)
+                VStack(spacing: LacticSpacing.xl) {
+                    brandPanel
+                    signInCard
+                }
+            }
+            .padding(LacticSpacing.xl)
+            .frame(maxWidth: 1180)
+            .frame(maxWidth: .infinity)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(LacticColor.surface)
+    }
+
+    private var brandPanel: some View {
+        VStack(alignment: .leading, spacing: LacticSpacing.xl) {
+            HStack(spacing: LacticSpacing.sm) {
+                Image(systemName: "dumbbell.fill")
+                    .font(.title2.weight(.bold))
+                    .foregroundStyle(LacticColor.heroSurface)
+                    .frame(width: 52, height: 52)
+                    .background(LacticColor.brand, in: RoundedRectangle(cornerRadius: LacticRadius.control))
+                    .accessibilityHidden(true)
+                Text("Lactic Studio")
+                    .font(.lacticHeadline)
+                    .foregroundStyle(LacticColor.textOnHero)
             }
 
-            Button("Continue with Google") { signIn() }
-                .lacticButton(isEnabled: !isSigningIn)
+            Spacer(minLength: LacticSpacing.xl)
+
+            VStack(alignment: .leading, spacing: LacticSpacing.md) {
+                Text("Coach workspace")
+                    .font(.lacticEyebrow)
+                    .foregroundStyle(LacticColor.brand)
+                    .textCase(.uppercase)
+                Text("Build better training, together.")
+                    .font(.lacticDisplay)
+                    .foregroundStyle(LacticColor.textOnHero)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("Manage your clients and keep every training relationship moving from one focused workspace.")
+                    .font(.lacticBody)
+                    .foregroundStyle(LacticColor.textOnHero.opacity(0.76))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: LacticSpacing.xl)
+
+            Label("Secure coach access", systemImage: "lock.shield.fill")
+                .font(.lacticCaption.weight(.semibold))
+                .foregroundStyle(LacticColor.textOnHero.opacity(0.82))
+        }
+        .padding(LacticSpacing.xxl)
+        .frame(maxWidth: .infinity, minHeight: 520, alignment: .leading)
+        .background(
+            LacticColor.heroSurface,
+            in: RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous)
+        )
+    }
+
+    private var signInCard: some View {
+        VStack(alignment: .leading, spacing: LacticSpacing.xl) {
+            VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+                Text("Welcome back")
+                    .font(.lacticTitle)
+                Text("Sign in to manage your coaching roster.")
+                    .font(.lacticBody)
+                    .foregroundStyle(LacticColor.textSecondary)
+            }
+
+            if let errorMessage {
+                Text(verbatim: errorMessage)
+                    .font(.lacticCaption)
+                    .foregroundStyle(LacticColor.danger)
+                    .multilineTextAlignment(.leading)
+                    .padding(LacticSpacing.md)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        LacticColor.dangerSurface,
+                        in: RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
+                    )
+            }
+
+            Button(action: signIn) {
+                HStack(spacing: LacticSpacing.sm) {
+                    if isSigningIn {
+                        ProgressView()
+                    } else {
+                        Image(systemName: "g.circle.fill")
+                            .accessibilityHidden(true)
+                    }
+                    if isSigningIn {
+                        Text("Signing in…")
+                    } else {
+                        Text("Continue with Google")
+                    }
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .lacticButton(isEnabled: !isSigningIn)
 
             #if DEBUG
+                Divider()
+
                 // The picker lives here rather than in Settings because Studio
                 // has no signed-in Settings yet, and a build that cannot reach
                 // the server it needs is unusable.
@@ -44,13 +135,16 @@ struct StudioSignInView: View {
                 }
                 .pickerStyle(.segmented)
 
-                VStack(spacing: LacticSpacing.sm) {
+                VStack(alignment: .leading, spacing: LacticSpacing.sm) {
                     TextField("Email", text: $devEmail)
                         .textFieldStyle(.roundedBorder)
+                        .textContentType(.emailAddress)
+                        .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
+                        .disabled(isSigningIn)
                     Button("Sign in") { signInWithDevLogin() }
-                        .lacticButton(.secondary, isEnabled: !isSigningIn)
+                        .lacticButton(.secondary, isEnabled: !isSigningIn && !devEmail.isEmpty)
                     Text("Uses the API's dev_login route, which does not exist in production.")
                         .font(.lacticCaption)
                         .foregroundStyle(LacticColor.textMuted)
@@ -58,9 +152,15 @@ struct StudioSignInView: View {
             #endif
         }
         .padding(LacticSpacing.xl)
-        .frame(maxWidth: 420)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(LacticColor.surface)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            LacticColor.surfaceElevated,
+            in: RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous)
+                .strokeBorder(LacticColor.border, lineWidth: 1)
+        }
     }
 
     #if DEBUG

@@ -1,6 +1,62 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "Active clients": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Active clients" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Clienti attivi" } }
+      }
+    },
+    "Build better training, together.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Build better training, together." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Crea allenamenti migliori, insieme." } }
+      }
+    },
+    "Cancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Cancel" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Annulla" } }
+      }
+    },
+    "Check your connection and try again.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Check your connection and try again." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Controlla la connessione e riprova." } }
+      }
+    },
+    "Client capacity": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Client capacity" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Capacità clienti" } }
+      }
+    },
+    "Client limit reached": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Client limit reached" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Limite clienti raggiunto" } }
+      }
+    },
+    "Client roster": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Client roster" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Elenco clienti" } }
+      }
+    },
+    "Clients": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Clients" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Clienti" } }
+      }
+    },
     "Coach": {
       "extractionState": "manual",
       "localizations": {
@@ -8,11 +64,81 @@
         "it": { "stringUnit": { "state": "translated", "value": "Coach" } }
       }
     },
+    "Coach workspace": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Coach workspace" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Area di lavoro coach" } }
+      }
+    },
     "Continue with Google": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Continue with Google" } },
         "it": { "stringUnit": { "state": "translated", "value": "Continua con Google" } }
+      }
+    },
+    "Email address": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Email address" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Indirizzo email" } }
+      }
+    },
+    "Expires": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Expires" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Scade" } }
+      }
+    },
+    "Follow up with people who have not joined your roster yet.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Follow up with people who have not joined your roster yet." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Controlla chi non si è ancora unito al tuo elenco clienti." } }
+      }
+    },
+    "Invitations": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Invitations" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Inviti" } }
+      }
+    },
+    "Invitations waiting for a response will appear here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Invitations waiting for a response will appear here." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Gli inviti in attesa di risposta appariranno qui." } }
+      }
+    },
+    "Invite a client": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Invite a client" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invita un cliente" } }
+      }
+    },
+    "Invite client": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Invite client" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invita cliente" } }
+      }
+    },
+    "Invite your first client to start building your roster.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Invite your first client to start building your roster." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invita il tuo primo cliente per iniziare a creare il tuo elenco." } }
+      }
+    },
+    "Keep clients and pending invitations organised in one place.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Keep clients and pending invitations organised in one place." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Tieni clienti e inviti in sospeso organizzati in un unico posto." } }
       }
     },
     "Lactic Studio": {
@@ -25,6 +151,135 @@
         "it": { "stringUnit": { "state": "translated", "value": "Lactic Studio è per i coach. Usa l'app Lactic per seguire il tuo programma." } }
       }
     },
+    "Loading clients": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Loading clients" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Caricamento clienti" } }
+      }
+    },
+    "Loading your workspace": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Loading your workspace" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Caricamento area di lavoro" } }
+      }
+    },
+    "Manage your clients and keep every training relationship moving from one focused workspace.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Manage your clients and keep every training relationship moving from one focused workspace." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Gestisci i tuoi clienti e fai crescere ogni rapporto di allenamento da un’unica area di lavoro." } }
+      }
+    },
+    "name@example.com": {
+      "shouldTranslate": false
+    },
+    "New invitation": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "New invitation" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nuovo invito" } }
+      }
+    },
+    "No client slots are available. Client limits are managed on Lactic Web.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No client slots are available. Client limits are managed on Lactic Web." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Non ci sono posti disponibili per altri clienti. I limiti dei clienti si gestiscono su Lactic Web." } }
+      }
+    },
+    "No clients yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No clients yet" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessun cliente" } }
+      }
+    },
+    "No pending invitations": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No pending invitations" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessun invito in sospeso" } }
+      }
+    },
+    "Pending": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Pending" } },
+        "it": { "stringUnit": { "state": "translated", "value": "In sospeso" } }
+      }
+    },
+    "Pending invitations": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Pending invitations" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Inviti in sospeso" } }
+      }
+    },
+    "Pending invites": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Pending invites" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Inviti in sospeso" } }
+      }
+    },
+    "Resend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Resend" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invia di nuovo" } }
+      }
+    },
+    "Revoke": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Revoke" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Revoca" } }
+      }
+    },
+    "Revoke invitation": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Revoke invitation" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Revoca invito" } }
+      }
+    },
+    "Revoke invitation?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Revoke invitation?" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Revocare l’invito?" } }
+      }
+    },
+    "Secure coach access": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Secure coach access" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Accesso coach sicuro" } }
+      }
+    },
+    "Send an invitation by email. They’ll join your roster after signing in with the same address.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Send an invitation by email. They’ll join your roster after signing in with the same address." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invia un invito via email. La persona entrerà nel tuo elenco dopo aver effettuato l’accesso con lo stesso indirizzo." } }
+      }
+    },
+    "Send invitation": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Send invitation" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invia invito" } }
+      }
+    },
+    "Sign in to manage your coaching roster.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Sign in to manage your coaching roster." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Accedi per gestire i tuoi clienti." } }
+      }
+    },
     "Sign out": {
       "extractionState": "manual",
       "localizations": {
@@ -32,11 +287,67 @@
         "it": { "stringUnit": { "state": "translated", "value": "Esci" } }
       }
     },
+    "Signing in…": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Signing in…" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Accesso in corso…" } }
+      }
+    },
+    "That action was not completed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "That action was not completed" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Operazione non completata" } }
+      }
+    },
+    "The invitation link for %@ will stop working.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The invitation link for %@ will stop working." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Il link di invito per %@ smetterà di funzionare." } }
+      }
+    },
     "This is a client account": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "This is a client account" } },
         "it": { "stringUnit": { "state": "translated", "value": "Questo è un account cliente" } }
+      }
+    },
+    "Try again": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Try again" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Riprova" } }
+      }
+    },
+    "Unlimited": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Unlimited" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Illimitato" } }
+      }
+    },
+    "Welcome back": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Welcome back" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Bentornato" } }
+      }
+    },
+    "Your clients": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Your clients" } },
+        "it": { "stringUnit": { "state": "translated", "value": "I tuoi clienti" } }
+      }
+    },
+    "You're offline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "You're offline" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Sei offline" } }
       }
     }
   },
