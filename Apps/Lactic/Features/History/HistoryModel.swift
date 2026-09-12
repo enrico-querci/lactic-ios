@@ -11,30 +11,7 @@ import Observation
 @MainActor
 @Observable
 final class HistoryModel: LoadableSource {
-    struct Snapshot: Sendable, Equatable {
-        let sessions: [WorkoutSession]
-
-        var completed: [WorkoutSession] {
-            sessions.filter { !$0.isInProgress }
-        }
-
-        var inProgress: [WorkoutSession] {
-            sessions.filter(\.isInProgress)
-        }
-
-        var totalTrainingTime: TimeInterval {
-            completed.reduce(0) { total, session in
-                guard let startedAt = session.startedAt, let completedAt = session.completedAt else {
-                    return total
-                }
-                return total + completedAt.timeIntervalSince(startedAt)
-            }
-        }
-
-        var distinctWorkoutCount: Int {
-            Set(completed.map(\.workoutID)).count
-        }
-    }
+    typealias Snapshot = TrainingHistory
 
     private(set) var state: Loadable<Snapshot> = .idle
 
@@ -77,43 +54,8 @@ final class HistoryModel: LoadableSource {
 @MainActor
 @Observable
 final class SessionDetailModel: LoadableSource {
-    struct ExerciseReference: Sendable, Equatable {
-        let exerciseID: Int?
-        let name: String?
-        let position: String?
-    }
-
-    struct Detail: Sendable, Equatable {
-        let session: WorkoutSessionDetail
-        let workoutName: String?
-        let exerciseReferences: [Int: ExerciseReference]
-
-        var orderedExerciseLogs: [ExerciseLogDetail] {
-            session.exerciseLogs.sorted { lhs, rhs in
-                let lhsPosition = exerciseReferences[lhs.workoutExerciseID]?.position ?? ""
-                let rhsPosition = exerciseReferences[rhs.workoutExerciseID]?.position ?? ""
-                return lhsPosition.localizedStandardCompare(rhsPosition) == .orderedAscending
-            }
-        }
-
-        var totalSetCount: Int {
-            session.exerciseLogs.reduce(0) { $0 + $1.setLogs.count }
-        }
-
-        var totalReps: Int {
-            session.exerciseLogs.flatMap(\.setLogs).reduce(0) { $0 + $1.reps }
-        }
-
-        var totalVolumeKg: Decimal {
-            session.exerciseLogs.flatMap(\.setLogs).reduce(Decimal.zero) { total, set in
-                total + set.weightKg * Decimal(set.reps)
-            }
-        }
-
-        func reference(for log: ExerciseLogDetail) -> ExerciseReference? {
-            exerciseReferences[log.workoutExerciseID]
-        }
-    }
+    typealias Detail = SessionSummary
+    typealias ExerciseReference = SessionSummary.ExerciseReference
 
     private(set) var state: Loadable<Detail> = .idle
 

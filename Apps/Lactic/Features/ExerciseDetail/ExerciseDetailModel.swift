@@ -7,80 +7,11 @@ import Observation
 @MainActor
 @Observable
 final class ExerciseDetailModel: LoadableSource {
-    struct HistorySession: Sendable, Equatable, Identifiable {
-        let id: Int
-        let performedAt: Date?
-        let sets: [SetLog]
-
-        var bestWeight: Decimal {
-            sets.map(\.weightKg).max() ?? .zero
-        }
-
-        var totalReps: Int {
-            sets.reduce(0) { $0 + $1.reps }
-        }
-
-        var volumeKg: Decimal {
-            sets.reduce(Decimal.zero) { total, set in
-                total + set.weightKg * Decimal(set.reps)
-            }
-        }
-    }
-
-    struct Detail: Sendable, Equatable {
-        let exercise: ExerciseDetail
-        let history: [SetLog]
-
-        var historySessions: [HistorySession] {
-            var sessions: [HistorySession] = []
-            var indices: [Int: Int] = [:]
-
-            for set in history {
-                let sessionID = set.workoutSessionID ?? -set.id
-                if let index = indices[sessionID] {
-                    let existing = sessions[index]
-                    sessions[index] = HistorySession(
-                        id: existing.id,
-                        performedAt: existing.performedAt ?? set.performedAt,
-                        sets: existing.sets + [set]
-                    )
-                } else {
-                    indices[sessionID] = sessions.count
-                    sessions.append(
-                        HistorySession(id: sessionID, performedAt: set.performedAt, sets: [set])
-                    )
-                }
-            }
-            return sessions
-        }
-
-        var bestWeight: Decimal? {
-            history.map(\.weightKg).max()
-        }
-
-        var totalReps: Int {
-            history.reduce(0) { $0 + $1.reps }
-        }
-
-        var totalVolumeKg: Decimal {
-            history.reduce(Decimal.zero) { total, set in
-                total + set.weightKg * Decimal(set.reps)
-            }
-        }
-
-        var datedHistorySessions: [HistorySession] {
-            historySessions
-                .filter { $0.performedAt != nil }
-                .sorted { ($0.performedAt ?? .distantPast) < ($1.performedAt ?? .distantPast) }
-        }
-
-        var bestWeightChange: Decimal? {
-            guard let first = datedHistorySessions.first, let last = datedHistorySessions.last,
-                  first.id != last.id
-            else { return nil }
-            return last.bestWeight - first.bestWeight
-        }
-    }
+    /// The derivations live in `LacticKit` so both the arithmetic and its
+    /// tests sit with the models they read, leaving this type to fetching and
+    /// state. The names views already use are kept.
+    typealias Detail = ExerciseProgress
+    typealias HistorySession = ExerciseProgress.Session
 
     private(set) var state: Loadable<Detail> = .idle
 
