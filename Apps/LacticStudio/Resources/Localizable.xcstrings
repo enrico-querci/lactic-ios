@@ -106,6 +106,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "Inviti" } }
       }
     },
+    "Invites": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Invites" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Inviti" } }
+      }
+    },
     "Invitations waiting for a response will appear here.": {
       "extractionState": "manual",
       "localizations": {

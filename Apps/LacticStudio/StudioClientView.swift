@@ -58,6 +58,8 @@ private enum StudioSheet: String, Identifiable {
 
 @MainActor
 struct StudioClientNavigation: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let coachName: String
     let coachEmail: String
     let model: ClientListModel
@@ -72,6 +74,7 @@ struct StudioClientNavigation: View {
                 Section {
                     StudioSidebarRow(
                         title: "Clients",
+                        compactTitle: "Clients",
                         systemImage: "person.2.fill",
                         count: model.clients.count
                     )
@@ -79,6 +82,7 @@ struct StudioClientNavigation: View {
 
                     StudioSidebarRow(
                         title: "Invitations",
+                        compactTitle: "Invites",
                         systemImage: "envelope.fill",
                         count: model.pendingInvitations.count
                     )
@@ -87,7 +91,11 @@ struct StudioClientNavigation: View {
             }
             .listStyle(.sidebar)
             .navigationTitle("Lactic Studio")
-            .navigationSplitViewColumnWidth(min: 250, ideal: 300, max: 360)
+            .navigationSplitViewColumnWidth(
+                min: dynamicTypeSize.isAccessibilitySize ? 360 : 250,
+                ideal: dynamicTypeSize.isAccessibilitySize ? 400 : 300,
+                max: dynamicTypeSize.isAccessibilitySize ? 440 : 360
+            )
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 StudioAccountFooter(
                     name: coachName,
@@ -117,7 +125,9 @@ struct StudioClientNavigation: View {
             switch sheet {
             case .invite:
                 InviteClientSheet(model: model)
-                    .presentationDetents([.medium, .large])
+                    .presentationDetents(
+                        dynamicTypeSize.isAccessibilitySize ? [.large] : [.medium, .large]
+                    )
             }
         }
     }
@@ -148,13 +158,21 @@ struct StudioClientNavigation: View {
 }
 
 private struct StudioSidebarRow: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let title: LocalizedStringKey
+    let compactTitle: LocalizedStringKey
     let systemImage: String
     let count: Int
 
     var body: some View {
         HStack(spacing: LacticSpacing.sm) {
-            Label(title, systemImage: systemImage)
+            Label(
+                dynamicTypeSize.isAccessibilitySize ? compactTitle : title,
+                systemImage: systemImage
+            )
+            .lineLimit(1)
+            .accessibilityLabel(title)
             Spacer(minLength: LacticSpacing.sm)
             Text(verbatim: count.formatted())
                 .font(.lacticCaption.weight(.semibold).monospacedDigit())
@@ -168,6 +186,8 @@ private struct StudioSidebarRow: View {
 }
 
 private struct StudioAccountFooter: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let name: String
     let email: String
     let signOut: () -> Void
@@ -183,11 +203,13 @@ private struct StudioAccountFooter: View {
                 VStack(alignment: .leading, spacing: LacticSpacing.xs) {
                     Text(verbatim: name)
                         .font(.lacticHeadline)
-                        .lineLimit(1)
-                    Text(verbatim: email)
-                        .font(.lacticCaption)
-                        .foregroundStyle(LacticColor.textSecondary)
-                        .lineLimit(1)
+                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+                    if !dynamicTypeSize.isAccessibilitySize {
+                        Text(verbatim: email)
+                            .font(.lacticCaption)
+                            .foregroundStyle(LacticColor.textSecondary)
+                            .lineLimit(1)
+                    }
                 }
             }
 
@@ -205,6 +227,8 @@ private struct StudioAccountFooter: View {
 }
 
 private struct StudioClientsDashboard: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let model: ClientListModel
     let invite: () -> Void
 
@@ -241,7 +265,9 @@ private struct StudioClientsDashboard: View {
                     }
                 } else {
                     LazyVGrid(
-                        columns: [GridItem(.adaptive(minimum: 280), spacing: LacticSpacing.lg)],
+                        columns: dynamicTypeSize.isAccessibilitySize
+                            ? [GridItem(.flexible())]
+                            : [GridItem(.adaptive(minimum: 280), spacing: LacticSpacing.lg)],
                         spacing: LacticSpacing.lg
                     ) {
                         ForEach(model.clients) { client in
@@ -263,8 +289,6 @@ private struct StudioClientsDashboard: View {
 private struct StudioInvitationsDashboard: View {
     let model: ClientListModel
     let invite: () -> Void
-
-    @State private var invitationToRevoke: ClientInvitation?
 
     var body: some View {
         ScrollView {
@@ -300,7 +324,9 @@ private struct StudioInvitationsDashboard: View {
                                 resend: {
                                     Task { await model.resend(invitationID: invitation.id) }
                                 },
-                                revoke: { invitationToRevoke = invitation }
+                                revoke: {
+                                    Task { await model.revoke(invitationID: invitation.id) }
+                                }
                             )
                         }
                     }
@@ -313,30 +339,6 @@ private struct StudioInvitationsDashboard: View {
         .background(LacticColor.surface)
         .navigationTitle("Invitations")
         .refreshable { await model.load() }
-        .confirmationDialog(
-            "Revoke invitation?",
-            isPresented: isConfirmingRevocation,
-            titleVisibility: .visible,
-            presenting: invitationToRevoke
-        ) { invitation in
-            Button("Revoke invitation", role: .destructive) {
-                Task { await model.revoke(invitationID: invitation.id) }
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: { invitation in
-            Text("The invitation link for \(invitation.email) will stop working.")
-        }
-    }
-
-    private var isConfirmingRevocation: Binding<Bool> {
-        Binding(
-            get: { invitationToRevoke != nil },
-            set: { isPresented in
-                if !isPresented {
-                    invitationToRevoke = nil
-                }
-            }
-        )
     }
 }
 
@@ -616,6 +618,7 @@ private struct StudioInvitationRow: View {
     let isSubmitting: Bool
     let resend: () -> Void
     let revoke: () -> Void
+    @State private var isConfirmingRevocation = false
 
     var body: some View {
         let layout = dynamicTypeSize.isAccessibilitySize
@@ -642,11 +645,24 @@ private struct StudioInvitationRow: View {
             HStack(spacing: LacticSpacing.sm) {
                 Button("Resend", action: resend)
                     .lacticButton(.secondary, size: .small, isEnabled: !isSubmitting)
-                    .frame(maxWidth: 140)
-                Button("Revoke", action: revoke)
-                    .lacticButton(.danger, size: .small, isEnabled: !isSubmitting)
-                    .frame(maxWidth: 140)
+                    .lineLimit(1)
+                Button("Revoke") {
+                    isConfirmingRevocation = true
+                }
+                .lacticButton(.danger, size: .small, isEnabled: !isSubmitting)
+                .lineLimit(1)
+                .confirmationDialog(
+                    "Revoke invitation?",
+                    isPresented: $isConfirmingRevocation,
+                    titleVisibility: .visible
+                ) {
+                    Button("Revoke invitation", role: .destructive, action: revoke)
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("The invitation link for \(invitation.email) will stop working.")
+                }
             }
+            .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : 300)
         }
         .padding(LacticSpacing.lg)
         .background(
@@ -696,6 +712,7 @@ private struct StudioEmptyCard<Action: View>: View {
 
 private struct InviteClientSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     let model: ClientListModel
     @State private var email = ""
@@ -771,7 +788,11 @@ private struct InviteClientSheet: View {
                     Button("Cancel") { dismiss() }
                 }
             }
-            .task { isEmailFocused = true }
+            .task {
+                if !dynamicTypeSize.isAccessibilitySize {
+                    isEmailFocused = true
+                }
+            }
         }
     }
 
