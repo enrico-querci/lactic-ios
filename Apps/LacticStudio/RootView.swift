@@ -4,15 +4,26 @@ import LacticUI
 import SwiftUI
 
 /// Routes on session state, mirroring the client app.
-///
-/// The signed-in surface is still a placeholder: Studio v1 is sign-in plus a
-/// client list, and the iPad layout is the visual pass's to design. What is
-/// real here is the auth path — `CoachAPI` exists, the credentials are wired,
-/// and a coach can get a token.
 struct RootView: View {
     @Environment(StudioEnvironment.self) private var environment
 
     var body: some View {
+        #if DEBUG
+            if ProcessInfo.processInfo.arguments.contains("--studio-design-preview") {
+                if ProcessInfo.processInfo.arguments.contains("--studio-sign-in") {
+                    StudioSignInView()
+                } else {
+                    StudioDesignPreview()
+                }
+            } else {
+                sessionContent
+            }
+        #else
+            sessionContent
+        #endif
+    }
+
+    private var sessionContent: some View {
         Group {
             switch environment.session.phase {
             case .restoring:
@@ -28,7 +39,7 @@ struct RootView: View {
                 // client, so routing one into the shell would show errors
                 // everywhere instead of an explanation.
                 if user.role == .coach {
-                    StudioPlaceholderView(user: user)
+                    StudioClientView(user: user)
                 } else {
                     StudioWrongRoleView(user: user)
                 }
@@ -36,32 +47,6 @@ struct RootView: View {
         }
         .animation(.default, value: environment.session.phase)
         .task { await environment.session.restore() }
-    }
-}
-
-/// Signed in as a coach. Awaiting the client list and the iPad split view.
-private struct StudioPlaceholderView: View {
-    @Environment(StudioEnvironment.self) private var environment
-    let user: User
-
-    var body: some View {
-        VStack(spacing: LacticSpacing.lg) {
-            Image(systemName: "dumbbell.fill")
-                .font(.lacticDisplay)
-                .foregroundStyle(LacticColor.brand)
-                .accessibilityHidden(true)
-            Text("Lactic Studio")
-                .font(.lacticDisplay)
-            Text(user.name)
-                .font(.lacticBody)
-            Button("Sign out") {
-                Task { await environment.session.signOut() }
-            }
-            .lacticButton(.secondary)
-        }
-        .foregroundStyle(LacticColor.textOnHero)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(LacticColor.heroSurface)
     }
 }
 

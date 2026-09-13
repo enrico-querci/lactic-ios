@@ -19,14 +19,14 @@ is a workout-management ecosystem for coaches and their clients.
 | Product | Audience | Platform | Purpose | Current state |
 | --- | --- | --- | --- | --- |
 | **Lactic** | Client | iOS | Follow assigned programs and log workouts | Core flows implemented; visual redesign landed through `lactic-ios#1`-`#5`; see `docs/ios-plan.md` |
-| **Lactic Studio** | Coach/Admin | Web today; iOS/iPadOS planned | Manage clients and create training programs | Coach routes (`/coach/**`) in Lactic Web are implemented and deployed; a native app is a product target |
+| **Lactic Studio** | Coach/Admin | Web and iPad-first iOS | Manage clients and create training programs | Coach routes (`/coach/**`) are deployed on the web; native sign-in and client-roster management are implemented in `lactic-ios#6` |
 | **Lactic Web** | Coach and client | Web | Browser access to both role-specific experiences | Implemented and deployed |
 | **Lactic API** | All clients | Rails API | Shared auth, business logic, persistence, email, and REST API | Implemented and deployed |
 
 **Lactic Studio** names the coach/admin dashboard as a product, independent of which
-surface currently implements it — today that is the coach routes inside Lactic Web;
-a native iOS/iPadOS app remains a future target, not a separate product to track
-alongside it. Coaches are the paying customer, so Lactic Studio is expected to be the
+surface currently implements it — the full experience is the coach routes inside
+Lactic Web, while the native iPad-first app currently covers sign-in and client-roster
+management. Coaches are the paying customer, so Lactic Studio is expected to be the
 primary source of revenue; weigh coach-side work accordingly when prioritizing.
 
 **Reference competitor:** CoachPlus (client) / CoachPlus PT (admin).
@@ -55,7 +55,7 @@ The latest completed milestone is Lactic Studio subscription billing via Revenue
 
 ### 1.2 Current iOS milestone
 
-As of **2026-09-10**, the Lactic client has completed and merged five visual
+As of **2026-09-13**, the iOS repository has completed and merged six visual
 implementation increments, landed in order:
 
 1. `lactic-ios#1` (`codex/lactic-visual-foundation` onto `main`) establishes
@@ -83,23 +83,33 @@ implementation increments, landed in order:
    personal bests, and a best-weight trend chart. The additive API context ships
    in `lactic-api#51`; optional decoding plus a workout fallback keeps rolling
    deployment safe.
+6. `lactic-ios#6` (`codex/studio-client-ui` onto `main`) replaces the native
+   Lactic Studio placeholder with a polished coach sign-in and an iPad-first
+   Clients/Invitations `NavigationSplitView`. It supports inviting, resending,
+   and revoking, distinguishes full-plan, rejected, and offline failures, shows
+   live client capacity, and ships complete English/Italian localization. A
+   DEBUG-only fixture transport covers normal, full-plan, and sign-in states
+   without authentication or a live API. `ClientListModel` refreshes capacity
+   after a successful invitation so the UI never derives billing state itself.
 
-All five PRs have passing GitHub lint/test checks. The client and Studio Debug
+All six PRs have passing GitHub lint/test checks. The client and Studio Debug
 schemes, the Lactic Release configuration, and all three package suites pass
 locally. Home, workout, programme, history, session, and exercise-progress
-fixtures have been visually checked in light and dark appearances and at
-accessibility Dynamic Type sizes. DEBUG-only
+fixtures plus the Studio client/invitation surfaces have been visually checked
+in light and dark appearances and at accessibility Dynamic Type sizes. DEBUG-only
 synthetic routes (`--workout-design-preview`, optional
 `--workout-design-timer`; `--home-design-preview`, optional `--home-resume`;
 `--programme-design-preview`, optional `--programme-list`; and
 `--history-design-preview`, optional `--history-session` or
-`--history-exercise`) keep that review independent of authentication and live
-API data.
+`--history-exercise`; plus `--studio-design-preview`, optional
+`--studio-plan-full` or `--studio-sign-in`) keep that review independent of
+authentication and live API data.
 
 The next client visual sequence is Settings and remaining onboarding/account
-states. The native Lactic Studio target is still a branded placeholder and is a
-larger product milestone after the client surfaces. Automated device taps were
-not available during the visual pass, so workout logging/deletion and client
+states. Native Studio client detail/progress needs a LacticKit model before its
+UI can be built; the program builder, exercise picker, templates, assignments,
+and billing remain later Studio milestones. Automated device taps were not
+available during the client visual pass, so workout logging/deletion and client
 navigation still need hands-on interaction verification even though their
 models, builds, and screenshot states pass.
 

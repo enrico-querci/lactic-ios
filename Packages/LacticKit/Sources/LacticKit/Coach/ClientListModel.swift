@@ -104,6 +104,9 @@ public final class ClientListModel {
                 CoachAPI.createInvitation(email: email)
             )
             self.invitations.insert(invitation, at: 0)
+            // A pending invitation reserves a client slot, so the capacity
+            // shown beside the updated list must move with it.
+            await self.refreshSubscription()
         }
     }
 
