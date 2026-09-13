@@ -1,8 +1,9 @@
 # Lactic iOS — V1 Implementation Plan
 
-Status: approved; in progress. See **Current state** for what is built today.
+Status: approved; in progress. See **Current visual delivery** for what is built today.
 
-Last updated: 2026-09-08. Steps 0-4 of the order of work are complete.
+Last updated: 2026-09-13. The client visual sequence and the first native
+Lactic Studio surface are implemented.
 
 This is the working plan for `lactic-ios`, the third Lactic repository. It is a
 living document — update it as decisions change rather than letting it drift.
@@ -24,24 +25,47 @@ shape in **ADR #2 — "iOS monorepo with two targets"** and §6.1 (`LacticKit` /
 live API whose contract is fully readable from the Rails blueprints.
 
 **Outcome:** a buildable, testable, CI-checked iOS monorepo whose **Lactic**
-(client/iPhone) app is feature-complete against `/api/v1/client/**`, signing in
-through `dev_login` against a local API, with the **Lactic Studio** (coach/iPad)
-target scaffolded. Native Apple/Google sign-in and the `lactic-api` changes it
-requires are deferred to a later pass (decision #7) — they are a ship gate for
-the App Store, not a gate on building the app.
+(client/iPhone) app implements the core `/api/v1/client/**` experience and whose
+**Lactic Studio** (coach/iPad) app implements Google sign-in plus client and
+pending-invitation management. Sign in with Apple remains a ship gate for the
+App Store (decision #7), not a gate on continuing native product work.
 
 ### Decisions taken with the user
 
 | # | Decision |
 | --- | --- |
 | 1 | One repo, one Xcode project, **two app targets** (Lactic → iPhone, Lactic Studio → iPad-first); ~90% of code in three local SPM packages |
-| 2 | Scope now: **full client app + Studio scaffold** (auth + client list) |
+| 2 | First native scope: **full client app + Studio sign-in/client roster** — implemented through `lactic-ios#6` |
 | 3 | Set logging uses a **persisted session buffer + retry outbox** — not full offline sync, not online-only |
 | 4 | `lactic-api` changes ship alongside the iOS work as their own PRs in that repo — superseded in part by #7, which defers the auth ones |
 | 5 | Deployment target **iOS 18.0** (overrides `AGENTS.md` §6.1's "iOS 26+", which must be corrected in all three repos) |
 | 6 | ~~Fix the datetime format in `lactic-api` first~~ — **DONE**, [PR #46](https://github.com/enrico-querci/lactic-api/pull/46), deployed `b21bee6`, verified live |
 | 7 | **Google Sign-In now; Sign in with Apple at the App Store gate.** `dev_login` stays as a DEBUG-only convenience. SIWA is a release blocker, not a development one — see below |
 | 8 | **REST, not GraphQL** — considered and declined for v1; revisit at Studio's program builder |
+
+---
+
+## Current visual delivery (2026-09-13)
+
+Six incremental PRs establish the current native product:
+
+- `lactic-ios#1`-`#5` deliver the shared chalk/graphite/electric-lime design
+  system and redesign the client's sign-in, workout execution, Home,
+  programmes, History, session summary, and exercise-progress surfaces.
+- `lactic-ios#6` delivers the first functional Lactic Studio interface: a
+  responsive coach sign-in and an iPad-first `NavigationSplitView` with Clients
+  and Invitations destinations, invite/resend/revoke actions, capacity, empty,
+  loading, offline, rejection, and plan-full states, and English/Italian
+  localization. DEBUG fixtures cover the roster, full-plan state, and sign-in
+  without authentication or a live API.
+
+The client and Studio schemes, the warnings-as-errors Release configuration,
+and all three package suites pass locally. The remaining client visual work is
+Settings and account/onboarding states. Studio client detail/progress must wait
+for a LacticKit model; program building, the exercise picker, templates,
+assignments, and native billing are later milestones. Native billing remains
+explicitly blocked on the App Store policy decision recorded in root
+`AGENTS.md` §8.
 
 ---
 
@@ -152,9 +176,11 @@ a half-built iOS app, where a failure is ambiguous between client and server.
 
 ---
 
-## Current state (2026-09-08)
+## Baseline state (2026-09-08)
 
-Steps 0-4 of the order of work are done. `lactic-ios` is live at
+This section preserves the implementation baseline before the visual sequence;
+the current shipped surface is summarized above. At this baseline, steps 0-4
+of the order of work were done and `lactic-ios` was live at
 `github.com/enrico-querci/lactic-ios`, CI green, everything pushed.
 
 **Shipped in `lactic-api`** (all merged and deployed):
