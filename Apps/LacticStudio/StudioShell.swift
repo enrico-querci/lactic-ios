@@ -64,18 +64,24 @@ enum StudioRoute: Hashable {
     case exercise(id: Int, name: String)
 }
 
-extension EnvironmentValues {
-    /// Pushes a screen onto the current destination's stack — for the places a
-    /// screen opens something it just created, where there is no link to tap.
-    @Entry var studioNavigate: StudioNavigateAction = StudioNavigateAction { _ in }
-}
+/// The current destination's drill-down stack.
+///
+/// A reference type held once by the shell and handed down through the
+/// environment, so a screen can open something it just created. It replaces
+/// a closure that was rebuilt on every render: a new closure is a new
+/// environment value, which invalidated the whole detail column each time
+/// the shell redrew.
+@MainActor
+@Observable
+final class StudioNavigator {
+    var path: [StudioRoute]
 
-struct StudioNavigateAction {
-    let push: @MainActor (StudioRoute) -> Void
+    init(path: [StudioRoute] = []) {
+        self.path = path
+    }
 
-    @MainActor
-    func callAsFunction(_ route: StudioRoute) {
-        push(route)
+    func push(_ route: StudioRoute) {
+        path.append(route)
     }
 }
 
@@ -96,7 +102,7 @@ struct StudioShell: View {
     let deleteAccount: () async throws -> Void
 
     @State private var selection: StudioDestination? = Self.initialDestination
-    @State private var path: [StudioRoute] = Self.initialPath
+    @State private var navigator = StudioNavigator(path: Self.initialPath)
 
     var body: some View {
         NavigationSplitView {
@@ -127,17 +133,22 @@ struct StudioShell: View {
                 max: dynamicTypeSize.isAccessibilitySize ? 440 : 360
             )
         } detail: {
-            NavigationStack(path: $path) {
+            NavigationStack(path: $navigator.path) {
                 root(for: selection ?? .clients)
                     .navigationDestination(for: StudioRoute.self, destination: screen)
             }
-            .environment(\.studioNavigate, StudioNavigateAction { path.append($0) })
-            // A new destination starts at its own root, not at whatever the
-            // previous one had pushed.
-            .id(selection)
+            .environment(navigator)
+            // Deliberately no `.id(selection)` here. On iPhone, where the split
+            // view collapses, it rebuilt the whole stack as the detail was
+            // pushed; the destination's view kept disappearing and reappearing,
+            // each time cancelling its load and starting another. With real
+            // network latency that never converged: 122 requests in five
+            // seconds to /coach/program_assignments behind an endless spinner.
+            // Each destination is a different view type, so its state is
+            // already separate; the path is reset below instead.
         }
         .navigationSplitViewStyle(.balanced)
-        .onChange(of: selection) { path = [] }
+        .onChange(of: selection) { navigator.path = [] }
     }
 
     private func row(

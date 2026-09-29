@@ -47,6 +47,9 @@ public final class ProgramBuilderModel: CoachActionPerforming {
             self.templates = await templates ?? self.templates
             failure = nil
         } catch {
+            if error.isCancellation {
+                return
+            }
             failure = CoachActionFailure(error)
         }
     }

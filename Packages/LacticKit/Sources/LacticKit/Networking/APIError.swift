@@ -100,3 +100,21 @@ struct APIErrorEnvelope: Decodable {
         code = try container.decodeIfPresent(String.self, forKey: .code)
     }
 }
+
+extension Error {
+    /// A request abandoned because whoever asked stopped waiting — typically a
+    /// SwiftUI `.task` whose view left the screen — rather than one that failed.
+    ///
+    /// Loads treat it as "not finished" instead of an error: reporting it as a
+    /// failure, or letting it reset state, is what let a view that briefly
+    /// disappeared restart its load in a loop.
+    var isCancellation: Bool {
+        if self is CancellationError {
+            return true
+        }
+        if let apiError = self as? APIError, case .transport(let urlError) = apiError {
+            return urlError.code == .cancelled
+        }
+        return (self as? URLError)?.code == .cancelled
+    }
+}

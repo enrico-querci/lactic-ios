@@ -28,6 +28,9 @@ public final class ProgramListModel: CoachActionPerforming {
             hasLoaded = true
             failure = nil
         } catch {
+            if error.isCancellation {
+                return
+            }
             failure = CoachActionFailure(error)
         }
     }

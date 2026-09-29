@@ -88,6 +88,9 @@ public final class ClientListModel {
             (self.clients, self.invitations, self.subscription) =
                 try await (clients, invitations, subscription)
         } catch {
+            if error.isCancellation {
+                return
+            }
             failure = CoachActionFailure(error)
         }
     }

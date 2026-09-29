@@ -85,6 +85,9 @@ public final class WorkoutEditorModel: CoachActionPerforming {
             workout = try await client.send(endpoint)
             failure = nil
         } catch {
+            if error.isCancellation {
+                return
+            }
             failure = CoachActionFailure(error)
         }
     }
