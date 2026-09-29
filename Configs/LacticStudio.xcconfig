@@ -6,7 +6,7 @@
 PRODUCT_NAME = LacticStudio
 PRODUCT_BUNDLE_IDENTIFIER = com.enricoquerci.lacticstudio
 PRODUCT_MODULE_NAME = LacticStudio
-CURRENT_PROJECT_VERSION = 2
+CURRENT_PROJECT_VERSION = 3
 MARKETING_VERSION = 0.1.0
 
 // Only HTTPS through URLSession, which is exempt from US export rules. Saying
