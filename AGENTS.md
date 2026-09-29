@@ -19,14 +19,14 @@ is a workout-management ecosystem for coaches and their clients.
 | Product | Audience | Platform | Purpose | Current state |
 | --- | --- | --- | --- | --- |
 | **Lactic** | Client | iOS | Follow assigned programs and log workouts | Core flows implemented; visual redesign landed through `lactic-ios#1`-`#5`; see `docs/ios-plan.md` |
-| **Lactic Studio** | Coach/Admin | Web and iPad-first iOS | Manage clients and create training programs | Coach routes (`/coach/**`) are deployed on the web; native sign-in and client-roster management are implemented in `lactic-ios#6`, with Sign in with Apple added in `lactic-ios#7` |
+| **Lactic Studio** | Coach/Admin | Web and iPad-first iOS | Manage clients and create training programs | Coach routes (`/coach/**`) are deployed on the web; the native app matches them (`lactic-ios#13`-`#16`) except buying a plan, which stays on the web |
 | **Lactic Web** | Coach and client | Web | Browser access to both role-specific experiences | Implemented and deployed |
 | **Lactic API** | All clients | Rails API | Shared auth, business logic, persistence, email, and REST API | Implemented and deployed |
 
 **Lactic Studio** names the coach/admin dashboard as a product, independent of which
-surface currently implements it — the full experience is the coach routes inside
-Lactic Web, while the native iPad-first app currently covers sign-in and client-roster
-management. Coaches are the paying customer, so Lactic Studio is expected to be the
+surface currently implements it — the coach routes inside Lactic Web and the native
+iPad-first app offer the same features, except that a plan is bought only on the web
+(the app shows it read-only; see §8). Coaches are the paying customer, so Lactic Studio is expected to be the
 primary source of revenue; weigh coach-side work accordingly when prioritizing.
 
 **Reference competitor:** CoachPlus (client) / CoachPlus PT (admin).
@@ -111,10 +111,19 @@ synthetic routes (`--workout-design-preview`, optional
 `--studio-plan-full` or `--studio-sign-in`) keep that review independent of
 authentication and live API data.
 
+Native Lactic Studio then reached parity with the web's coach routes in
+`lactic-ios#13`-`#16`: LacticKit models for every coach screen (#13); a shell
+with Assignments, client detail with session history, and a read-only Plan
+(#14); programmes, the week/workout builder, the workout editor with an
+exercise picker, and templates (#15); and the exercise catalog with custom
+exercises (#16). Studio also creates and applies workout templates and
+duplicates workouts across weeks and days, which the web cannot. Buying a plan
+stays web-only until the App Store question in §8 is decided. DEBUG
+`--studio-destination <name>` and `--studio-route <route>` open any Studio
+screen for review.
+
 The next client visual sequence is Settings and remaining onboarding/account
-states. Native Studio client detail/progress needs a LacticKit model before its
-UI can be built; the program builder, exercise picker, templates, assignments,
-and billing remain later Studio milestones. Automated device taps were not
+states. Automated device taps were not
 available during the client visual pass, so workout logging/deletion and client
 navigation still need hands-on interaction verification even though their
 models, builds, and screenshot states pass.

@@ -2,6 +2,10 @@
 
 > Handoff for the agent building Lactic Studio's interface.
 > Written 2026-09-12, against `main` at `be11981`.
+>
+> **Scope superseded 2026-09-29.** §2's v1 scope shipped, and Studio has since
+> reached parity with the web (`lactic-ios#13`-`#16`). The division of labour
+> (§1), conventions (§5) and the paywall rule (§6) still apply.
 
 Build the Lactic Studio UI — the iPad-first coach app — in the `lactic-ios`
 repo, target `LacticStudio`, bundle id `com.enricoquerci.lacticstudio`.
