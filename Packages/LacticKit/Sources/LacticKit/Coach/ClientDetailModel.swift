@@ -40,6 +40,9 @@ public final class ClientDetailModel {
             await assignments
             failure = nil
         } catch {
+            if error.isCancellation {
+                return
+            }
             failure = CoachActionFailure(error)
         }
     }
@@ -83,6 +86,9 @@ public final class ClientSessionModel {
             session = try await client.send(CoachAPI.clientSession(clientID: clientID, sessionID: sessionID))
             failure = nil
         } catch {
+            if error.isCancellation {
+                return
+            }
             failure = CoachActionFailure(error)
         }
     }

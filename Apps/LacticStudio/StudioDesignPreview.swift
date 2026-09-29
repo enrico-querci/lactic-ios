@@ -45,6 +45,14 @@
         }
 
         override func startLoading() {
+            // `--studio-preview-latency` answers after 300 ms, like a real
+            // network. Instant fixtures hid a load loop that only a round trip
+            // long enough to be interrupted could expose.
+            if ProcessInfo.processInfo.arguments.contains("--studio-preview-latency"), !isDelayed {
+                isDelayed = true
+                DispatchQueue.global().asyncAfter(deadline: .now() + 0.3) { self.startLoading() }
+                return
+            }
             guard let url = request.url else {
                 client?.urlProtocol(self, didFailWithError: URLError(.badURL))
                 return
@@ -66,6 +74,7 @@
         }
 
         override func stopLoading() {}
+        private nonisolated(unsafe) var isDelayed = false
 
         private static func payload(for request: URLRequest) -> (status: Int, body: String) {
             let path = request.url?.path ?? ""

@@ -91,6 +91,9 @@ public final class ExerciseCatalogModel: CoachActionPerforming {
             hasLoaded = true
             failure = nil
         } catch {
+            if error.isCancellation {
+                return
+            }
             guard current == generation else { return }
             failure = CoachActionFailure(error)
         }
@@ -111,6 +114,9 @@ public final class ExerciseCatalogModel: CoachActionPerforming {
             exercises += result.items.filter { !seen.contains($0.id) }
             apply(result)
         } catch {
+            if error.isCancellation {
+                return
+            }
             guard current == generation else { return }
             failure = CoachActionFailure(error)
         }
@@ -198,6 +204,9 @@ public final class ExerciseDetailModel {
             detail = try await client.send(CoachAPI.exercise(id: exerciseID))
             failure = nil
         } catch {
+            if error.isCancellation {
+                return
+            }
             failure = CoachActionFailure(error)
         }
     }

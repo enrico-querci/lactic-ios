@@ -14,11 +14,19 @@ final class StubTransport: @unchecked Sendable {
         let status: Int
         let body: Data
         let headers: [String: String]
+        /// When set, the request fails at the transport level instead.
+        var failure: URLError?
 
         init(status: Int = 200, body: Data = Data("{}".utf8), headers: [String: String] = [:]) {
             self.status = status
             self.body = body
             self.headers = headers
+        }
+
+        static func failing(_ code: URLError.Code) -> Response {
+            var response = Response()
+            response.failure = URLError(code)
+            return response
         }
 
         static func json(_ string: String, status: Int = 200) -> Response {
@@ -99,6 +107,10 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
             return
         }
         let response = transport.handle(request)
+        if let failure = response.failure {
+            client?.urlProtocol(self, didFailWithError: failure)
+            return
+        }
 
         guard let url = request.url,
               let http = HTTPURLResponse(

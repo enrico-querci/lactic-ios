@@ -11,7 +11,7 @@ import SwiftUI
 /// page, where a coach builds the plan.
 struct StudioProgramBuilderView: View {
     @Environment(StudioEnvironment.self) private var environment
-    @Environment(\.studioNavigate) private var navigate
+    @Environment(StudioNavigator.self) private var navigator
 
     @State private var model: ProgramBuilderModel
     private let name: String
@@ -255,7 +255,7 @@ struct StudioProgramBuilderView: View {
             }
         case .addWorkout(let weekID):
             AddWorkoutSheet(model: model, weekID: weekID) { workout in
-                navigate(.workout(
+                navigator.push(.workout(
                     programID: model.programID, weekID: weekID, workoutID: workout.id, name: workout.name
                 ))
             }

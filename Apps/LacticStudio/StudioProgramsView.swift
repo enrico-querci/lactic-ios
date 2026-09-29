@@ -7,7 +7,7 @@ import SwiftUI
 /// clients. The web's Programs page.
 struct StudioProgramsView: View {
     @Environment(StudioEnvironment.self) private var environment
-    @Environment(\.studioNavigate) private var navigate
+    @Environment(StudioNavigator.self) private var navigator
 
     @State private var model: ProgramListModel
     @State private var isCreating = false
@@ -52,7 +52,7 @@ struct StudioProgramsView: View {
                     return model.failure
                 }
                 // An empty programme is only a starting point: open it.
-                navigate(.program(id: program.id, name: program.name))
+                navigator.push(.program(id: program.id, name: program.name))
                 return nil
             }
         }

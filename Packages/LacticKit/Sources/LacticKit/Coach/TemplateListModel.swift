@@ -27,6 +27,9 @@ public final class TemplateListModel: CoachActionPerforming {
             hasLoaded = true
             failure = nil
         } catch {
+            if error.isCancellation {
+                return
+            }
             failure = CoachActionFailure(error)
         }
     }
