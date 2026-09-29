@@ -98,6 +98,42 @@ without one Apple's sheet fails before the API is ever called.
 `localhost`. It relaxes App Transport Security for local and private-range hosts
 only, never for the public internet.
 
+## Releasing to TestFlight
+
+Both apps go to **internal** TestFlight only for now: Lactic (`6817242451`) and
+Lactic Studio (`6817242889`) each have one "Internal" group with access to every
+build, and the account holder is its only tester.
+`Configs/TestFlightExportOptions.plist` sets `testFlightInternalTestingOnly`, so
+a build uploaded with it can never reach external testers or App Review — a
+submission needs a fresh build exported without that key.
+
+Bump `CURRENT_PROJECT_VERSION` in `Configs/<App>.xcconfig` first: App Store
+Connect rejects a build number it has already seen for that version. Then, per
+app:
+
+```bash
+make project
+asc xcode archive --project Lactic.xcodeproj --scheme Lactic --configuration Release --clean \
+  --archive-path build/Lactic.xcarchive \
+  --xcodebuild-flag=-destination --xcodebuild-flag=generic/platform=iOS \
+  --xcodebuild-flag=-allowProvisioningUpdates
+asc --profile enricoquerci xcode export --archive-path build/Lactic.xcarchive \
+  --export-options Configs/TestFlightExportOptions.plist \
+  --xcodebuild-flag=-allowProvisioningUpdates
+ASC_TIMEOUT=90s asc --profile enricoquerci builds list --app 6817242451
+```
+
+- Signing is automatic, through the Apple account signed into Xcode for team
+  `PE865UQNK4`; Xcode manages the distribution certificate itself. Nothing
+  needs an API key file.
+- Always pass `--profile enricoquerci`: the default `asc` profile is a
+  different team.
+- Leave off `export --wait`. `asc` resolves the app from the bundle ID by
+  prefix, finds both apps for `com.enricoquerci.lactic`, and gives up after the
+  upload has already succeeded. Check processing with `builds list` instead.
+- "No Accounts with App Store Connect Access" at export is Xcode's account
+  service failing to answer, not a missing account. Retrying has worked.
+
 ## Conventions
 
 - Swift 6 language mode, complete concurrency checking, iOS 18.0 minimum.
