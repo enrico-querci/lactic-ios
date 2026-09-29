@@ -248,6 +248,14 @@ models, builds, and screenshot states pass.
   account). App IDs `com.enricoquerci.lactic` and
   `com.enricoquerci.lacticstudio` both carry the Sign in with Apple
   capability.
+- App Store Connect app records: Lactic `6817242451` (SKU `LACTIC-IOS`) and
+  Lactic Studio `6817242889` (SKU `LACTIC-STUDIO-IOS`), both primary locale
+  `en-GB`.
+- Sign in with Apple key `A44BHGF86K` ("Lactic SIWA"), configured with
+  Lactic's App ID as its primary. Studio's App ID is a separate primary: if
+  Studio's code exchange ever fails with `invalid_client`, group it under
+  Lactic in the Developer Portal. The key's `.p8` is downloadable only once;
+  it lives outside every repository and is never committed.
 - Sign-in itself needs no configuration: the API verifies identity tokens
   against Apple's public keys.
 - Railway variables `APPLE_TEAM_ID`, `APPLE_SIGN_IN_KEY_ID` and
