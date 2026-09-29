@@ -59,6 +59,7 @@ struct AppleSignInCredentialTests {
             try AppleSignInProvider.credential(from: .failure(error))
         }
         #expect(InvitationFailure(AppleSignInProvider.Failure.failed) == .appleSignInFailed)
+        #expect(InvitationFailure(SessionStore.WrongAppError(role: .coach)) == .coachAccount)
     }
 
     @Test func passesUnrelatedErrorsThrough() {

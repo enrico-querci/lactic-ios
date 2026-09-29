@@ -188,6 +188,8 @@ struct StudioSignInView: View {
                 // The user dismissed Apple's sheet.
             } catch is AppleSignInProvider.Failure {
                 errorMessage = String(localized: "Sign in with Apple didn't finish. Try again.")
+            } catch is SessionStore.WrongAppError {
+                errorMessage = String(localized: "This is a client account. Sign in to the Lactic app instead.")
             } catch {
                 errorMessage = (error as? APIError)?.message ?? error.localizedDescription
             }

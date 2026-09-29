@@ -26,7 +26,13 @@ struct StudioClientView: View {
                     coachName: user.name,
                     coachEmail: user.email,
                     model: model,
-                    signOut: { Task { await environment.session.signOut() } }
+                    signOut: { Task { await environment.session.signOut() } },
+                    deleteAccount: {
+                        try await environment.client.sendIgnoringResponse(CoachAPI.deleteAccount)
+                        // The account is gone, so there is no session left to
+                        // revoke: clear locally rather than calling DELETE /auth.
+                        await environment.session.clearSession()
+                    }
                 )
             } else {
                 LoadingView(String(localized: "Loading your workspace"))
@@ -64,6 +70,7 @@ struct StudioClientNavigation: View {
     let coachEmail: String
     let model: ClientListModel
     let signOut: () -> Void
+    let deleteAccount: () async throws -> Void
 
     @State private var selection: StudioDestination? = .clients
     @State private var sheet: StudioSheet?
@@ -100,7 +107,8 @@ struct StudioClientNavigation: View {
                 StudioAccountFooter(
                     name: coachName,
                     email: coachEmail,
-                    signOut: signOut
+                    signOut: signOut,
+                    deleteAccount: deleteAccount
                 )
             }
         } detail: {
@@ -191,6 +199,13 @@ private struct StudioAccountFooter: View {
     let name: String
     let email: String
     let signOut: () -> Void
+    /// App Review guideline 5.1.1(v): Studio creates accounts, so it must
+    /// also delete them from inside the app.
+    let deleteAccount: () async throws -> Void
+
+    @State private var isConfirmingDeletion = false
+    @State private var isDeleting = false
+    @State private var deletionError: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: LacticSpacing.md) {
@@ -217,11 +232,68 @@ private struct StudioAccountFooter: View {
                 Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
             }
             .lacticButton(.secondary, size: .small)
+            .disabled(isDeleting)
+
+            // Quieter than Sign out on purpose: it is rare and irreversible,
+            // and the confirmation below carries the weight.
+            Button("Delete account", role: .destructive) { isConfirmingDeletion = true }
+                .font(.lacticCaption)
+                .foregroundStyle(LacticColor.danger)
+                .frame(maxWidth: .infinity, minHeight: LacticSize.minimumHitTarget)
+                .disabled(isDeleting)
         }
         .padding(LacticSpacing.lg)
         .background(.bar)
         .overlay(alignment: .top) {
             Divider()
+        }
+        .confirmationDialog(
+            "Delete your coach account?",
+            isPresented: $isConfirmingDeletion,
+            titleVisibility: .visible
+        ) {
+            Button("Delete everything", role: .destructive) { performDeletion() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text(
+                """
+                Your programmes, exercises, templates and invitations are deleted, along with \
+                the workouts your clients logged against your programmes. Your clients keep \
+                their own accounts. This cannot be undone.
+                """
+            )
+        }
+        .alert(
+            "Account not deleted",
+            isPresented: Binding(get: { deletionError != nil }, set: {
+                if !$0 {
+                    deletionError = nil
+                }
+            }),
+            presenting: deletionError
+        ) { _ in
+            Button("OK") {}
+        } message: { message in
+            Text(verbatim: message)
+        }
+    }
+
+    private func performDeletion() {
+        isDeleting = true
+        Task {
+            defer { isDeleting = false }
+            do {
+                try await deleteAccount()
+            } catch let error as APIError where error.code == "subscription_active" {
+                deletionError = String(
+                    localized: """
+                    Cancel your subscription on the web first. You can delete your account once it \
+                    will no longer renew.
+                    """
+                )
+            } catch {
+                deletionError = (error as? APIError)?.message ?? error.localizedDescription
+            }
         }
     }
 }

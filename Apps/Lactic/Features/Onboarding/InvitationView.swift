@@ -148,6 +148,7 @@ struct InvitationView: View {
         case .notFound: String(localized: "We could not find that invitation. Check the link or code.")
         case .offline: String(localized: "You appear to be offline.")
         case .appleSignInFailed: String(localized: "Sign in with Apple didn't finish. Try again.")
+        case .coachAccount: String(localized: "This is a coach account. Sign in to Lactic Studio instead.")
         case .server(let message): message
         }
     }

@@ -22,11 +22,15 @@ public enum ClientAPI {
     /// `name` and `authorizationCode` only ever come from Sign in with Apple:
     /// Google's verified token already carries the name, and there is nothing
     /// of Google's for the API to revoke.
+    ///
+    /// `app` is `lactic` or `studio`. The API refuses a user that app cannot
+    /// serve instead of signing them in; the web sends none.
     public static func signIn(
         provider: String, idToken: String, invitationToken: String?,
-        name: String? = nil, authorizationCode: String? = nil
+        name: String? = nil, authorizationCode: String? = nil, app: String? = nil
     ) throws -> Endpoint {
         var payload = ["provider": provider, "id_token": idToken]
+        payload["app"] = app
         payload["invitation_token"] = invitationToken
         payload["name"] = name
         payload["authorization_code"] = authorizationCode
