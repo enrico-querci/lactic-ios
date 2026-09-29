@@ -89,9 +89,20 @@ public extension CoachAPI {
         Endpoint(method: .delete, path: "/coach/programs/\(programID)/weeks/\(weekID)/workouts/\(id)")
     }
 
-    /// Copies a workout, within its week or into another one.
-    static func duplicateWorkout(programID: Int, weekID: Int, id: Int) -> Endpoint {
-        Endpoint(method: .post, path: "/coach/programs/\(programID)/weeks/\(weekID)/workouts/\(id)/duplicate")
+    /// Copies a workout, exercises included, within its week or into another
+    /// week of the same program, answering with the new workout.
+    ///
+    /// Top level, not wrapped: the controller reads `params[:target_week_id]`
+    /// and `params[:day]` directly. (The web wraps them in `workout`, so the
+    /// server ignores them there and always copies in place.) Omitting both
+    /// copies into the same week on the same day.
+    static func duplicateWorkout(
+        programID: Int, weekID: Int, id: Int, targetWeekID: Int? = nil, day: Int? = nil
+    ) throws -> Endpoint {
+        try Endpoint(
+            method: .post, path: "/coach/programs/\(programID)/weeks/\(weekID)/workouts/\(id)/duplicate",
+            body: JSONCoding.encoder.encode(WorkoutPlacement(targetWeekID: targetWeekID, day: day))
+        )
     }
 
     // MARK: - Workout exercises
@@ -182,6 +193,22 @@ public extension CoachAPI {
         )
     }
 
+    /// Replaces a configured exercise's whole prescription, sending every
+    /// field — `nil` as an explicit `null`.
+    ///
+    /// What an edit form needs, as opposed to `updateWorkoutExercise`, which
+    /// drops nil fields so a partial PATCH cannot clear a column by accident.
+    /// That same rule makes it impossible to *remove* an RIR, a suggested
+    /// weight or a note, which the web's form does by sending null.
+    static func replaceWorkoutExercise(
+        workoutID: Int, id: Int, plan: WorkoutExercisePlan
+    ) throws -> Endpoint {
+        try Endpoint(
+            method: .patch, path: "/coach/workouts/\(workoutID)/workout_exercises/\(id)",
+            body: JSONCoding.encoder.encode(["workout_exercise": FullPrescription(plan)])
+        )
+    }
+
     static func deleteWorkoutExercise(workoutID: Int, id: Int) -> Endpoint {
         Endpoint(method: .delete, path: "/coach/workouts/\(workoutID)/workout_exercises/\(id)")
     }
@@ -266,11 +293,13 @@ public extension CoachAPI {
         )
     }
 
-    /// Materialises the template into a week, returning the new workout.
-    static func applyWorkoutTemplate(id: Int, targetWeekID: Int) throws -> Endpoint {
+    /// Materialises the template into a week on `day`, returning the new
+    /// workout. `day` is required in practice: the controller calls `.to_i` on
+    /// it, so a missing one becomes day 0 and fails validation with a 422.
+    static func applyWorkoutTemplate(id: Int, targetWeekID: Int, day: Int) throws -> Endpoint {
         try Endpoint(
             method: .post, path: "/coach/workout_templates/\(id)/apply",
-            body: JSONCoding.encoder.encode(ApplyTemplate(targetWeekID: targetWeekID))
+            body: JSONCoding.encoder.encode(WorkoutPlacement(targetWeekID: targetWeekID, day: day))
         )
     }
 
@@ -280,8 +309,14 @@ public extension CoachAPI {
 
     // MARK: - Program assignments
 
-    static var programAssignments: Endpoint {
-        Endpoint(path: "/coach/program_assignments")
+    /// Every assignment this coach made, optionally narrowed to one client or
+    /// one status. Both filters are applied server-side.
+    static func programAssignments(clientID: Int? = nil, status: AssignmentStatus? = nil) -> Endpoint {
+        let query = [
+            clientID.map { URLQueryItem(name: "client_id", value: String($0)) },
+            status.map { URLQueryItem(name: "status", value: $0.rawValue) },
+        ].compactMap(\.self)
+        return Endpoint(path: "/coach/program_assignments", query: query)
     }
 
     static func programAssignment(id: Int) -> Endpoint {
