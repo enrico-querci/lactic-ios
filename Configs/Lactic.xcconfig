@@ -6,6 +6,10 @@ PRODUCT_MODULE_NAME = Lactic
 CURRENT_PROJECT_VERSION = 1
 MARKETING_VERSION = 0.1.0
 
+// Only HTTPS through URLSession, which is exempt from US export rules. Saying
+// so here stops App Store Connect asking for every uploaded build.
+INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO
+
 // 1 = iPhone. Lactic is a phone app; Lactic Studio is the iPad one.
 TARGETED_DEVICE_FAMILY = 1
 INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait

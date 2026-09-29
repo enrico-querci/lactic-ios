@@ -9,6 +9,10 @@ PRODUCT_MODULE_NAME = LacticStudio
 CURRENT_PROJECT_VERSION = 1
 MARKETING_VERSION = 0.1.0
 
+// Only HTTPS through URLSession, which is exempt from US export rules. Saying
+// so here stops App Store Connect asking for every uploaded build.
+INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO
+
 // 1,2 = iPhone and iPad. Layout is designed iPad-first.
 TARGETED_DEVICE_FAMILY = 1,2
 INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
