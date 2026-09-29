@@ -14,6 +14,10 @@ INFOPLIST_KEY_CFBundleDisplayName = Lactic
 INFOPLIST_KEY_UILaunchScreen_Generation = YES
 INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES
 
+// Only HTTPS through URLSession, which is exempt from US export rules. Saying
+// so here stops App Store Connect asking for every uploaded build.
+INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO
+
 // Google Sign-In.
 //
 // None of these are secrets: an iOS OAuth client has no client secret, and a
