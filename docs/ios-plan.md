@@ -133,6 +133,11 @@ parked blockers were resolved:
 3. **Name.** The app forwards Apple's first-authorization name as `name` on `POST /auth`; it is used only when creating a user and ignored for Google.
 4. **Token revocation** (guideline 5.1.1(v), not in the original list). The app also sends the `authorization_code`; the API exchanges it for a refresh token stored on the user and revokes it in `DELETE /client/account`. Optional like Resend and RevenueCat: without `APPLE_TEAM_ID`, `APPLE_SIGN_IN_KEY_ID` and `APPLE_SIGN_IN_PRIVATE_KEY` both calls are skipped, and neither can fail a sign-in or a deletion.
 
+**First TestFlight builds — 2026-09-29.** Version 0.1.0 build 1 of both apps
+went to internal TestFlight from `main` at `83e17cb`, with placeholder icons.
+Sign in with Apple is confirmed working in Lactic Studio's TestFlight build
+against production. See the README for the release steps.
+
 ### Product findings from the web to keep — or deliberately exceed
 
 - **Resume-in-progress is mandatory.** The workout screen looks for an incomplete session and rehydrates its `exercise_logs`/`set_logs`; the web comment records that state used to live only in React and a refresh stranded logged sets (`lactic-web/app/client/workouts/[id]/page.tsx:48-92`). On iOS, mid-workout termination is routine.
