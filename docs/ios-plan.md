@@ -61,11 +61,17 @@ Six incremental PRs establish the current native product:
 
 The client and Studio schemes, the warnings-as-errors Release configuration,
 and all three package suites pass locally. The remaining client visual work is
-Settings and account/onboarding states. Studio client detail/progress must wait
-for a LacticKit model; program building, the exercise picker, templates,
-assignments, and native billing are later milestones. Native billing remains
-explicitly blocked on the App Store policy decision recorded in root
-`AGENTS.md` §8.
+Settings and account/onboarding states. Native billing remains explicitly
+blocked on the App Store policy decision recorded in root `AGENTS.md` §8.
+
+**Studio parity with the web — 2026-09-29.** `lactic-ios#13`-`#16` give native
+Studio every coach feature the web has except buying a plan: assignments, client
+detail and session history, programmes with the week/workout builder, the
+workout editor and exercise picker, templates, the exercise catalog with custom
+exercises, and a read-only plan. The LacticKit models came first (#13), so every
+screen binds to tested logic, and each request shape was checked against a
+running `lactic-api` — which is how `applyWorkoutTemplate` turned out never to
+have sent the `day` the API requires.
 
 ---
 
@@ -535,8 +541,7 @@ Home.
 
 ## Not in scope
 
-Studio's program builder, exercise picker, templates, assignments and billing;
-execution photos (no upload endpoint); a client exercise-browse screen; HealthKit;
+Selling a Studio plan in the app (see `AGENTS.md` §8); execution photos (no upload endpoint); a client exercise-browse screen; HealthKit;
 watchOS; widgets; push notifications; Live Activities (the natural follow-up to
 the rest timer).
 

@@ -48,6 +48,7 @@ enum StudioDestination: String, Hashable, CaseIterable {
     case invitations
     case assignments
     case programs
+    case exercises
     case templates
     case plan
     case profile
@@ -60,6 +61,7 @@ enum StudioRoute: Hashable {
     case clientSession(clientID: Int, sessionID: Int, title: String)
     case program(id: Int, name: String)
     case workout(programID: Int, weekID: Int, workoutID: Int, name: String)
+    case exercise(id: Int, name: String)
 }
 
 extension EnvironmentValues {
@@ -109,6 +111,7 @@ struct StudioShell: View {
                 }
                 Section("Library") {
                     row(.programs, "Programmes", compact: "Programmes", image: "list.bullet.rectangle.fill")
+                    row(.exercises, "Exercises", compact: "Exercises", image: "dumbbell.fill")
                     row(.templates, "Templates", compact: "Templates", image: "square.on.square.fill")
                 }
                 Section("Account") {
@@ -156,6 +159,8 @@ struct StudioShell: View {
             StudioAssignmentsView(client: client)
         case .programs:
             StudioProgramsView(client: client)
+        case .exercises:
+            StudioExercisesView(client: client)
         case .templates:
             StudioTemplatesView(client: client)
         case .plan:
@@ -178,6 +183,8 @@ struct StudioShell: View {
             StudioWorkoutEditorView(
                 client: client, programID: programID, weekID: weekID, workoutID: workoutID, name: name
             )
+        case .exercise(let id, let name):
+            StudioExerciseDetailView(client: client, exerciseID: id, name: name)
         }
     }
 
@@ -214,6 +221,8 @@ struct StudioShell: View {
                 return [.client(id: ids[0], name: ""), .clientSession(clientID: ids[0], sessionID: ids[1], title: "")]
             case ("program", let ids) where ids.count == 1:
                 return [.program(id: ids[0], name: "")]
+            case ("exercise", let ids) where ids.count == 1:
+                return [.exercise(id: ids[0], name: "")]
             case ("workout", let ids) where ids.count == 3:
                 return [
                     .program(id: ids[0], name: ""),

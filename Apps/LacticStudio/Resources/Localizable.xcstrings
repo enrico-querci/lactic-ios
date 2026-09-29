@@ -8,6 +8,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "%lld clienti · illimitati" } }
       }
     },
+    "%lld exercises": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "%lld exercises" } },
+        "it": { "stringUnit": { "state": "translated", "value": "%lld esercizi" } }
+      }
+    },
     "%lld of %lld clients": {
       "extractionState": "manual",
       "localizations": {
@@ -519,6 +526,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "Elimina tutto" } }
       }
     },
+    "Delete exercise": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Delete exercise" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Elimina esercizio" } }
+      }
+    },
     "Delete programme": {
       "extractionState": "manual",
       "localizations": {
@@ -566,6 +580,13 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Delete your coach account?" } },
         "it": { "stringUnit": { "state": "translated", "value": "Eliminare il tuo account coach?" } }
+      }
+    },
+    "Demonstration unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Demonstration unavailable" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Dimostrazione non disponibile" } }
       }
     },
     "Description (optional)": {
@@ -659,6 +680,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "Azioni sull'esercizio" } }
       }
     },
+    "Exercises": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Exercises" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Esercizi" } }
+      }
+    },
     "Expires": {
       "extractionState": "manual",
       "localizations": {
@@ -736,6 +764,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "Ischiocrurali" } }
       }
     },
+    "Hide demonstration": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Hide demonstration" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nascondi dimostrazione" } }
+      }
+    },
     "In a programme, open a workout's menu and choose Save as template.": {
       "extractionState": "manual",
       "localizations": {
@@ -748,6 +783,13 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "In progress" } },
         "it": { "stringUnit": { "state": "translated", "value": "In corso" } }
+      }
+    },
+    "Instructions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Instructions" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Istruzioni" } }
       }
     },
     "Intermediate": {
@@ -804,6 +846,13 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Invite your first client to start building your roster." } },
         "it": { "stringUnit": { "state": "translated", "value": "Invita il tuo primo cliente per iniziare a creare il tuo elenco." } }
+      }
+    },
+    "It is removed from every workout that uses it, along with the sets clients logged for it.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "It is removed from every workout that uses it, along with the sets clients logged for it." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Viene rimosso da tutti gli allenamenti che lo usano, insieme alle serie che i clienti vi hanno registrato." } }
       }
     },
     "Its assignments, and the workouts clients logged against them, are deleted too.": {
@@ -863,6 +912,20 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Loading clients" } },
         "it": { "stringUnit": { "state": "translated", "value": "Caricamento clienti" } }
+      }
+    },
+    "Loading demonstration": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Loading demonstration" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Caricamento dimostrazione" } }
+      }
+    },
+    "Loading exercise": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Loading exercise" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Caricamento dell'esercizio" } }
       }
     },
     "Loading programme": {
@@ -1005,6 +1068,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "Powerlifting" } }
       }
     },
+    "Primary muscle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Primary muscle" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Muscolo principale" } }
+      }
+    },
     "Profile": {
       "extractionState": "manual",
       "localizations": {
@@ -1075,6 +1145,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "es. Push Pull Legs" } }
       }
     },
+    "e.g. Tempo goblet squat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "e.g. Tempo goblet squat" } },
+        "it": { "stringUnit": { "state": "translated", "value": "es. Goblet squat con tempo" } }
+      }
+    },
     "e.g. Upper A": {
       "extractionState": "manual",
       "localizations": {
@@ -1092,11 +1169,25 @@
     "name@example.com": {
       "shouldTranslate": false
     },
+    "Media (optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Media (optional)" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Contenuti multimediali (facoltativi)" } }
+      }
+    },
     "Muscle": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Muscle" } },
         "it": { "stringUnit": { "state": "translated", "value": "Muscolo" } }
+      }
+    },
+    "Muscle group": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Muscle group" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Gruppo muscolare" } }
       }
     },
     "My exercises only": {
@@ -1125,6 +1216,13 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "New assignments start as active and appear in the client's app straight away." } },
         "it": { "stringUnit": { "state": "translated", "value": "Le nuove assegnazioni partono attive e compaiono subito nell'app del cliente." } }
+      }
+    },
+    "New exercise": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "New exercise" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nuovo esercizio" } }
       }
     },
     "New invitation": {
@@ -1176,6 +1274,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "Nessun esercizio trovato" } }
       }
     },
+    "No exercises match these filters.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No exercises match these filters." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessun esercizio corrisponde a questi filtri." } }
+      }
+    },
     "No exercises yet": {
       "extractionState": "manual",
       "localizations": {
@@ -1195,6 +1300,13 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Olympic weightlifting" } },
         "it": { "stringUnit": { "state": "translated", "value": "Sollevamento olimpico" } }
+      }
+    },
+    "Only you see your own exercises, in the catalog and when building workouts.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Only you see your own exercises, in the catalog and when building workouts." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Solo tu vedi i tuoi esercizi, nel catalogo e quando crei gli allenamenti." } }
       }
     },
     "Paused": {
@@ -1393,6 +1505,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "Cerca esercizi" } }
       }
     },
+    "Secondary muscles": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Secondary muscles" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Muscoli secondari" } }
+      }
+    },
     "Secure coach access": {
       "extractionState": "manual",
       "localizations": {
@@ -1461,6 +1580,13 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Show" } },
         "it": { "stringUnit": { "state": "translated", "value": "Mostra" } }
+      }
+    },
+    "Show demonstration": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Show demonstration" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Mostra dimostrazione" } }
       }
     },
     "Sign in to manage your coaching roster.": {
@@ -1575,6 +1701,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "Il link di invito per %@ smetterà di funzionare." } }
       }
     },
+    "Thumbnail URL": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Thumbnail URL" } },
+        "it": { "stringUnit": { "state": "translated", "value": "URL della miniatura" } }
+      }
+    },
     "Traps": {
       "extractionState": "manual",
       "localizations": {
@@ -1603,11 +1736,25 @@
         "it": { "stringUnit": { "state": "translated", "value": "Illimitato" } }
       }
     },
+    "Video URL": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Video URL" } },
+        "it": { "stringUnit": { "state": "translated", "value": "URL del video" } }
+      }
+    },
     "Volume": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Volume" } },
         "it": { "stringUnit": { "state": "translated", "value": "Volume" } }
+      }
+    },
+    "Watch video": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Watch video" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Guarda il video" } }
       }
     },
     "Week": {

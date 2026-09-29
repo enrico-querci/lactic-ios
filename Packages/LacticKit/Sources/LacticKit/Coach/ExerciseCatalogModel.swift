@@ -184,6 +184,15 @@ public final class ExerciseDetailModel {
         self.exerciseID = exerciseID
     }
 
+    /// Fetches the demonstration's bytes — only when the coach asks to see it,
+    /// because each fetch draws on the provider's metered quota. The endpoint
+    /// is shared by coaches and clients.
+    public func animationLoader() -> @Sendable () async throws -> Data {
+        let client = client
+        let id = exerciseID
+        return { try await client.data(for: ClientAPI.animation(exerciseID: id)) }
+    }
+
     public func load() async {
         do {
             detail = try await client.send(CoachAPI.exercise(id: exerciseID))

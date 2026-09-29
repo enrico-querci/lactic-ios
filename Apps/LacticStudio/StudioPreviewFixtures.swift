@@ -49,6 +49,8 @@
                 return (200, taxonomyJSON)
             case ("exercises", 1):
                 return (200, array(catalog.map(\.json)))
+            case ("exercises", 2):
+                return (200, exerciseDetailJSON)
             default:
                 return nil
             }
@@ -226,6 +228,20 @@
         private static let workoutDetailJSON = """
         {"id":8,"name":"Upper A","day":1,"volume_sets":{"Chest":6,"Back":6,"Shoulders":3},\
         "workout_exercises":\(array(prescriptions.map(\.json)))}
+        """
+
+        private static let exerciseDetailJSON = """
+        {"id":101,"name":"Barbell Bench Press","is_custom":false,"category":"strength","difficulty":"intermediate",\
+        "mechanic":"compound","force":"push","prescription_type":"reps","active":true,"assignable":true,\
+        "primary_muscle":{"key":"chest","name":"Chest","region":null},\
+        "equipment":[{"key":"barbell","name":"Barbell"},{"key":"bench","name":"Bench"}],\
+        "has_animation":true,"animation_url":"/api/v1/exercises/101/animation","muscle_group":"Chest",\
+        "video_url":null,"thumbnail_url":null,"locale":"en",\
+        "description":"A horizontal press that builds the chest, front shoulders and triceps.",\
+        "instructions":["Lie on the bench with your eyes under the bar.",\
+        "Lower the bar to mid-chest with elbows at about 45 degrees.",\
+        "Press back up until your arms are straight."],\
+        "secondary_muscles":[{"key":"triceps","name":"Triceps"},{"key":"shoulders","name":"Front delts"}]}
         """
 
         private static let templatesJSON = """
