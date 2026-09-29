@@ -47,6 +47,8 @@ enum StudioDestination: String, Hashable, CaseIterable {
     case clients
     case invitations
     case assignments
+    case programs
+    case templates
     case plan
     case profile
 }
@@ -56,6 +58,23 @@ enum StudioDestination: String, Hashable, CaseIterable {
 enum StudioRoute: Hashable {
     case client(id: Int, name: String)
     case clientSession(clientID: Int, sessionID: Int, title: String)
+    case program(id: Int, name: String)
+    case workout(programID: Int, weekID: Int, workoutID: Int, name: String)
+}
+
+extension EnvironmentValues {
+    /// Pushes a screen onto the current destination's stack — for the places a
+    /// screen opens something it just created, where there is no link to tap.
+    @Entry var studioNavigate: StudioNavigateAction = StudioNavigateAction { _ in }
+}
+
+struct StudioNavigateAction {
+    let push: @MainActor (StudioRoute) -> Void
+
+    @MainActor
+    func callAsFunction(_ route: StudioRoute) {
+        push(route)
+    }
 }
 
 /// The iPad-first coach workspace: a sidebar of destinations, each with its
@@ -88,6 +107,10 @@ struct StudioShell: View {
                     )
                     row(.assignments, "Assignments", compact: "Assigned", image: "calendar.badge.checkmark")
                 }
+                Section("Library") {
+                    row(.programs, "Programmes", compact: "Programmes", image: "list.bullet.rectangle.fill")
+                    row(.templates, "Templates", compact: "Templates", image: "square.on.square.fill")
+                }
                 Section("Account") {
                     row(.plan, "Plan", compact: "Plan", image: "creditcard.fill")
                     row(.profile, "Profile", compact: "Profile", image: "person.crop.circle.fill")
@@ -105,6 +128,7 @@ struct StudioShell: View {
                 root(for: selection ?? .clients)
                     .navigationDestination(for: StudioRoute.self, destination: screen)
             }
+            .environment(\.studioNavigate, StudioNavigateAction { path.append($0) })
             // A new destination starts at its own root, not at whatever the
             // previous one had pushed.
             .id(selection)
@@ -130,6 +154,10 @@ struct StudioShell: View {
             StudioInvitationsDashboard(model: roster)
         case .assignments:
             StudioAssignmentsView(client: client)
+        case .programs:
+            StudioProgramsView(client: client)
+        case .templates:
+            StudioTemplatesView(client: client)
         case .plan:
             StudioPlanView(roster: roster)
         case .profile:
@@ -144,15 +172,22 @@ struct StudioShell: View {
             StudioClientDetailView(client: client, clientID: id, name: name, roster: roster)
         case .clientSession(let clientID, let sessionID, let title):
             StudioClientSessionView(client: client, clientID: clientID, sessionID: sessionID, title: title)
+        case .program(let id, let name):
+            StudioProgramBuilderView(client: client, programID: id, name: name)
+        case .workout(let programID, let weekID, let workoutID, let name):
+            StudioWorkoutEditorView(
+                client: client, programID: programID, weekID: weekID, workoutID: workoutID, name: name
+            )
         }
     }
 
     // MARK: - DEBUG deep links
 
-    /// `--studio-destination <name>` opens a destination and
-    /// `--studio-route client:<id>` or `session:<client>:<session>` pushes a
-    /// screen, so each can be reviewed without driving the sidebar. The older
-    /// `--studio-profile` still opens Profile.
+    /// `--studio-destination <name>` opens a destination and `--studio-route`
+    /// pushes a screen — `client:<id>`, `session:<client>:<session>`,
+    /// `program:<id>` or `workout:<program>:<week>:<workout>` — so each can be
+    /// reviewed without driving the sidebar. The older `--studio-profile` still
+    /// opens Profile.
     private static var initialDestination: StudioDestination {
         #if DEBUG
             let arguments = ProcessInfo.processInfo.arguments
@@ -177,6 +212,13 @@ struct StudioShell: View {
                 return [.client(id: ids[0], name: "")]
             case ("session", let ids) where ids.count == 2:
                 return [.client(id: ids[0], name: ""), .clientSession(clientID: ids[0], sessionID: ids[1], title: "")]
+            case ("program", let ids) where ids.count == 1:
+                return [.program(id: ids[0], name: "")]
+            case ("workout", let ids) where ids.count == 3:
+                return [
+                    .program(id: ids[0], name: ""),
+                    .workout(programID: ids[0], weekID: ids[1], workoutID: ids[2], name: ""),
+                ]
             default:
                 return []
             }

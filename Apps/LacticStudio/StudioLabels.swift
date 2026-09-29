@@ -52,3 +52,50 @@ extension CalendarDate {
         date().map { Formatters.date($0, locale: locale) } ?? description
     }
 }
+
+extension CustomMuscleGroup {
+    var label: String {
+        switch self {
+        case .chest: String(localized: "Chest")
+        case .back: String(localized: "Back")
+        case .shoulders: String(localized: "Shoulders")
+        case .quadriceps: String(localized: "Quadriceps")
+        case .hamstrings: String(localized: "Hamstrings")
+        case .glutes: String(localized: "Glutes")
+        case .biceps: String(localized: "Biceps")
+        case .triceps: String(localized: "Triceps")
+        case .core: String(localized: "Core")
+        case .calves: String(localized: "Calves")
+        case .forearms: String(localized: "Forearms")
+        case .traps: String(localized: "Traps")
+        case .fullBody: String(localized: "Full body")
+        }
+    }
+}
+
+extension Exercise {
+    /// The catalog's localized primary muscle, or — for a coach's own
+    /// exercise, which never gets one — the legacy muscle group, translated
+    /// through the same vocabulary the create form offers.
+    var muscleLabel: String {
+        if let primaryMuscle {
+            return primaryMuscle.name
+        }
+        return CustomMuscleGroup(rawValue: muscleGroup)?.label ?? muscleGroup
+    }
+}
+
+extension WorkoutExercise {
+    /// `3 × 10 · 90 s rest · RIR 2 · 60 kg`, leaving out what the coach did
+    /// not prescribe.
+    func prescriptionSummary(locale: AppLocale) -> String {
+        var parts = ["\(sets) × \(reps)", String(localized: "\(effectiveRestSeconds) s rest")]
+        if let rir {
+            parts.append(String(localized: "RIR \(rir)"))
+        }
+        if let weight {
+            parts.append("\(Formatters.weight(weight, locale: locale)) kg")
+        }
+        return parts.joined(separator: " · ")
+    }
+}
