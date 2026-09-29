@@ -17,6 +17,13 @@ public struct CalendarDate: Codable, Hashable, Sendable, Comparable, CustomStrin
         self.day = day
     }
 
+    /// The day `date` falls on in `calendar` — for turning a picked date into
+    /// the plain `YYYY-MM-DD` the API stores.
+    public init(_ date: Date, calendar: Calendar = .current) {
+        let parts = calendar.dateComponents([.year, .month, .day], from: date)
+        self.init(year: parts.year ?? 1970, month: parts.month ?? 1, day: parts.day ?? 1)
+    }
+
     public init?(_ string: String) {
         let parts = string.split(separator: "-")
         guard parts.count == 3,

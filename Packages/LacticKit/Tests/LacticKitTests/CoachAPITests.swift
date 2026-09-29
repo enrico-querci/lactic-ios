@@ -32,8 +32,9 @@ struct CoachRequestTests {
         #expect(fields["name"] as? String == "Push A")
         #expect(fields["source_workout_id"] as? Int == 6)
 
-        let apply = try CoachAPI.applyWorkoutTemplate(id: 1, targetWeekID: 4)
+        let apply = try CoachAPI.applyWorkoutTemplate(id: 1, targetWeekID: 4, day: 3)
         #expect(try body(apply)["target_week_id"] as? Int == 4)
+        #expect(try body(apply)["day"] as? Int == 3, "without a day the API answers 422")
     }
 
     /// A PATCH must send only what it means to change: an explicit null would
@@ -78,9 +79,9 @@ struct CoachRequestTests {
         #expect(endpoint.query.first { $0.name == "custom" }?.value == "true")
     }
 
-    @Test func nestedPathsAddressTheRightResource() {
+    @Test func nestedPathsAddressTheRightResource() throws {
         #expect(CoachAPI.workouts(programID: 3, weekID: 4).path == "/coach/programs/3/weeks/4/workouts")
-        #expect(CoachAPI.duplicateWorkout(programID: 3, weekID: 4, id: 6).path
+        #expect(try CoachAPI.duplicateWorkout(programID: 3, weekID: 4, id: 6).path
             == "/coach/programs/3/weeks/4/workouts/6/duplicate")
         #expect(CoachAPI.clientProgress(clientID: 7).path == "/coach/clients/7/progress")
         #expect(CoachAPI.resendInvitation(id: 2).method == .post)

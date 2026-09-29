@@ -103,10 +103,42 @@ public enum CoachAPI {
         }
     }
 
-    struct ApplyTemplate: Encodable {
-        let targetWeekID: Int
+    /// Where a duplicated or template-applied workout lands. Nil fields are
+    /// omitted, which the duplicate endpoint reads as "where it already is".
+    struct WorkoutPlacement: Encodable {
+        let targetWeekID: Int?
+        let day: Int?
         enum CodingKeys: String, CodingKey {
             case targetWeekID = "target_week_id"
+            case day
+        }
+    }
+
+    /// Every prescription field, with `nil` encoded as `null` rather than
+    /// omitted — see `replaceWorkoutExercise`.
+    struct FullPrescription: Encodable {
+        let plan: WorkoutExercisePlan
+
+        init(_ plan: WorkoutExercisePlan) {
+            self.plan = plan
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case exerciseID = "exercise_id"
+            case position, sets, reps, rir, weight, notes
+            case restSeconds = "rest_seconds"
+        }
+
+        func encode(to encoder: any Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(plan.exerciseID, forKey: .exerciseID)
+            try container.encode(plan.position, forKey: .position)
+            try container.encode(plan.sets, forKey: .sets)
+            try container.encode(plan.reps, forKey: .reps)
+            try container.encode(plan.restSeconds, forKey: .restSeconds)
+            try container.encode(plan.rir, forKey: .rir)
+            try container.encode(plan.weight, forKey: .weight)
+            try container.encode(plan.notes, forKey: .notes)
         }
     }
 
