@@ -12,34 +12,26 @@ final class ClientLoopTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    private func launch() -> XCUIApplication {
+    private func launch(as email: String = "alice@example.com") -> XCUIApplication {
         let app = XCUIApplication()
-        // English so assertions can match labels, and the local server so the
-        // seeded data is what the app sees.
-        app.launchArguments = ["-app_locale", "en", "-api_server", "local"]
+        // English so assertions can match labels, the local server so the
+        // seeded data is what the app sees, and `--dev-login` so the app signs
+        // itself in through the API's development route — the sign-in screen
+        // offers only Apple and Google, neither of which a test can drive.
+        app.launchArguments = ["-app_locale", "en", "-api_server", "local", "--dev-login", email]
         app.launch()
         return app
     }
 
-    /// Signs in through the development route, which exists precisely so this
-    /// is possible without a Google account.
+    /// Waits for the signed-in shell.
+    ///
+    /// The refresh token is in the keychain, which outlives the app, so a
+    /// second run starts already signed in and `--dev-login` does nothing.
+    /// That is correct behaviour, not a failure: either way the shell appears.
     @discardableResult
-    private func signIn(_ app: XCUIApplication, as email: String = "alice@example.com") -> Bool {
-        // The refresh token is in the keychain, which outlives the app, so a
-        // second run starts already signed in. That is correct behaviour, not
-        // a failure: restore() puts the shell up without a sign-in screen.
-        if app.tabBars.firstMatch.waitForExistence(timeout: 8) {
-            return true
-        }
-        let field = app.textFields.firstMatch
-        guard field.waitForExistence(timeout: 20) else { return false }
-        if (field.value as? String) != email {
-            field.tap()
-            field.typeText(email)
-        }
-        app.buttons["Sign in"].tap()
+    private func signIn(_ app: XCUIApplication) -> Bool {
         // The tab bar only exists inside the signed-in shell.
-        return app.tabBars.firstMatch.waitForExistence(timeout: 20)
+        app.tabBars.firstMatch.waitForExistence(timeout: 20)
     }
 
     /// The hero button carries the whole card as its label, so match on the

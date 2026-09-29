@@ -105,6 +105,23 @@ final class StudioEnvironment {
             serverBox.value = newValue.url
             await session.signOut()
         }
+
+        /// Signs in through the API's development route when launched with
+        /// `--dev-login <email>`, mirroring the client app. The sign-in card no
+        /// longer carries a development form, so this is the scripted way into
+        /// the signed-in shell against a local API.
+        func signInFromLaunchArguments() async {
+            let arguments = ProcessInfo.processInfo.arguments
+            guard session.phase == .signedOut,
+                  let flag = arguments.firstIndex(of: "--dev-login"),
+                  case let next = arguments.index(after: flag), next < arguments.endIndex
+            else { return }
+            do {
+                try await session.signInWithDevLogin(email: arguments[next])
+            } catch {
+                AppLog.auth.error("--dev-login failed: \(error.localizedDescription, privacy: .public)")
+            }
+        }
     #endif
 }
 

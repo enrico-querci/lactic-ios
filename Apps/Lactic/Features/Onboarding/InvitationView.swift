@@ -84,14 +84,35 @@ struct InvitationView: View {
                 .foregroundStyle(LacticColor.textSecondary)
 
         case .signInRequired:
-            Button("Continue with Google") {
-                Task {
-                    if await model.signInWithGoogle() {
-                        environment.dismissInvitation()
+            VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+                LacticAppleSignInButton(
+                    isEnabled: !model.isSubmitting,
+                    onRequest: AppleSignInProvider.configure,
+                    onCompletion: { result in
+                        Task {
+                            if await model.signInWithApple(result) {
+                                environment.dismissInvitation()
+                            }
+                        }
+                    }
+                )
+
+                Button("Continue with Google") {
+                    Task {
+                        if await model.signInWithGoogle() {
+                            environment.dismissInvitation()
+                        }
                     }
                 }
+                .lacticButton(isEnabled: !model.isSubmitting)
+
+                // Said up front because the failure is hard to undo: a relay
+                // address never matches the invited one, and Apple remembers the
+                // choice until the client stops using Lactic in Settings.
+                Text("With Apple, choose Share My Email so your account matches this invitation.")
+                    .font(.lacticCaption)
+                    .foregroundStyle(LacticColor.textMuted)
             }
-            .lacticButton(isEnabled: !model.isSubmitting)
 
         case .readyToAccept:
             Button("Accept invitation") {
@@ -126,6 +147,7 @@ struct InvitationView: View {
         switch failure {
         case .notFound: String(localized: "We could not find that invitation. Check the link or code.")
         case .offline: String(localized: "You appear to be offline.")
+        case .appleSignInFailed: String(localized: "Sign in with Apple didn't finish. Try again.")
         case .server(let message): message
         }
     }

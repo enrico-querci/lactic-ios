@@ -14,9 +14,7 @@ let package = Package(
     dependencies: [
         .package(path: "../LacticCore"),
         // The only third-party dependency in the project, per AGENTS.md 6.1.
-        // Sign in with Apple needs none (AuthenticationServices) and arrives at
-        // the App Store gate, where guideline 4.8 makes it mandatory once
-        // Google ships. See docs/ios-plan.md.
+        // Sign in with Apple needs none: it is AuthenticationServices.
         .package(url: "https://github.com/google/GoogleSignIn-iOS", from: "8.0.0"),
     ],
     targets: [

@@ -19,7 +19,7 @@ is a workout-management ecosystem for coaches and their clients.
 | Product | Audience | Platform | Purpose | Current state |
 | --- | --- | --- | --- | --- |
 | **Lactic** | Client | iOS | Follow assigned programs and log workouts | Core flows implemented; visual redesign landed through `lactic-ios#1`-`#5`; see `docs/ios-plan.md` |
-| **Lactic Studio** | Coach/Admin | Web and iPad-first iOS | Manage clients and create training programs | Coach routes (`/coach/**`) are deployed on the web; native sign-in and client-roster management are implemented in `lactic-ios#6` |
+| **Lactic Studio** | Coach/Admin | Web and iPad-first iOS | Manage clients and create training programs | Coach routes (`/coach/**`) are deployed on the web; native sign-in and client-roster management are implemented in `lactic-ios#6`, with Sign in with Apple added in `lactic-ios#7` |
 | **Lactic Web** | Coach and client | Web | Browser access to both role-specific experiences | Implemented and deployed |
 | **Lactic API** | All clients | Rails API | Shared auth, business logic, persistence, email, and REST API | Implemented and deployed |
 
@@ -92,7 +92,13 @@ implementation increments, landed in order:
    without authentication or a live API. `ClientListModel` refreshes capacity
    after a successful invitation so the UI never derives billing state itself.
 
-All six PRs have passing GitHub lint/test checks. The client and Studio Debug
+Sign in with Apple then landed for both apps in `lactic-ios#7`, with its
+backend in `lactic-api#59` (see §2.3). Both sign-in screens and the invitation
+screen offer Apple beside Google, which clears App Review guideline 4.8, and
+the development sign-in forms are gone; UI tests sign in through the DEBUG
+`--dev-login <email>` launch argument instead.
+
+All six visual PRs have passing GitHub lint/test checks. The client and Studio Debug
 schemes, the Lactic Release configuration, and all three package suites pass
 locally. Home, workout, programme, history, session, and exercise-progress
 fixtures plus the Studio client/invitation surfaces have been visually checked
@@ -145,7 +151,21 @@ models, builds, and screenshot states pass.
 
 - Google and Apple are the only production sign-in methods in v1.
 - There is no email/password signup in v1.
-- The web UI currently implements Google Sign-In. The API also supports Apple.
+- Both iOS apps implement Sign in with Apple and Google. The web UI implements
+  Google only.
+- A native Apple ID token's audience is the requesting app's bundle ID, so
+  `Auth::AppleVerifier` accepts `com.enricoquerci.lactic` and
+  `com.enricoquerci.lacticstudio` (`APPLE_CLIENT_IDS` overrides the list). It
+  must never verify against a blank audience: the `apple_id` gem skips the
+  `aud` check entirely when given one. It also requires `email_verified`,
+  because accounts are linked by email.
+- Apple sends the user's name to the app only on first authorization; the app
+  forwards it as `name` on `POST /auth`, and the API uses it only when creating
+  a user.
+- An Apple "Hide My Email" relay address can never match an invitation's
+  email. The exact-match rule stands; acceptance fails with a message telling
+  the client to stop using Lactic in their Apple Account's Sign in with Apple
+  settings and sign in again with Share My Email.
 - The API issues short-lived JWT access tokens and refresh tokens.
 - A user has exactly one role: `coach` or `client`.
 - Existing users sign in normally using their linked provider identity.
@@ -222,6 +242,31 @@ models, builds, and screenshot states pass.
 - Never write secret values in source, documentation, logs, issues, or
   commits. Document variable names only.
 
+#### Sign in with Apple
+
+- Apple Developer team `PE865UQNK4` (the `enricoquerci` App Store Connect
+  account). App IDs `com.enricoquerci.lactic` and
+  `com.enricoquerci.lacticstudio` both carry the Sign in with Apple
+  capability.
+- App Store Connect app records: Lactic `6817242451` (SKU `LACTIC-IOS`) and
+  Lactic Studio `6817242889` (SKU `LACTIC-STUDIO-IOS`), both primary locale
+  `en-GB`.
+- Sign in with Apple key `A44BHGF86K` ("Lactic SIWA"), configured with
+  Lactic's App ID as its primary. Studio's App ID is a separate primary: if
+  Studio's code exchange ever fails with `invalid_client`, group it under
+  Lactic in the Developer Portal. The key's `.p8` is downloadable only once;
+  it lives outside every repository and is never committed.
+- Sign-in itself needs no configuration: the API verifies identity tokens
+  against Apple's public keys.
+- Railway variables `APPLE_TEAM_ID`, `APPLE_SIGN_IN_KEY_ID` and
+  `APPLE_SIGN_IN_PRIVATE_KEY` (the `.p8` key's PEM text) enable exchanging a
+  sign-in's authorization code for a refresh token, which
+  `DELETE /api/v1/client/account` revokes as App Review guideline 5.1.1(v)
+  requires. Optional, like Resend and RevenueCat: without them both calls are
+  skipped, and neither can ever fail a sign-in or a deletion.
+- Never write secret values in source, documentation, logs, issues, or
+  commits. Document variable names only.
+
 #### Error tracking
 
 - Provider: Sentry, on both `lactic-api` and `lactic-web`.
@@ -284,6 +329,8 @@ WorkoutSession
 #### User / Coach
 
 - `id`, `name`, `email`, `avatar_url`, `role`, provider identity fields.
+- `apple_refresh_token` and `apple_client_id` (the bundle ID it was issued
+  to), kept only so account deletion can revoke Sign in with Apple.
 - Has many clients, invitations, programs, exercises, templates,
   assignments, and at most one `CoachSubscription` as appropriate.
 - Coach signup is open (§2.3); `COACH_EMAILS` now only comps a listed email
@@ -689,6 +736,9 @@ npm run build
 - Preserve the invitation security invariants: hashed token, expiry,
   revocation, single use, social-email match, coach ownership, and
   server-controlled role assignment.
+- Preserve the Sign in with Apple invariants: the verifier's audience list is
+  never empty, a relay address never satisfies an invitation's email match,
+  and deleting an account revokes its stored Apple token first.
 - Preserve the billing invariants: the RevenueCat webhook is
   signature-verified and idempotent per `event_id`; stored subscription
   state is always re-fetched from RevenueCat rather than trusted from a

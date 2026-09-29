@@ -82,12 +82,17 @@ bin/rails server        # http://localhost:3000
 sessions, so without it every client screen is legitimately empty and a bug is
 indistinguishable from no data.
 
-Sign in during development with the API's dev-only route, which does not exist
-in production:
+Sign in with Apple or Google as normal, or skip both in a DEBUG build by
+launching with `--dev-login <email>`. That signs in through the API's dev-only
+route, which does not exist in production, and is how the UI tests get past the
+sign-in screen:
 
+```bash
+xcrun simctl launch booted com.enricoquerci.lactic -api_server local --dev-login alice@example.com
 ```
-POST /api/v1/auth/dev_login  {"email": "alice@example.com"}
-```
+
+Sign in with Apple needs an Apple Account signed in on the simulator or device;
+without one Apple's sheet fails before the API is ever called.
 
 `Info.plist` sets `NSAllowsLocalNetworking`, which is what permits plain HTTP to
 `localhost`. It relaxes App Transport Security for local and private-range hosts
