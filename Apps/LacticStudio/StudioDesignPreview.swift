@@ -9,6 +9,7 @@
     @MainActor
     struct StudioDesignPreview: View {
         @State private var model: ClientListModel
+        private let client: APIClient
 
         init() {
             let configuration = URLSessionConfiguration.ephemeral
@@ -17,14 +18,16 @@
                 configuration: .localDevelopment(locale: { "en" }),
                 session: URLSession(configuration: configuration)
             )
+            self.client = client
             _model = State(initialValue: ClientListModel(client: client))
         }
 
         var body: some View {
-            StudioClientNavigation(
+            StudioShell(
+                client: client,
                 coachName: "John Coach",
                 coachEmail: "john@example.com",
-                model: model,
+                roster: model,
                 signOut: {},
                 deleteAccount: {}
             )
@@ -66,19 +69,23 @@
 
         private static func payload(for request: URLRequest) -> (status: Int, body: String) {
             let path = request.url?.path ?? ""
+            let method = request.httpMethod ?? "GET"
             let isFull = ProcessInfo.processInfo.arguments.contains("--studio-plan-full")
 
-            if request.httpMethod == "POST", path.hasSuffix("/resend") {
+            if method == "POST", path.hasSuffix("/resend") {
                 return (200, invitationJSON(id: 21, email: "marco@example.com"))
             }
-            if request.httpMethod == "POST", path.hasSuffix("/client_invitations") {
+            if method == "POST", path.hasSuffix("/client_invitations") {
                 if isFull {
                     return (402, #"{"error":"You've reached your plan's client limit","code":"client_limit_reached"}"#)
                 }
                 return (201, invitationJSON(id: 99, email: "new.client@example.com"))
             }
-            if request.httpMethod == "DELETE" {
+            if method == "DELETE" {
                 return (204, "")
+            }
+            if let response = StudioPreviewFixtures.response(method: method, path: path, request: request) {
+                return response
             }
             if path.hasSuffix("/clients") {
                 return (200, clientsJSON)
@@ -118,8 +125,8 @@
         private static func subscriptionJSON(used: Int, limit: Int?) -> String {
             let limit = limit.map(String.init) ?? "null"
             return """
-            {"plan":"free","client_limit":\(limit),"client_slots_used":\(used),\
-            "expires_at":null,"auto_renew":null,"billing_issue":false}
+            {"plan":"pro","client_limit":\(limit),"client_slots_used":\(used),\
+            "expires_at":"2026-10-29T10:00:00.000Z","auto_renew":true,"billing_issue":false}
             """
         }
     }

@@ -1,6 +1,27 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%lld clients · unlimited": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "%lld clients · unlimited" } },
+        "it": { "stringUnit": { "state": "translated", "value": "%lld clienti · illimitati" } }
+      }
+    },
+    "%lld of %lld clients": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "%lld of %lld clients" } },
+        "it": { "stringUnit": { "state": "translated", "value": "%lld di %lld clienti" } }
+      }
+    },
+    "Account": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Account" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Account" } }
+      }
+    },
     "Account not deleted": {
       "extractionState": "manual",
       "localizations": {
@@ -8,11 +29,74 @@
         "it": { "stringUnit": { "state": "translated", "value": "Account non eliminato" } }
       }
     },
+    "Active": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Active" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Attivo" } }
+      }
+    },
     "Active clients": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Active clients" } },
         "it": { "stringUnit": { "state": "translated", "value": "Clienti attivi" } }
+      }
+    },
+    "Active programmes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Active programmes" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Programmi attivi" } }
+      }
+    },
+    "All": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "All" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Tutti" } }
+      }
+    },
+    "Assign": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Assign" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Assegna" } }
+      }
+    },
+    "Assign a programme": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Assign a programme" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Assegna un programma" } }
+      }
+    },
+    "Assign a programme to a client and it will appear here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Assign a programme to a client and it will appear here." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Assegna un programma a un cliente e comparirà qui." } }
+      }
+    },
+    "Assigned": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Assigned" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Assegnati" } }
+      }
+    },
+    "Assignment actions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Assignment actions" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Azioni sull'assegnazione" } }
+      }
+    },
+    "Assignments": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Assignments" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Assegnazioni" } }
       }
     },
     "Build better training, together.": {
@@ -43,6 +127,34 @@
         "it": { "stringUnit": { "state": "translated", "value": "Controlla la connessione e riprova." } }
       }
     },
+    "Choose a client": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Choose a client" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Scegli un cliente" } }
+      }
+    },
+    "Choose a programme": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Choose a programme" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Scegli un programma" } }
+      }
+    },
+    "Client": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Client" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Cliente" } }
+      }
+    },
+    "Client actions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Client actions" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Azioni sul cliente" } }
+      }
+    },
     "Client capacity": {
       "extractionState": "manual",
       "localizations": {
@@ -62,6 +174,13 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Client roster" } },
         "it": { "stringUnit": { "state": "translated", "value": "Elenco clienti" } }
+      }
+    },
+    "Client slots": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Client slots" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Posti per clienti" } }
       }
     },
     "Clients": {
@@ -85,11 +204,39 @@
         "it": { "stringUnit": { "state": "translated", "value": "Area di lavoro coach" } }
       }
     },
+    "Coaching": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Coaching" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Coaching" } }
+      }
+    },
+    "Completed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Completed" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Completato" } }
+      }
+    },
     "Continue with Google": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Continue with Google" } },
         "it": { "stringUnit": { "state": "translated", "value": "Continua con Google" } }
+      }
+    },
+    "Create a programme first — assignments pair a client with one.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Create a programme first — assignments pair a client with one." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Crea prima un programma: ogni assegnazione abbina un cliente a un programma." } }
+      }
+    },
+    "Current plan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Current plan" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Piano attuale" } }
       }
     },
     "Delete account": {
@@ -99,11 +246,25 @@
         "it": { "stringUnit": { "state": "translated", "value": "Elimina account" } }
       }
     },
+    "Delete assignment": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Delete assignment" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Elimina assegnazione" } }
+      }
+    },
     "Delete everything": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Delete everything" } },
         "it": { "stringUnit": { "state": "translated", "value": "Elimina tutto" } }
+      }
+    },
+    "Delete this assignment?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Delete this assignment?" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Eliminare questa assegnazione?" } }
       }
     },
     "Delete your coach account?": {
@@ -113,11 +274,32 @@
         "it": { "stringUnit": { "state": "translated", "value": "Eliminare il tuo account coach?" } }
       }
     },
+    "Duration": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Duration" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Durata" } }
+      }
+    },
     "Email address": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Email address" } },
         "it": { "stringUnit": { "state": "translated", "value": "Indirizzo email" } }
+      }
+    },
+    "Ends on %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Ends on %@" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Termina il %@" } }
+      }
+    },
+    "Exercise": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Exercise" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Esercizio" } }
       }
     },
     "Expires": {
@@ -132,6 +314,20 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Follow up with people who have not joined your roster yet." } },
         "it": { "stringUnit": { "state": "translated", "value": "Controlla chi non si è ancora unito al tuo elenco clienti." } }
+      }
+    },
+    "Free": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Free" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Gratuito" } }
+      }
+    },
+    "In progress": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "In progress" } },
+        "it": { "stringUnit": { "state": "translated", "value": "In corso" } }
       }
     },
     "Invitations": {
@@ -162,6 +358,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "Invita un cliente" } }
       }
     },
+    "Invite a client first — assignments pair a programme with one.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Invite a client first — assignments pair a programme with one." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invita prima un cliente: ogni assegnazione abbina un programma a un cliente." } }
+      }
+    },
     "Invite client": {
       "extractionState": "manual",
       "localizations": {
@@ -186,11 +389,39 @@
     "Lactic Studio": {
       "shouldTranslate": false
     },
+    "Loading assignments": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Loading assignments" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Caricamento delle assegnazioni" } }
+      }
+    },
+    "Loading client": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Loading client" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Caricamento del cliente" } }
+      }
+    },
     "Loading clients": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Loading clients" } },
         "it": { "stringUnit": { "state": "translated", "value": "Caricamento clienti" } }
+      }
+    },
+    "Loading session": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Loading session" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Caricamento della sessione" } }
+      }
+    },
+    "Loading your plan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Loading your plan" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Caricamento del piano" } }
       }
     },
     "Loading your workspace": {
@@ -207,11 +438,46 @@
         "it": { "stringUnit": { "state": "translated", "value": "Gestisci i tuoi clienti e fai crescere ogni rapporto di allenamento da un’unica area di lavoro." } }
       }
     },
+    "No programme assigned yet.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No programme assigned yet." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessun programma ancora assegnato." } }
+      }
+    },
+    "No sets were logged in this session.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No sets were logged in this session." } },
+        "it": { "stringUnit": { "state": "translated", "value": "In questa sessione non è stata registrata nessuna serie." } }
+      }
+    },
+    "No workout sessions yet.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No workout sessions yet." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessuna sessione di allenamento ancora." } }
+      }
+    },
+    "Notes for the client (optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Notes for the client (optional)" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Note per il cliente (facoltative)" } }
+      }
+    },
     "OK": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "OK" } },
         "it": { "stringUnit": { "state": "translated", "value": "OK" } }
+      }
+    },
+    "Plan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Plan" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Piano" } }
       }
     },
     "Profile": {
@@ -221,11 +487,39 @@
         "it": { "stringUnit": { "state": "translated", "value": "Profilo" } }
       }
     },
+    "The sessions %@ logged against it are deleted too.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The sessions %@ logged against it are deleted too." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Vengono eliminate anche le sessioni che %@ ha registrato con questa assegnazione." } }
+      }
+    },
+    "There's a problem with your latest payment. Update your payment method to keep your plan.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "There's a problem with your latest payment. Update your payment method to keep your plan." } },
+        "it": { "stringUnit": { "state": "translated", "value": "C'è un problema con il tuo ultimo pagamento. Aggiorna il metodo di pagamento per mantenere il tuo piano." } }
+      }
+    },
+    "They lose access to your programmes. Their logged history is kept.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "They lose access to your programmes. Their logged history is kept." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Perderà l'accesso ai tuoi programmi. La cronologia registrata viene conservata." } }
+      }
+    },
     "This is a client account. Sign in to the Lactic app instead.": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "This is a client account. Sign in to the Lactic app instead." } },
         "it": { "stringUnit": { "state": "translated", "value": "Questo è un account cliente. Accedi invece all'app Lactic." } }
+      }
+    },
+    "Your plan sets how many clients you can have, counting pending invitations. If it lapses, your existing clients keep everything; only new invitations wait.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Your plan sets how many clients you can have, counting pending invitations. If it lapses, your existing clients keep everything; only new invitations wait." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Il tuo piano stabilisce quanti clienti puoi avere, inclusi gli inviti in sospeso. Se scade, i clienti attuali mantengono tutto: solo i nuovi inviti restano in attesa." } }
       }
     },
     "Your programmes, exercises, templates and invitations are deleted, along with the workouts your clients logged against your programmes. Your clients keep their own accounts. This cannot be undone.": {
@@ -238,11 +532,32 @@
     "name@example.com": {
       "shouldTranslate": false
     },
+    "New assignment": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "New assignment" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nuova assegnazione" } }
+      }
+    },
+    "New assignments start as active and appear in the client's app straight away.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "New assignments start as active and appear in the client's app straight away." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Le nuove assegnazioni partono attive e compaiono subito nell'app del cliente." } }
+      }
+    },
     "New invitation": {
       "extractionState": "manual",
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "New invitation" } },
         "it": { "stringUnit": { "state": "translated", "value": "Nuovo invito" } }
+      }
+    },
+    "No assignments": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No assignments" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessuna assegnazione" } }
       }
     },
     "No client slots are available. Client limits are managed on Lactic Web.": {
@@ -266,6 +581,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "Nessun invito in sospeso" } }
       }
     },
+    "Paused": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Paused" } },
+        "it": { "stringUnit": { "state": "translated", "value": "In pausa" } }
+      }
+    },
     "Pending": {
       "extractionState": "manual",
       "localizations": {
@@ -285,6 +607,55 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Pending invites" } },
         "it": { "stringUnit": { "state": "translated", "value": "Inviti in sospeso" } }
+      }
+    },
+    "Programme": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Programme" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Programma" } }
+      }
+    },
+    "Programme assignments": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Programme assignments" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Assegnazioni dei programmi" } }
+      }
+    },
+    "Programmes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Programmes" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Programmi" } }
+      }
+    },
+    "Remove %@ from your clients?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Remove %@ from your clients?" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Rimuovere %@ dai tuoi clienti?" } }
+      }
+    },
+    "Remove client": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Remove client" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Rimuovi cliente" } }
+      }
+    },
+    "Renews on %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Renews on %@" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Si rinnova il %@" } }
+      }
+    },
+    "Reps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Reps" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Ripetizioni" } }
       }
     },
     "Resend": {
@@ -343,6 +714,27 @@
         "it": { "stringUnit": { "state": "translated", "value": "L'accesso con Apple non è stato completato. Riprova." } }
       }
     },
+    "Sessions logged": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Sessions logged" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Sessioni registrate" } }
+      }
+    },
+    "Set %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Set %lld" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Serie %lld" } }
+      }
+    },
+    "Sets": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Sets" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Serie" } }
+      }
+    },
     "Sign in to manage your coaching roster.": {
       "extractionState": "manual",
       "localizations": {
@@ -362,6 +754,27 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Signing in…" } },
         "it": { "stringUnit": { "state": "translated", "value": "Accesso in corso…" } }
+      }
+    },
+    "Start date": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Start date" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Data di inizio" } }
+      }
+    },
+    "Starts %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Starts %@" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Inizia il %@" } }
+      }
+    },
+    "Status": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Status" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Stato" } }
       }
     },
     "That action was not completed": {
@@ -392,6 +805,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "Illimitato" } }
       }
     },
+    "Volume": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Volume" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Volume" } }
+      }
+    },
     "Welcome back": {
       "extractionState": "manual",
       "localizations": {
@@ -404,6 +824,27 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Your clients" } },
         "it": { "stringUnit": { "state": "translated", "value": "I tuoi clienti" } }
+      }
+    },
+    "Who follows which programme, from when, and whether it is running.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Who follows which programme, from when, and whether it is running." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Chi segue quale programma, da quando e se è in corso." } }
+      }
+    },
+    "Workout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Workout" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Allenamento" } }
+      }
+    },
+    "Workout history": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Workout history" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Cronologia allenamenti" } }
       }
     },
     "You're offline": {

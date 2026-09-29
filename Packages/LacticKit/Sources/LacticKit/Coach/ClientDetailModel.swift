@@ -62,6 +62,22 @@ public final class ClientSessionModel {
         self.sessionID = sessionID
     }
 
+    /// The session with its exercises named and in the coach's `A`-`Z` order.
+    /// Each log carries its own exercise name and letter, so no second fetch of
+    /// the workout is needed to label it.
+    public var summary: SessionSummary? {
+        guard let session else { return nil }
+        let references = Dictionary(
+            session.exerciseLogs.map { log in
+                (log.workoutExerciseID, SessionSummary.ExerciseReference(
+                    exerciseID: log.exerciseID, name: log.exerciseName, position: log.position
+                ))
+            },
+            uniquingKeysWith: { first, _ in first }
+        )
+        return SessionSummary(session: session, workoutName: session.workoutName, exerciseReferences: references)
+    }
+
     public func load() async {
         do {
             session = try await client.send(CoachAPI.clientSession(clientID: clientID, sessionID: sessionID))

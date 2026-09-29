@@ -3,233 +3,28 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
-// This file is a single, tightly scoped feature made of small SwiftUI views.
-// Keeping them together makes the roster's loading, empty and action states
-// reviewable as one surface.
+// The roster: clients and pending invitations. One file because the two
+// screens share their plan, failure and empty states.
 // swiftlint:disable file_length
 
-/// The iPad-first coach workspace.
-///
-/// Clients and invitations are peer destinations rather than client-detail
-/// navigation. LacticKit does not yet expose a client-detail model, so the UI
-/// deliberately stops at the roster instead of deriving progress in a view.
-struct StudioClientView: View {
-    @Environment(StudioEnvironment.self) private var environment
-
-    let user: User
-    @State private var model: ClientListModel?
-
-    var body: some View {
-        Group {
-            if let model {
-                StudioClientNavigation(
-                    coachName: user.name,
-                    coachEmail: user.email,
-                    model: model,
-                    signOut: { Task { await environment.session.signOut() } },
-                    deleteAccount: {
-                        try await environment.client.sendIgnoringResponse(CoachAPI.deleteAccount)
-                        // The account is gone, so there is no session left to
-                        // revoke: clear locally rather than calling DELETE /auth.
-                        await environment.session.clearSession()
-                    }
-                )
-            } else {
-                LoadingView(String(localized: "Loading your workspace"))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(LacticColor.surface)
-            }
-        }
-        .task {
-            guard model == nil else { return }
-            let model = ClientListModel(client: environment.client)
-            self.model = model
-            await model.load()
-        }
-    }
-}
-
-private enum StudioDestination: Hashable {
-    case clients
-    case invitations
-    case profile
-}
-
-private enum StudioSheet: String, Identifiable {
-    case invite
-
-    var id: String {
-        rawValue
-    }
-}
-
-@MainActor
-struct StudioClientNavigation: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    let coachName: String
-    let coachEmail: String
-    let model: ClientListModel
-    let signOut: () -> Void
-    let deleteAccount: () async throws -> Void
-
-    @State private var selection: StudioDestination? = Self.initialDestination
-    @State private var sheet: StudioSheet?
-
-    var body: some View {
-        NavigationSplitView {
-            List(selection: $selection) {
-                Section {
-                    StudioSidebarRow(
-                        title: "Clients",
-                        compactTitle: "Clients",
-                        systemImage: "person.2.fill",
-                        count: model.clients.count
-                    )
-                    .tag(StudioDestination.clients)
-
-                    StudioSidebarRow(
-                        title: "Invitations",
-                        compactTitle: "Invites",
-                        systemImage: "envelope.fill",
-                        count: model.pendingInvitations.count
-                    )
-                    .tag(StudioDestination.invitations)
-                }
-
-                // Its own section: the account is not part of the roster, and
-                // on iPhone this is the row that leads to sign-out and deletion.
-                Section {
-                    StudioSidebarRow(
-                        title: "Profile",
-                        compactTitle: "Profile",
-                        systemImage: "person.crop.circle.fill",
-                        count: nil
-                    )
-                    .tag(StudioDestination.profile)
-                }
-            }
-            .listStyle(.sidebar)
-            .navigationTitle("Lactic Studio")
-            .navigationSplitViewColumnWidth(
-                min: dynamicTypeSize.isAccessibilitySize ? 360 : 250,
-                ideal: dynamicTypeSize.isAccessibilitySize ? 400 : 300,
-                max: dynamicTypeSize.isAccessibilitySize ? 440 : 360
-            )
-        } detail: {
-            detail
-                .toolbar {
-                    if selection != .profile {
-                        ToolbarItem(placement: .primaryAction) {
-                            Button {
-                                sheet = .invite
-                            } label: {
-                                Label("Invite client", systemImage: "person.badge.plus")
-                            }
-                            // Keep the control visible when the limit is known. The
-                            // capacity treatment below explains why it is disabled.
-                            // While the plan is unknown, LacticKit remains permissive
-                            // and a server 402 gets the purpose-built treatment.
-                            .disabled(!model.canInviteClient || model.isSubmitting)
-                        }
-                    }
-                }
-        }
-        .navigationSplitViewStyle(.balanced)
-        .sheet(item: $sheet) { sheet in
-            switch sheet {
-            case .invite:
-                InviteClientSheet(model: model)
-                    .presentationDetents(
-                        dynamicTypeSize.isAccessibilitySize ? [.large] : [.medium, .large]
-                    )
-            }
-        }
-    }
-
-    /// `--studio-profile` opens on Profile, so the screen can be reviewed
-    /// without driving the sidebar.
-    private static var initialDestination: StudioDestination {
-        #if DEBUG
-            if ProcessInfo.processInfo.arguments.contains("--studio-profile") {
-                return .profile
-            }
-        #endif
-        return .clients
-    }
-
-    @ViewBuilder
-    private var detail: some View {
-        // Ahead of the roster's loading and failure states: signing out or
-        // deleting the account must work even when the roster cannot load.
-        if selection == .profile {
-            StudioProfileView(
-                name: coachName,
-                email: coachEmail,
-                signOut: signOut,
-                deleteAccount: deleteAccount
-            )
-        } else if model.subscription == nil, model.isLoading {
-            LoadingView(String(localized: "Loading clients"))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(LacticColor.surface)
-        } else if model.subscription == nil, let failure = model.failure {
-            StudioInitialFailureView(failure: failure) {
-                Task { await model.load() }
-            }
-        } else {
-            switch selection ?? .clients {
-            case .clients:
-                StudioClientsDashboard(model: model) {
-                    sheet = .invite
-                }
-            case .invitations, .profile:
-                StudioInvitationsDashboard(model: model) {
-                    sheet = .invite
-                }
-            }
-        }
-    }
-}
-
-private struct StudioSidebarRow: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    let title: LocalizedStringKey
-    let compactTitle: LocalizedStringKey
-    let systemImage: String
-    /// `nil` for a destination that is not a collection, like Profile.
-    let count: Int?
-
-    var body: some View {
-        HStack(spacing: LacticSpacing.sm) {
-            Label(
-                dynamicTypeSize.isAccessibilitySize ? compactTitle : title,
-                systemImage: systemImage
-            )
-            .lineLimit(1)
-            .accessibilityLabel(title)
-            Spacer(minLength: LacticSpacing.sm)
-            if let count {
-                Text(verbatim: count.formatted())
-                    .font(.lacticCaption.weight(.semibold).monospacedDigit())
-                    .foregroundStyle(LacticColor.textSecondary)
-                    .padding(.horizontal, LacticSpacing.sm)
-                    .padding(.vertical, LacticSpacing.xs)
-                    .background(LacticColor.surfacePressed, in: Capsule())
-            }
-        }
-        .frame(minHeight: LacticSize.minimumHitTarget)
-    }
-}
-
-private struct StudioClientsDashboard: View {
+struct StudioClientsDashboard: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     let model: ClientListModel
-    let invite: () -> Void
+    @State private var isInviting = false
 
     var body: some View {
+        StudioRosterGate(model: model, title: Text("Clients")) {
+            content
+        }
+        .inviteClientControls(model: model, isInviting: $isInviting)
+    }
+
+    private func invite() {
+        isInviting = true
+    }
+
+    private var content: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: LacticSpacing.xl) {
                 StudioDashboardHeader(
@@ -268,7 +63,10 @@ private struct StudioClientsDashboard: View {
                         spacing: LacticSpacing.lg
                     ) {
                         ForEach(model.clients) { client in
-                            StudioClientCard(client: client)
+                            NavigationLink(value: StudioRoute.client(id: client.id, name: client.name)) {
+                                StudioClientCard(client: client)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                 }
@@ -283,11 +81,22 @@ private struct StudioClientsDashboard: View {
     }
 }
 
-private struct StudioInvitationsDashboard: View {
+struct StudioInvitationsDashboard: View {
     let model: ClientListModel
-    let invite: () -> Void
+    @State private var isInviting = false
 
     var body: some View {
+        StudioRosterGate(model: model, title: Text("Invitations")) {
+            content
+        }
+        .inviteClientControls(model: model, isInviting: $isInviting)
+    }
+
+    private func invite() {
+        isInviting = true
+    }
+
+    private var content: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: LacticSpacing.xl) {
                 StudioDashboardHeader(
@@ -339,34 +148,6 @@ private struct StudioInvitationsDashboard: View {
     }
 }
 
-private struct StudioDashboardHeader: View {
-    let eyebrow: LocalizedStringKey
-    let title: LocalizedStringKey
-    let message: LocalizedStringKey
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: LacticSpacing.sm) {
-            Text(eyebrow)
-                .font(.lacticEyebrow)
-                .foregroundStyle(LacticColor.brand)
-                .textCase(.uppercase)
-            Text(title)
-                .font(.lacticDisplay)
-                .foregroundStyle(LacticColor.textOnHero)
-            Text(message)
-                .font(.lacticBody)
-                .foregroundStyle(LacticColor.textOnHero.opacity(0.78))
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(LacticSpacing.xl)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LacticColor.heroSurface,
-            in: RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous)
-        )
-    }
-}
-
 private struct StudioOverviewMetrics: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -405,56 +186,6 @@ private struct StudioOverviewMetrics: View {
     }
 }
 
-private struct StudioMetricCard: View {
-    let title: LocalizedStringKey
-    let value: String
-    let systemImage: String
-    /// A single line — icon, label, value at the trailing edge — for stacked
-    /// layouts, where a card is a full-width row rather than a tile.
-    var isRow = false
-
-    var body: some View {
-        HStack(spacing: LacticSpacing.md) {
-            Image(systemName: systemImage)
-                .font(.title3.weight(.semibold))
-                .foregroundStyle(LacticColor.accent)
-                .frame(width: LacticSize.minimumHitTarget, height: LacticSize.minimumHitTarget)
-                .background(LacticColor.surfacePressed, in: Circle())
-                .accessibilityHidden(true)
-
-            if isRow {
-                Text(title)
-                    .font(.lacticBody)
-                    .foregroundStyle(LacticColor.textSecondary)
-                Spacer(minLength: LacticSpacing.sm)
-                Text(verbatim: value)
-                    .font(.title3.weight(.bold).monospacedDigit())
-                    .foregroundStyle(LacticColor.textPrimary)
-            } else {
-                VStack(alignment: .leading, spacing: LacticSpacing.xs) {
-                    Text(verbatim: value)
-                        .font(.title2.weight(.bold).monospacedDigit())
-                        .foregroundStyle(LacticColor.textPrimary)
-                    Text(title)
-                        .font(.lacticCaption)
-                        .foregroundStyle(LacticColor.textSecondary)
-                }
-            }
-        }
-        .accessibilityElement(children: .combine)
-        .padding(isRow ? LacticSpacing.md : LacticSpacing.lg)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LacticColor.surfaceElevated,
-            in: RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
-                .strokeBorder(LacticColor.border, lineWidth: 1)
-        }
-    }
-}
-
 private struct StudioCapacityMetric: View {
     let subscription: CoachSubscription?
     var isRow = false
@@ -477,7 +208,7 @@ private struct StudioCapacityMetric: View {
     }
 }
 
-private struct StudioPlanFullNotice: View {
+struct StudioPlanFullNotice: View {
     let subscription: CoachSubscription?
 
     var body: some View {
@@ -519,85 +250,6 @@ private struct StudioPlanFullNotice: View {
     }
 }
 
-private struct StudioActionFailureNotice: View {
-    let failure: CoachActionFailure
-
-    var body: some View {
-        HStack(alignment: .top, spacing: LacticSpacing.md) {
-            Image(systemName: icon)
-                .foregroundStyle(LacticColor.danger)
-                .frame(width: LacticSize.minimumHitTarget, height: LacticSize.minimumHitTarget)
-                .accessibilityHidden(true)
-
-            VStack(alignment: .leading, spacing: LacticSpacing.xs) {
-                Text(title)
-                    .font(.lacticHeadline)
-                message
-                    .font(.lacticBody)
-                    .foregroundStyle(LacticColor.textSecondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding(LacticSpacing.lg)
-        .background(
-            LacticColor.dangerSurface,
-            in: RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
-                .strokeBorder(LacticColor.dangerBorder, lineWidth: 1)
-        }
-        .accessibilityElement(children: .combine)
-    }
-
-    private var icon: String {
-        switch failure {
-        case .offline: "wifi.slash"
-        case .planIsFull, .rejected: "exclamationmark.triangle.fill"
-        }
-    }
-
-    private var title: LocalizedStringKey {
-        switch failure {
-        case .offline: "You're offline"
-        case .planIsFull: "Client limit reached"
-        case .rejected: "That action was not completed"
-        }
-    }
-
-    @ViewBuilder
-    private var message: some View {
-        switch failure {
-        case .offline:
-            Text("Check your connection and try again.")
-        case .planIsFull:
-            Text("No client slots are available. Client limits are managed on Lactic Web.")
-        case .rejected(let message):
-            // The API's wording is deliberately preserved exactly.
-            Text(verbatim: message)
-        }
-    }
-}
-
-private struct StudioInitialFailureView: View {
-    let failure: CoachActionFailure
-    let retry: () -> Void
-
-    var body: some View {
-        VStack(spacing: LacticSpacing.lg) {
-            StudioActionFailureNotice(failure: failure)
-                .frame(maxWidth: 560)
-            Button("Try again", action: retry)
-                .lacticButton(.secondary)
-                .frame(maxWidth: 240)
-        }
-        .padding(LacticSpacing.xl)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(LacticColor.surface)
-        .navigationTitle("Clients")
-    }
-}
-
 private struct StudioClientCard: View {
     let client: User
 
@@ -615,9 +267,13 @@ private struct StudioClientCard: View {
                 Text(verbatim: client.email)
                     .font(.lacticCaption)
                     .foregroundStyle(LacticColor.textSecondary)
-                    .textSelection(.enabled)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+
+            Image(systemName: "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(LacticColor.textMuted)
+                .accessibilityHidden(true)
         }
         .padding(LacticSpacing.lg)
         .frame(maxWidth: .infinity, minHeight: 96, alignment: .leading)
@@ -699,41 +355,7 @@ private struct StudioInvitationRow: View {
     }
 }
 
-private struct StudioEmptyCard<Action: View>: View {
-    let title: LocalizedStringKey
-    let message: LocalizedStringKey
-    let systemImage: String
-    @ViewBuilder let action: () -> Action
-
-    var body: some View {
-        VStack(spacing: LacticSpacing.md) {
-            Image(systemName: systemImage)
-                .font(.largeTitle)
-                .foregroundStyle(LacticColor.textMuted)
-                .accessibilityHidden(true)
-            Text(title)
-                .font(.lacticHeadline)
-            Text(message)
-                .font(.lacticBody)
-                .foregroundStyle(LacticColor.textSecondary)
-                .multilineTextAlignment(.center)
-            action()
-                .padding(.top, LacticSpacing.sm)
-        }
-        .padding(LacticSpacing.xxl)
-        .frame(maxWidth: .infinity)
-        .background(
-            LacticColor.surfaceElevated,
-            in: RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous)
-                .strokeBorder(LacticColor.border, lineWidth: 1)
-        }
-    }
-}
-
-private struct InviteClientSheet: View {
+struct InviteClientSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -833,5 +455,65 @@ private struct InviteClientSheet: View {
                 dismiss()
             }
         }
+    }
+}
+
+/// The roster's first load: a spinner until something arrives, and a retry if
+/// nothing does. Once the roster has loaded, later failures are shown inline
+/// by the screen instead of replacing it.
+struct StudioRosterGate<Content: View>: View {
+    let model: ClientListModel
+    let title: Text
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        if model.subscription == nil, model.isLoading {
+            LoadingView(String(localized: "Loading clients"))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(LacticColor.surface)
+                .navigationTitle(title)
+        } else if model.subscription == nil, let failure = model.failure {
+            StudioInitialFailureView(failure: failure, title: title) {
+                Task { await model.load() }
+            }
+        } else {
+            content()
+        }
+    }
+}
+
+extension View {
+    /// The Invite client toolbar button and the sheet it opens.
+    func inviteClientControls(model: ClientListModel, isInviting: Binding<Bool>) -> some View {
+        modifier(InviteClientControls(model: model, isInviting: isInviting))
+    }
+}
+
+private struct InviteClientControls: ViewModifier {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    let model: ClientListModel
+    @Binding var isInviting: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        isInviting = true
+                    } label: {
+                        Label("Invite client", systemImage: "person.badge.plus")
+                    }
+                    // Keep the control visible when the limit is known. The
+                    // capacity treatment explains why it is disabled. While the
+                    // plan is unknown, LacticKit remains permissive and a server
+                    // 402 gets the purpose-built treatment.
+                    .disabled(!model.canInviteClient || model.isSubmitting)
+                }
+            }
+            .sheet(isPresented: $isInviting) {
+                InviteClientSheet(model: model)
+                    .presentationDetents(dynamicTypeSize.isAccessibilitySize ? [.large] : [.medium, .large])
+            }
     }
 }

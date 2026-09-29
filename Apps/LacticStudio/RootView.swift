@@ -36,7 +36,7 @@ struct RootView: View {
             case .signedIn(let user):
                 // Always a coach: the session is scoped to this app, so a
                 // client is refused at sign-in and signed out on restore.
-                StudioClientView(user: user)
+                StudioWorkspace(user: user)
             }
         }
         .animation(.default, value: environment.session.phase)
