@@ -214,6 +214,13 @@
         "it": { "stringUnit": { "state": "translated", "value": "OK" } }
       }
     },
+    "Profile": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Profile" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Profilo" } }
+      }
+    },
     "This is a client account. Sign in to the Lactic app instead.": {
       "extractionState": "manual",
       "localizations": {

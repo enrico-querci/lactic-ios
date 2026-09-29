@@ -52,6 +52,7 @@ struct StudioClientView: View {
 private enum StudioDestination: Hashable {
     case clients
     case invitations
+    case profile
 }
 
 private enum StudioSheet: String, Identifiable {
@@ -72,7 +73,7 @@ struct StudioClientNavigation: View {
     let signOut: () -> Void
     let deleteAccount: () async throws -> Void
 
-    @State private var selection: StudioDestination? = .clients
+    @State private var selection: StudioDestination? = Self.initialDestination
     @State private var sheet: StudioSheet?
 
     var body: some View {
@@ -95,6 +96,18 @@ struct StudioClientNavigation: View {
                     )
                     .tag(StudioDestination.invitations)
                 }
+
+                // Its own section: the account is not part of the roster, and
+                // on iPhone this is the row that leads to sign-out and deletion.
+                Section {
+                    StudioSidebarRow(
+                        title: "Profile",
+                        compactTitle: "Profile",
+                        systemImage: "person.crop.circle.fill",
+                        count: nil
+                    )
+                    .tag(StudioDestination.profile)
+                }
             }
             .listStyle(.sidebar)
             .navigationTitle("Lactic Studio")
@@ -103,28 +116,22 @@ struct StudioClientNavigation: View {
                 ideal: dynamicTypeSize.isAccessibilitySize ? 400 : 300,
                 max: dynamicTypeSize.isAccessibilitySize ? 440 : 360
             )
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                StudioAccountFooter(
-                    name: coachName,
-                    email: coachEmail,
-                    signOut: signOut,
-                    deleteAccount: deleteAccount
-                )
-            }
         } detail: {
             detail
                 .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button {
-                            sheet = .invite
-                        } label: {
-                            Label("Invite client", systemImage: "person.badge.plus")
+                    if selection != .profile {
+                        ToolbarItem(placement: .primaryAction) {
+                            Button {
+                                sheet = .invite
+                            } label: {
+                                Label("Invite client", systemImage: "person.badge.plus")
+                            }
+                            // Keep the control visible when the limit is known. The
+                            // capacity treatment below explains why it is disabled.
+                            // While the plan is unknown, LacticKit remains permissive
+                            // and a server 402 gets the purpose-built treatment.
+                            .disabled(!model.canInviteClient || model.isSubmitting)
                         }
-                        // Keep the control visible when the limit is known. The
-                        // capacity treatment below explains why it is disabled.
-                        // While the plan is unknown, LacticKit remains permissive
-                        // and a server 402 gets the purpose-built treatment.
-                        .disabled(!model.canInviteClient || model.isSubmitting)
                     }
                 }
         }
@@ -140,9 +147,29 @@ struct StudioClientNavigation: View {
         }
     }
 
+    /// `--studio-profile` opens on Profile, so the screen can be reviewed
+    /// without driving the sidebar.
+    private static var initialDestination: StudioDestination {
+        #if DEBUG
+            if ProcessInfo.processInfo.arguments.contains("--studio-profile") {
+                return .profile
+            }
+        #endif
+        return .clients
+    }
+
     @ViewBuilder
     private var detail: some View {
-        if model.subscription == nil, model.isLoading {
+        // Ahead of the roster's loading and failure states: signing out or
+        // deleting the account must work even when the roster cannot load.
+        if selection == .profile {
+            StudioProfileView(
+                name: coachName,
+                email: coachEmail,
+                signOut: signOut,
+                deleteAccount: deleteAccount
+            )
+        } else if model.subscription == nil, model.isLoading {
             LoadingView(String(localized: "Loading clients"))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(LacticColor.surface)
@@ -156,7 +183,7 @@ struct StudioClientNavigation: View {
                 StudioClientsDashboard(model: model) {
                     sheet = .invite
                 }
-            case .invitations:
+            case .invitations, .profile:
                 StudioInvitationsDashboard(model: model) {
                     sheet = .invite
                 }
@@ -171,7 +198,8 @@ private struct StudioSidebarRow: View {
     let title: LocalizedStringKey
     let compactTitle: LocalizedStringKey
     let systemImage: String
-    let count: Int
+    /// `nil` for a destination that is not a collection, like Profile.
+    let count: Int?
 
     var body: some View {
         HStack(spacing: LacticSpacing.sm) {
@@ -182,119 +210,16 @@ private struct StudioSidebarRow: View {
             .lineLimit(1)
             .accessibilityLabel(title)
             Spacer(minLength: LacticSpacing.sm)
-            Text(verbatim: count.formatted())
-                .font(.lacticCaption.weight(.semibold).monospacedDigit())
-                .foregroundStyle(LacticColor.textSecondary)
-                .padding(.horizontal, LacticSpacing.sm)
-                .padding(.vertical, LacticSpacing.xs)
-                .background(LacticColor.surfacePressed, in: Capsule())
+            if let count {
+                Text(verbatim: count.formatted())
+                    .font(.lacticCaption.weight(.semibold).monospacedDigit())
+                    .foregroundStyle(LacticColor.textSecondary)
+                    .padding(.horizontal, LacticSpacing.sm)
+                    .padding(.vertical, LacticSpacing.xs)
+                    .background(LacticColor.surfacePressed, in: Capsule())
+            }
         }
         .frame(minHeight: LacticSize.minimumHitTarget)
-    }
-}
-
-private struct StudioAccountFooter: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    let name: String
-    let email: String
-    let signOut: () -> Void
-    /// App Review guideline 5.1.1(v): Studio creates accounts, so it must
-    /// also delete them from inside the app.
-    let deleteAccount: () async throws -> Void
-
-    @State private var isConfirmingDeletion = false
-    @State private var isDeleting = false
-    @State private var deletionError: String?
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: LacticSpacing.md) {
-            HStack(spacing: LacticSpacing.sm) {
-                Image(systemName: "person.crop.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(LacticColor.accent)
-                    .accessibilityHidden(true)
-
-                VStack(alignment: .leading, spacing: LacticSpacing.xs) {
-                    Text(verbatim: name)
-                        .font(.lacticHeadline)
-                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
-                    if !dynamicTypeSize.isAccessibilitySize {
-                        Text(verbatim: email)
-                            .font(.lacticCaption)
-                            .foregroundStyle(LacticColor.textSecondary)
-                            .lineLimit(1)
-                    }
-                }
-            }
-
-            Button(action: signOut) {
-                Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
-            }
-            .lacticButton(.secondary, size: .small)
-            .disabled(isDeleting)
-
-            // Quieter than Sign out on purpose: it is rare and irreversible,
-            // and the confirmation below carries the weight.
-            Button("Delete account", role: .destructive) { isConfirmingDeletion = true }
-                .font(.lacticCaption)
-                .foregroundStyle(LacticColor.danger)
-                .frame(maxWidth: .infinity, minHeight: LacticSize.minimumHitTarget)
-                .disabled(isDeleting)
-        }
-        .padding(LacticSpacing.lg)
-        .background(.bar)
-        .overlay(alignment: .top) {
-            Divider()
-        }
-        .confirmationDialog(
-            "Delete your coach account?",
-            isPresented: $isConfirmingDeletion,
-            titleVisibility: .visible
-        ) {
-            Button("Delete everything", role: .destructive) { performDeletion() }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text(
-                """
-                Your programmes, exercises, templates and invitations are deleted, along with \
-                the workouts your clients logged against your programmes. Your clients keep \
-                their own accounts. This cannot be undone.
-                """
-            )
-        }
-        .alert(
-            "Account not deleted",
-            isPresented: Binding(get: { deletionError != nil }, set: {
-                if !$0 {
-                    deletionError = nil
-                }
-            }),
-            presenting: deletionError
-        ) { _ in
-            Button("OK") {}
-        } message: { message in
-            Text(verbatim: message)
-        }
-    }
-
-    private func performDeletion() {
-        isDeleting = true
-        Task {
-            defer { isDeleting = false }
-            do {
-                try await deleteAccount()
-            } catch let error as APIError where error.code == "subscription_active" {
-                deletionError = String(
-                    localized: """
-                    Cancel your subscription on the web first. You can delete your account once it \
-                    will no longer renew.
-                    """
-                )
-            } catch {
-                deletionError = (error as? APIError)?.message ?? error.localizedDescription
-            }
-        }
     }
 }
 
@@ -444,28 +369,38 @@ private struct StudioDashboardHeader: View {
 
 private struct StudioOverviewMetrics: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let clientCount: Int
     let invitationCount: Int
     let subscription: CoachSubscription?
 
+    /// Three cards side by side only have room on a regular-width screen. On
+    /// an iPhone they squeezed their labels down to a letter per line, so a
+    /// compact width stacks them as full-width rows instead.
+    private var isStacked: Bool {
+        horizontalSizeClass == .compact || dynamicTypeSize.isAccessibilitySize
+    }
+
     var body: some View {
-        let layout = dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(spacing: LacticSpacing.md))
+        let layout = isStacked
+            ? AnyLayout(VStackLayout(spacing: LacticSpacing.sm))
             : AnyLayout(HStackLayout(spacing: LacticSpacing.md))
 
         layout {
             StudioMetricCard(
                 title: "Active clients",
                 value: clientCount.formatted(),
-                systemImage: "person.2.fill"
+                systemImage: "person.2.fill",
+                isRow: isStacked
             )
             StudioMetricCard(
                 title: "Pending invites",
                 value: invitationCount.formatted(),
-                systemImage: "envelope.fill"
+                systemImage: "envelope.fill",
+                isRow: isStacked
             )
-            StudioCapacityMetric(subscription: subscription)
+            StudioCapacityMetric(subscription: subscription, isRow: isStacked)
         }
     }
 }
@@ -474,6 +409,9 @@ private struct StudioMetricCard: View {
     let title: LocalizedStringKey
     let value: String
     let systemImage: String
+    /// A single line — icon, label, value at the trailing edge — for stacked
+    /// layouts, where a card is a full-width row rather than a tile.
+    var isRow = false
 
     var body: some View {
         HStack(spacing: LacticSpacing.md) {
@@ -484,16 +422,27 @@ private struct StudioMetricCard: View {
                 .background(LacticColor.surfacePressed, in: Circle())
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: LacticSpacing.xs) {
-                Text(verbatim: value)
-                    .font(.title2.weight(.bold).monospacedDigit())
-                    .foregroundStyle(LacticColor.textPrimary)
+            if isRow {
                 Text(title)
-                    .font(.lacticCaption)
+                    .font(.lacticBody)
                     .foregroundStyle(LacticColor.textSecondary)
+                Spacer(minLength: LacticSpacing.sm)
+                Text(verbatim: value)
+                    .font(.title3.weight(.bold).monospacedDigit())
+                    .foregroundStyle(LacticColor.textPrimary)
+            } else {
+                VStack(alignment: .leading, spacing: LacticSpacing.xs) {
+                    Text(verbatim: value)
+                        .font(.title2.weight(.bold).monospacedDigit())
+                        .foregroundStyle(LacticColor.textPrimary)
+                    Text(title)
+                        .font(.lacticCaption)
+                        .foregroundStyle(LacticColor.textSecondary)
+                }
             }
         }
-        .padding(LacticSpacing.lg)
+        .accessibilityElement(children: .combine)
+        .padding(isRow ? LacticSpacing.md : LacticSpacing.lg)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             LacticColor.surfaceElevated,
@@ -508,12 +457,14 @@ private struct StudioMetricCard: View {
 
 private struct StudioCapacityMetric: View {
     let subscription: CoachSubscription?
+    var isRow = false
 
     var body: some View {
         StudioMetricCard(
             title: "Client capacity",
             value: capacity,
-            systemImage: "gauge.with.dots.needle.33percent"
+            systemImage: "gauge.with.dots.needle.33percent",
+            isRow: isRow
         )
     }
 

@@ -1693,6 +1693,23 @@
         }
       }
     },
+    "Profile" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profilo"
+          }
+        }
+      }
+    },
     "Programme detail preview" : {
       "extractionState" : "manual",
       "localizations" : {

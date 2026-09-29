@@ -3,7 +3,7 @@
 PRODUCT_NAME = Lactic
 PRODUCT_BUNDLE_IDENTIFIER = com.enricoquerci.lactic
 PRODUCT_MODULE_NAME = Lactic
-CURRENT_PROJECT_VERSION = 2
+CURRENT_PROJECT_VERSION = 3
 MARKETING_VERSION = 0.1.0
 
 // Only HTTPS through URLSession, which is exempt from US export rules. Saying
