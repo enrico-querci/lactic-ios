@@ -144,9 +144,15 @@ public enum InvitationFailure: Equatable, Sendable {
     /// No invitation for this token: usually a mistyped code or a cut-off link.
     case notFound
     case offline
+    /// Apple's sheet failed before the API was ever asked.
+    case appleSignInFailed
     case server(String)
 
     public init(_ error: any Error) {
+        if error is AppleSignInProvider.Failure {
+            self = .appleSignInFailed
+            return
+        }
         guard let apiError = error as? APIError else {
             self = .server(error.localizedDescription)
             return

@@ -119,3 +119,26 @@ final class StubURLProtocol: URLProtocol, @unchecked Sendable {
 
     override func stopLoading() {}
 }
+
+extension URLRequest {
+    /// URLSession replaces `httpBody` with a stream for some requests, so read
+    /// whichever is populated.
+    func bodyData() -> Data? {
+        if let body = httpBody {
+            return body
+        }
+        guard let stream = httpBodyStream else { return nil }
+        stream.open()
+        defer { stream.close() }
+        var data = Data()
+        let size = 4096
+        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
+        defer { buffer.deallocate() }
+        while stream.hasBytesAvailable {
+            let read = stream.read(buffer, maxLength: size)
+            guard read > 0 else { break }
+            data.append(buffer, count: read)
+        }
+        return data
+    }
+}

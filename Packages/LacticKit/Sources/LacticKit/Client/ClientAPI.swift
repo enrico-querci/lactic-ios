@@ -8,6 +8,8 @@ import LacticCore
 public enum ClientAPI {
     // MARK: - Auth
 
+    /// Reached only through the DEBUG `--dev-login` launch argument, which is
+    /// how UI tests sign in without a Google or Apple account.
     public static func devLogin(email: String) throws -> Endpoint {
         // Top-level params: AuthController does not use a Rails wrapper.
         try Endpoint(
@@ -17,9 +19,17 @@ public enum ClientAPI {
         )
     }
 
-    public static func signIn(provider: String, idToken: String, invitationToken: String?) throws -> Endpoint {
+    /// `name` and `authorizationCode` only ever come from Sign in with Apple:
+    /// Google's verified token already carries the name, and there is nothing
+    /// of Google's for the API to revoke.
+    public static func signIn(
+        provider: String, idToken: String, invitationToken: String?,
+        name: String? = nil, authorizationCode: String? = nil
+    ) throws -> Endpoint {
         var payload = ["provider": provider, "id_token": idToken]
         payload["invitation_token"] = invitationToken
+        payload["name"] = name
+        payload["authorization_code"] = authorizationCode
         return try Endpoint(
             method: .post, path: "/auth",
             body: JSONCoding.encoder.encode(payload),

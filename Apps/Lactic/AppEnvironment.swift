@@ -64,6 +64,26 @@ final class AppEnvironment {
             else { return }
             pendingInvitationToken = InvitationLink.token(fromPastedText: arguments[next])
         }
+
+        /// Signs in through the API's development route when launched with
+        /// `--dev-login <email>`.
+        ///
+        /// The sign-in screen no longer offers a development form, so this is
+        /// how UI tests reach the signed-in shell without a Google or Apple
+        /// account. It only acts once `restore()` has found no session, so a
+        /// relaunch keeps whoever is already signed in.
+        func signInFromLaunchArguments() async {
+            let arguments = ProcessInfo.processInfo.arguments
+            guard session.phase == .signedOut,
+                  let flag = arguments.firstIndex(of: "--dev-login"),
+                  case let next = arguments.index(after: flag), next < arguments.endIndex
+            else { return }
+            do {
+                try await session.signInWithDevLogin(email: arguments[next])
+            } catch {
+                AppLog.auth.error("--dev-login failed: \(error.localizedDescription, privacy: .public)")
+            }
+        }
     #endif
 
     /// Returns whether the URL was an invitation link, so the caller can tell

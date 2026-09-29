@@ -83,6 +83,21 @@ struct RequestEncodingTests {
         #expect(with["invitation_token"] as? String == "inv")
     }
 
+    /// Apple's name and code are optional on the wire: a Google sign-in, or
+    /// any Apple sign-in after the first, sends neither key rather than null.
+    @Test func sendsApplesNameAndCodeOnlyWhenPresent() throws {
+        let google = try json(ClientAPI.signIn(provider: "google", idToken: "tok", invitationToken: nil))
+        #expect(google["name"] == nil)
+        #expect(google["authorization_code"] == nil)
+
+        let apple = try json(ClientAPI.signIn(
+            provider: "apple", idToken: "tok", invitationToken: nil, name: "Alice", authorizationCode: "code"
+        ))
+        #expect(apple["provider"] as? String == "apple")
+        #expect(apple["name"] as? String == "Alice")
+        #expect(apple["authorization_code"] as? String == "code")
+    }
+
     /// Auth endpoints must not carry a bearer token or trigger a refresh, and
     /// the public invitation lookup is deliberately unauthenticated.
     @Test func marksUnauthenticatedEndpoints() throws {

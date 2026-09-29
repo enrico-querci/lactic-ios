@@ -84,6 +84,9 @@ public final class SessionStore: TokenProviding {
     /// Development-only sign-in. The route does not exist in production, which
     /// is precisely why it is safe to ship this call: a Release build pointed at
     /// production gets a 404, not a back door.
+    ///
+    /// No screen offers it any more. It survives for UI tests, which reach it
+    /// through the DEBUG `--dev-login <email>` launch argument.
     public func signInWithDevLogin(email: String) async throws {
         let session: AuthSession = try await client.send(ClientAPI.devLogin(email: email))
         try apply(session)
@@ -93,14 +96,32 @@ public final class SessionStore: TokenProviding {
         phase = .signedIn(user)
     }
 
-    public func signIn(provider: String, idToken: String, invitationToken: String? = nil) async throws {
+    public func signIn(
+        provider: String, idToken: String, invitationToken: String? = nil,
+        name: String? = nil, authorizationCode: String? = nil
+    ) async throws {
         let endpoint = try ClientAPI.signIn(
-            provider: provider, idToken: idToken, invitationToken: invitationToken
+            provider: provider, idToken: idToken, invitationToken: invitationToken,
+            name: name, authorizationCode: authorizationCode
         )
         let session: AuthSession = try await client.send(endpoint)
         try apply(session)
         let user: User = try await client.send(ClientAPI.me)
         phase = .signedIn(user)
+    }
+
+    /// Signs in with a credential from `SignInWithAppleButton`.
+    ///
+    /// Unlike Google there is nothing to end on sign-out: Apple keeps no
+    /// session of its own in the app, and the next sign-in shows Apple's sheet
+    /// again regardless.
+    public func signInWithApple(
+        _ credential: AppleSignInProvider.Credential, invitationToken: String? = nil
+    ) async throws {
+        try await signIn(
+            provider: "apple", idToken: credential.identityToken, invitationToken: invitationToken,
+            name: credential.fullName, authorizationCode: credential.authorizationCode
+        )
     }
 
     // Google's flow needs a UIKit presenter, so it exists only where UIKit

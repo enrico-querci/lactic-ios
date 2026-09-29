@@ -1,12 +1,15 @@
+import AuthenticationServices
 import LacticKit
 import LacticUI
 import SwiftUI
 
-/// Google sign-in with a debug-only local development path.
+/// Sign in with Apple or Google.
+///
+/// Both are offered because App Review guideline 4.8 requires a
+/// privacy-preserving option wherever a third-party login appears.
 struct SignInView: View {
     @Environment(AppEnvironment.self) private var environment
 
-    @State private var email = "alice@example.com"
     @State private var isWorking = false
     @State private var errorMessage: String?
 
@@ -16,6 +19,11 @@ struct SignInView: View {
                 brandHeader
 
                 VStack(spacing: LacticSpacing.md) {
+                    LacticAppleSignInButton(
+                        isEnabled: !isWorking,
+                        onRequest: AppleSignInProvider.configure,
+                        onCompletion: signInWithApple
+                    )
                     googleButton
 
                     if let errorMessage {
@@ -25,13 +33,9 @@ struct SignInView: View {
                             .multilineTextAlignment(.center)
                     }
 
-                    // Sign in with Apple lands at the App Store gate: guideline 4.8
-                    // requires an equivalent privacy-preserving option once Google
-                    // is offered, so this build is not submittable as it stands.
                     #if DEBUG
                         serverPicker
                             .padding(.top, LacticSpacing.lg)
-                        developmentSignIn
                     #endif
                 }
             }
@@ -76,6 +80,26 @@ struct SignInView: View {
             }
         }
         .lacticButton(isEnabled: !isWorking)
+    }
+
+    private func signInWithApple(_ result: Result<ASAuthorization, any Error>) {
+        isWorking = true
+        errorMessage = nil
+        Task {
+            do {
+                let credential = try AppleSignInProvider.credential(from: result)
+                try await environment.session.signInWithApple(credential)
+            } catch AppleSignInProvider.Failure.cancelled {
+                errorMessage = nil
+            } catch is AppleSignInProvider.Failure {
+                errorMessage = String(localized: "Sign in with Apple didn't finish. Try again.")
+            } catch let error as APIError {
+                errorMessage = error.message
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+            isWorking = false
+        }
     }
 
     private func signInWithGoogle() {
@@ -124,50 +148,6 @@ struct SignInView: View {
                 get: { environment.server },
                 set: { newValue in Task { await environment.applyServer(newValue) } }
             )
-        }
-
-        private var developmentSignIn: some View {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Development sign-in")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-
-                TextField("Email", text: $email)
-                    .textFieldStyle(.roundedBorder)
-                    .textContentType(.emailAddress)
-                    .keyboardType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .disabled(isWorking)
-
-                Button(action: signIn) {
-                    if isWorking {
-                        ProgressView().frame(maxWidth: .infinity)
-                    } else {
-                        Text("Sign in").frame(maxWidth: .infinity)
-                    }
-                }
-                .lacticButton(.secondary, isEnabled: !isWorking && !email.isEmpty)
-
-                Text("Uses the API's dev_login route, which does not exist in production.")
-                    .font(.caption2)
-                    .foregroundStyle(LacticColor.textMuted)
-            }
-        }
-
-        private func signIn() {
-            isWorking = true
-            errorMessage = nil
-            Task {
-                do {
-                    try await environment.session.signInWithDevLogin(email: email)
-                } catch let error as APIError {
-                    errorMessage = error.message
-                } catch {
-                    errorMessage = error.localizedDescription
-                }
-                isWorking = false
-            }
         }
     #endif
 }

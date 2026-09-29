@@ -2254,6 +2254,23 @@
         }
       }
     },
+    "Sign in with Apple didn't finish. Try again." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with Apple didn't finish. Try again."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'accesso con Apple non è stato completato. Riprova."
+          }
+        }
+      }
+    },
     "Sign out" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2675,6 +2692,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Peso per la serie %lld"
+          }
+        }
+      }
+    },
+    "With Apple, choose Share My Email so your account matches this invitation." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With Apple, choose Share My Email so your account matches this invitation."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con Apple, scegli Condividi la mia email così il tuo account corrisponde a questo invito."
           }
         }
       }

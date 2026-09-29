@@ -26,5 +26,9 @@ CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE
 GCC_WARN_ABOUT_MISSING_NEWLINE = YES
 GCC_WARN_SHADOW = YES
 
-DEVELOPMENT_TEAM =
+// The enricoquerci team, which owns both App IDs. Not a secret: it is the
+// prefix of every application identifier this team signs. It has to be set
+// because Sign in with Apple validates the signed application identifier,
+// even on the simulator; an unsigned build fails with AuthorizationError 1000.
+DEVELOPMENT_TEAM = PE865UQNK4
 CODE_SIGN_STYLE = Automatic

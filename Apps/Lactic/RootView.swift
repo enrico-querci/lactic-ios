@@ -43,6 +43,9 @@ struct RootView: View {
         .animation(.default, value: environment.session.phase)
         .task {
             await environment.session.restore()
+            #if DEBUG
+                await environment.signInFromLaunchArguments()
+            #endif
             // Only now is there a token to authenticate the queued writes.
             environment.drainOutbox()
         }

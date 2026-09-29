@@ -46,7 +46,12 @@ struct RootView: View {
             }
         }
         .animation(.default, value: environment.session.phase)
-        .task { await environment.session.restore() }
+        .task {
+            await environment.session.restore()
+            #if DEBUG
+                await environment.signInFromLaunchArguments()
+            #endif
+        }
     }
 }
 

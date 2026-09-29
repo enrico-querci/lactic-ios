@@ -1,3 +1,4 @@
+import AuthenticationServices
 import LacticKit
 import LacticUI
 import SwiftUI
@@ -9,9 +10,6 @@ struct StudioSignInView: View {
 
     @State private var isSigningIn = false
     @State private var errorMessage: String?
-    #if DEBUG
-        @State private var devEmail = "john@example.com"
-    #endif
 
     var body: some View {
         ScrollView {
@@ -104,7 +102,13 @@ struct StudioSignInView: View {
                     )
             }
 
-            Button(action: signIn) {
+            LacticAppleSignInButton(
+                isEnabled: !isSigningIn,
+                onRequest: AppleSignInProvider.configure,
+                onCompletion: signInWithApple
+            )
+
+            Button(action: signInWithGoogle) {
                 HStack(spacing: LacticSpacing.sm) {
                     if isSigningIn {
                         ProgressView()
@@ -134,21 +138,6 @@ struct StudioSignInView: View {
                     }
                 }
                 .pickerStyle(.segmented)
-
-                VStack(alignment: .leading, spacing: LacticSpacing.sm) {
-                    TextField("Email", text: $devEmail)
-                        .textFieldStyle(.roundedBorder)
-                        .textContentType(.emailAddress)
-                        .keyboardType(.emailAddress)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .disabled(isSigningIn)
-                    Button("Sign in") { signInWithDevLogin() }
-                        .lacticButton(.secondary, isEnabled: !isSigningIn && !devEmail.isEmpty)
-                    Text("Uses the API's dev_login route, which does not exist in production.")
-                        .font(.lacticCaption)
-                        .foregroundStyle(LacticColor.textMuted)
-                }
             #endif
         }
         .padding(LacticSpacing.xl)
@@ -170,14 +159,17 @@ struct StudioSignInView: View {
                 set: { newValue in Task { await environment.applyServer(newValue) } }
             )
         }
-
-        private func signInWithDevLogin() {
-            perform { try await environment.session.signInWithDevLogin(email: devEmail) }
-        }
     #endif
 
-    private func signIn() {
+    private func signInWithGoogle() {
         perform { try await environment.session.signInWithGoogle() }
+    }
+
+    private func signInWithApple(_ result: Result<ASAuthorization, any Error>) {
+        perform {
+            let credential = try AppleSignInProvider.credential(from: result)
+            try await environment.session.signInWithApple(credential)
+        }
     }
 
     /// A coach signs in with no invitation token: an unrecognised email simply
@@ -190,8 +182,12 @@ struct StudioSignInView: View {
             defer { isSigningIn = false }
             do {
                 try await work()
-            } catch is CancellationError {
+            } catch GoogleSignInProvider.Failure.cancelled {
                 // The user dismissed Google's sheet.
+            } catch AppleSignInProvider.Failure.cancelled {
+                // The user dismissed Apple's sheet.
+            } catch is AppleSignInProvider.Failure {
+                errorMessage = String(localized: "Sign in with Apple didn't finish. Try again.")
             } catch {
                 errorMessage = (error as? APIError)?.message ?? error.localizedDescription
             }

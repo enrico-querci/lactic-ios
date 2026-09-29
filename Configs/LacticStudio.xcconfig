@@ -18,6 +18,10 @@ INFOPLIST_KEY_CFBundleDisplayName = Lactic Studio
 INFOPLIST_KEY_UILaunchScreen_Generation = YES
 INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES
 
+// Sign in with Apple. The App ID carries the capability (App Store Connect,
+// team PE865UQNK4); this file is what claims it in the signed binary.
+CODE_SIGN_ENTITLEMENTS = Apps/LacticStudio/Support/LacticStudio.entitlements
+
 // Google Sign-In.
 //
 // None of these are secrets: an iOS OAuth client has no client secret, and a

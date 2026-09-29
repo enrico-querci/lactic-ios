@@ -1,3 +1,4 @@
+import AuthenticationServices
 import Foundation
 import LacticCore
 import Observation
@@ -91,7 +92,8 @@ public final class InvitationModel {
             do {
                 try await session.signInWithGoogle(invitationToken: token)
                 return true
-            } catch is CancellationError {
+            } catch GoogleSignInProvider.Failure.cancelled {
+                // Backing out of Google's sheet is not a failure to report.
                 return false
             } catch {
                 failure = InvitationFailure(error)
@@ -100,6 +102,29 @@ public final class InvitationModel {
             }
         }
     #endif
+
+    /// Signs in with Apple and accepts in one step, exactly like Google.
+    ///
+    /// If the client chose Hide My Email, the relay address cannot match the
+    /// invited one and the API refuses with a message explaining how to share
+    /// the real address instead. That refusal is surfaced as-is.
+    public func signInWithApple(_ result: Result<ASAuthorization, any Error>) async -> Bool {
+        guard !isSubmitting else { return false }
+        isSubmitting = true
+        failure = nil
+        defer { isSubmitting = false }
+        do {
+            let credential = try AppleSignInProvider.credential(from: result)
+            try await session.signInWithApple(credential, invitationToken: token)
+            return true
+        } catch AppleSignInProvider.Failure.cancelled {
+            return false
+        } catch {
+            failure = InvitationFailure(error)
+            await reloadAfterRejection()
+            return false
+        }
+    }
 
     /// Offered on the blocked branch, where the only way forward is to come
     /// back as somebody else.

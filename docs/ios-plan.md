@@ -2,8 +2,8 @@
 
 Status: approved; in progress. See **Current visual delivery** for what is built today.
 
-Last updated: 2026-09-13. The client visual sequence and the first native
-Lactic Studio surface are implemented.
+Last updated: 2026-09-29. The client visual sequence, the first native Lactic
+Studio surface, and Sign in with Apple for both apps are implemented.
 
 This is the working plan for `lactic-ios`, the third Lactic repository. It is a
 living document — update it as decisions change rather than letting it drift.
@@ -27,8 +27,8 @@ live API whose contract is fully readable from the Rails blueprints.
 **Outcome:** a buildable, testable, CI-checked iOS monorepo whose **Lactic**
 (client/iPhone) app implements the core `/api/v1/client/**` experience and whose
 **Lactic Studio** (coach/iPad) app implements Google sign-in plus client and
-pending-invitation management. Sign in with Apple remains a ship gate for the
-App Store (decision #7), not a gate on continuing native product work.
+pending-invitation management. Both apps offer Sign in with Apple alongside
+Google (decision #7), which clears guideline 4.8's App Store gate.
 
 ### Decisions taken with the user
 
@@ -40,7 +40,7 @@ App Store (decision #7), not a gate on continuing native product work.
 | 4 | `lactic-api` changes ship alongside the iOS work as their own PRs in that repo — superseded in part by #7, which defers the auth ones |
 | 5 | Deployment target **iOS 18.0** (overrides `AGENTS.md` §6.1's "iOS 26+", which must be corrected in all three repos) |
 | 6 | ~~Fix the datetime format in `lactic-api` first~~ — **DONE**, [PR #46](https://github.com/enrico-querci/lactic-api/pull/46), deployed `b21bee6`, verified live |
-| 7 | **Google Sign-In now; Sign in with Apple at the App Store gate.** `dev_login` stays as a DEBUG-only convenience. SIWA is a release blocker, not a development one — see below |
+| 7 | **Google Sign-In first; Sign in with Apple at the App Store gate** — both now shipped. `dev_login` survives only as the DEBUG `--dev-login <email>` launch argument UI tests use; no screen offers it. See below |
 | 8 | **REST, not GraphQL** — considered and declined for v1; revisit at Studio's program builder |
 
 ---
@@ -119,15 +119,19 @@ Also needed now, because real sign-up starts creating users:
 `AuthController` does not `include ErrorHandling`, so a `RecordInvalid` on
 first-time user creation escapes as a plain 500 with a non-JSON body.
 
-**Later — Sign in with Apple, and it is a hard release gate.** App Store
-guideline 4.8 requires an equivalent privacy-preserving option once Google is
-offered, so a Google-only build is a rejection risk. A Release build also has no
-`dev_login` to fall back on (`config/routes.rb` guards it to dev/test). SIWA must
-land before any external TestFlight or submission. Its blockers, parked:
+**Sign in with Apple — shipped 2026-09-29.** Guideline 4.8 requires an
+equivalent privacy-preserving option once Google is offered, so it was the
+release gate. Both App IDs (`com.enricoquerci.lactic`,
+`com.enricoquerci.lacticstudio`, team `PE865UQNK4`) carry the capability; each
+app claims it through `Apps/<App>/Support/<App>.entitlements`. The UI is
+SwiftUI's `SignInWithAppleButton` wrapped as `LacticAppleSignInButton`, and
+`AppleSignInProvider` turns its result into what `POST /auth` needs. How the
+parked blockers were resolved:
 
-1. **`Auth::AppleVerifier` accepts exactly one audience** (`apple_verifier.rb:6`). A native SIWA ID token's `aud` is the **app's bundle ID**, and there will be two. It must accept a list.
-2. **Apple "Hide My Email" permanently locks an invited client out.** `ClientInvitations::Accept` requires an exact normalized match between invited and provider email (`accept.rb:24-44`); a `@privaterelay.appleid.com` address can never match. Needs an explicit product rule, not a silent failure.
-3. `AppleVerifier` never reads Apple's name, deriving one from the email (`apple_verifier.rb:11`) — and Apple returns the real name **only on first authorization**, so it must be forwarded and used or it is lost forever.
+1. **Audience.** `Auth::AppleVerifier` accepts both bundle IDs (overridable with `APPLE_CLIENT_IDS`). Implementing it exposed that the old verifier had **never worked**: it called `AppleID::IdToken.new` on a JWT string and passed a keyword `verify!` does not take, so every real token failed — and a blank audience would have made the gem skip the `aud` check entirely. Its tests now sign real tokens instead of stubbing the verifier.
+2. **Hide My Email.** The exact-match invariant stays. A `@privaterelay.appleid.com` address that fails it gets a specific message — stop using Lactic in the Apple Account's Sign in with Apple list, then sign in again choosing Share My Email — and the invitation screen says as much before the client taps the button.
+3. **Name.** The app forwards Apple's first-authorization name as `name` on `POST /auth`; it is used only when creating a user and ignored for Google.
+4. **Token revocation** (guideline 5.1.1(v), not in the original list). The app also sends the `authorization_code`; the API exchanges it for a refresh token stored on the user and revokes it in `DELETE /client/account`. Optional like Resend and RevenueCat: without `APPLE_TEAM_ID`, `APPLE_SIGN_IN_KEY_ID` and `APPLE_SIGN_IN_PRIVATE_KEY` both calls are skipped, and neither can fail a sign-in or a deletion.
 
 ### Product findings from the web to keep — or deliberately exceed
 
@@ -384,7 +388,7 @@ consuming screen is built keeps the change and its consumer reviewable together.
 | `include ErrorHandling` in `AuthController` — a first-sign-in `RecordInvalid` currently escapes as a plain 500 with a non-JSON body | **Google Sign-In (now)** — real sign-up starts creating users |
 | `Auth::GoogleVerifier` accepting a `GOOGLE_CLIENT_IDS` list — **only if** the iOS token's `aud` proves to be the iOS client id rather than the `serverClientID`. Verify before writing it; it may be unnecessary | **Google Sign-In (now)**, if needed at all |
 
-### PR 2 — Sign in with Apple (at the App Store gate, per decision #7)
+### PR 2 — Sign in with Apple — **SHIPPED** (see the sign-in section above)
 
 1. `Auth::AppleVerifier` — accept a **list** of audiences (both bundle IDs) from `APPLE_CLIENT_IDS`/credentials, and use Apple's first-authorization `name` when the client forwards it, falling back to today's behavior.
 2. **Private-relay policy.** Recommended: reject an `@privaterelay.appleid.com` address at invitation acceptance with a clear message telling the client to re-run Sign in with Apple and choose "Share My Email". No silent failure, and no weakening of the exact-match invariant `AGENTS.md` §9.1 requires preserved.
@@ -453,9 +457,8 @@ Dependabot for GitHub Actions and Swift packages, matching the API repo.
 10. `LacticStudio` scaffold with `CoachAPI`.
 11. `AGENTS.md` sync back to `lactic-api` and `lactic-web`, including §2.5's "last verified production state" (stale — still points at `e9baae8` / 2026-08-24).
 
-**Deferred to the App Store gate** (decision #7): Sign in with Apple and
-`lactic-api` PR 2, plus Universal Links, which need an Apple Developer team
-either way. Nothing before that point is blocked by them.
+**Deferred to the App Store gate** (decision #7): Universal Links. Sign in
+with Apple and `lactic-api` PR 2 have since shipped.
 
 > **Scope note.** Bringing invitation onboarding back in (step 9) follows from
 > decision #7 rather than being a separate expansion: it was deferred only
@@ -532,13 +535,13 @@ execution photos (no upload endpoint); a client exercise-browse screen; HealthKi
 watchOS; widgets; push notifications; Live Activities (the natural follow-up to
 the rest timer).
 
-Also deferred to the App Store gate (decision #7): Sign in with Apple and
-Universal Links. Google Sign-In and invitation onboarding are **in** scope now.
+Also deferred to the App Store gate (decision #7): Universal Links. Google
+Sign-In, Sign in with Apple and invitation onboarding are implemented.
 
 **Prerequisites that need the user.**
 
 - **Now, for step 8:** a **Google Cloud iOS OAuth client** for `com.enricoquerci.lactic` (and later `com.enricoquerci.lacticstudio`). I need its client id and reversed client id; the existing web `GOOGLE_CLIENT_ID` is also needed as the `serverClientID`.
-- **At the App Store gate:** an Apple Developer team plus two App IDs with the Sign in with Apple capability — also what unblocks Universal Links.
+- ~~**At the App Store gate:** an Apple Developer team plus two App IDs with the Sign in with Apple capability~~ — **DONE** 2026-09-29 (team `PE865UQNK4`). Universal Links still need the `apple-app-site-association` file on `lactic-web`.
 - `gh` and `railway` are already authenticated as of 2026-09-08.
 
 Nothing blocks running on the simulator today: steps 1–7 need none of the above,
