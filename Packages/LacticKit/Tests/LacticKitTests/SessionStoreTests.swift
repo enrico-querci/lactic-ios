@@ -23,6 +23,7 @@ struct SessionStoreTests {
 
     private func makeStore(
         storage: InMemoryStorage,
+        app: SessionApp? = nil,
         handler: @escaping @Sendable (URLRequest) -> StubTransport.Response
     ) -> (SessionStore, StubTransport) {
         let transport = StubTransport(handler: handler)
@@ -30,7 +31,7 @@ struct SessionStoreTests {
             configuration: APIConfiguration(baseURL: URL(string: "https://api.test")!) { "en" },
             session: transport.session
         )
-        let store = SessionStore(client: client, keychain: storage)
+        let store = SessionStore(client: client, keychain: storage, app: app)
         Task { await client.setTokenProvider(store) }
         return (store, transport)
     }
@@ -63,6 +64,59 @@ struct SessionStoreTests {
         // /me is fetched rather than synthesised: the auth response's user has
         // no avatar_url.
         #expect(transport.requestCount(forPathSuffix: "/me") == 1)
+    }
+
+    // MARK: - App scope
+
+    /// A session stored before the apps were scoped can be for the wrong
+    /// role. It ends quietly rather than showing an explanation screen.
+    @Test func restoreSignsOutAUserThisAppCannotServe() async throws {
+        let storage = InMemoryStorage([Self.refreshKey: "refresh-0"])
+        let (store, transport) = makeStore(storage: storage, app: .studio) { request in
+            request.url?.path.hasSuffix("/me") == true
+                ? .json(meBody)
+                : .json(#"{"access_token":"access-2","refresh_token":"refresh-2"}"#)
+        }
+
+        await store.restore()
+
+        #expect(store.phase == .signedOut)
+        #expect(try storage.string(forKey: Self.refreshKey) == nil)
+        #expect(transport.requests.contains { $0.httpMethod == "DELETE" }, "the refresh token is revoked too")
+    }
+
+    @Test func restoreKeepsAUserThisAppServes() async {
+        let storage = InMemoryStorage([Self.refreshKey: "refresh-0"])
+        let (store, _) = makeStore(storage: storage, app: .lactic) { request in
+            request.url?.path.hasSuffix("/me") == true
+                ? .json(meBody)
+                : .json(#"{"access_token":"access-2","refresh_token":"refresh-2"}"#)
+        }
+
+        await store.restore()
+
+        #expect(store.phase == .signedIn(aliceClient))
+    }
+
+    /// The backstop behind the API's own refusal: a user of the wrong role
+    /// never reaches `.signedIn`, even for a moment.
+    @Test func aSignInForTheWrongRoleThrowsAndLeavesNoSession() async throws {
+        let storage = InMemoryStorage()
+        let (store, transport) = makeStore(storage: storage, app: .studio) { request in
+            request.url?.path.hasSuffix("/me") == true ? .json(meBody) : .json(authBody)
+        }
+
+        await #expect(throws: SessionStore.WrongAppError(role: .client)) {
+            try await store.signIn(provider: "google", idToken: "tok")
+        }
+        #expect(store.phase != .signedIn(aliceClient))
+        #expect(try storage.string(forKey: Self.refreshKey) == nil)
+
+        let auth = try #require(transport.requests
+            .first { $0.url?.path.hasSuffix("/auth") == true && $0.httpMethod == "POST" })
+        let data = try #require(auth.bodyData())
+        let body = try #require(JSONSerialization.jsonObject(with: data) as? [String: String])
+        #expect(body["app"] == "studio")
     }
 
     /// The API destroys the old refresh-token row when it issues a new pair, so

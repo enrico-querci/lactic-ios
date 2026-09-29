@@ -1,6 +1,13 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "Account not deleted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Account not deleted" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Account non eliminato" } }
+      }
+    },
     "Active clients": {
       "extractionState": "manual",
       "localizations": {
@@ -20,6 +27,13 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Cancel" } },
         "it": { "stringUnit": { "state": "translated", "value": "Annulla" } }
+      }
+    },
+    "Cancel your subscription on the web first. You can delete your account once it will no longer renew.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Cancel your subscription on the web first. You can delete your account once it will no longer renew." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Prima annulla l'abbonamento sul web. Potrai eliminare l'account quando non si rinnoverà più." } }
       }
     },
     "Check your connection and try again.": {
@@ -76,6 +90,27 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Continue with Google" } },
         "it": { "stringUnit": { "state": "translated", "value": "Continua con Google" } }
+      }
+    },
+    "Delete account": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Delete account" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Elimina account" } }
+      }
+    },
+    "Delete everything": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Delete everything" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Elimina tutto" } }
+      }
+    },
+    "Delete your coach account?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Delete your coach account?" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Eliminare il tuo account coach?" } }
       }
     },
     "Email address": {
@@ -151,13 +186,6 @@
     "Lactic Studio": {
       "shouldTranslate": false
     },
-    "Lactic Studio is for coaches. Use the Lactic app to follow your programme.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Lactic Studio is for coaches. Use the Lactic app to follow your programme." } },
-        "it": { "stringUnit": { "state": "translated", "value": "Lactic Studio è per i coach. Usa l'app Lactic per seguire il tuo programma." } }
-      }
-    },
     "Loading clients": {
       "extractionState": "manual",
       "localizations": {
@@ -177,6 +205,27 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Manage your clients and keep every training relationship moving from one focused workspace." } },
         "it": { "stringUnit": { "state": "translated", "value": "Gestisci i tuoi clienti e fai crescere ogni rapporto di allenamento da un’unica area di lavoro." } }
+      }
+    },
+    "OK": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "OK" } },
+        "it": { "stringUnit": { "state": "translated", "value": "OK" } }
+      }
+    },
+    "This is a client account. Sign in to the Lactic app instead.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "This is a client account. Sign in to the Lactic app instead." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Questo è un account cliente. Accedi invece all'app Lactic." } }
+      }
+    },
+    "Your programmes, exercises, templates and invitations are deleted, along with the workouts your clients logged against your programmes. Your clients keep their own accounts. This cannot be undone.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Your programmes, exercises, templates and invitations are deleted, along with the workouts your clients logged against your programmes. Your clients keep their own accounts. This cannot be undone." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Vengono eliminati i tuoi programmi, esercizi, modelli e inviti, insieme agli allenamenti che i tuoi clienti hanno registrato sui tuoi programmi. I tuoi clienti mantengono i propri account. L'operazione non può essere annullata." } }
       }
     },
     "name@example.com": {
@@ -320,13 +369,6 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "The invitation link for %@ will stop working." } },
         "it": { "stringUnit": { "state": "translated", "value": "Il link di invito per %@ smetterà di funzionare." } }
-      }
-    },
-    "This is a client account": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "This is a client account" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Questo è un account cliente" } }
       }
     },
     "Try again": {

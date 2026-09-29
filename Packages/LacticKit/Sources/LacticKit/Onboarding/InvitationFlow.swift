@@ -146,11 +146,17 @@ public enum InvitationFailure: Equatable, Sendable {
     case offline
     /// Apple's sheet failed before the API was ever asked.
     case appleSignInFailed
+    /// Signed in as a coach, which the client app refuses.
+    case coachAccount
     case server(String)
 
     public init(_ error: any Error) {
         if error is AppleSignInProvider.Failure {
             self = .appleSignInFailed
+            return
+        }
+        if error is SessionStore.WrongAppError {
+            self = .coachAccount
             return
         }
         guard let apiError = error as? APIError else {

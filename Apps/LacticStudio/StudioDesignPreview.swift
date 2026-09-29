@@ -25,7 +25,8 @@
                 coachName: "John Coach",
                 coachEmail: "john@example.com",
                 model: model,
-                signOut: {}
+                signOut: {},
+                deleteAccount: {}
             )
             .task { await model.load() }
         }

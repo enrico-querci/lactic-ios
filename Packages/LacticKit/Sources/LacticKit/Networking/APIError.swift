@@ -49,7 +49,8 @@ public enum APIError: Error, Sendable, Equatable {
         }
     }
 
-    /// A machine-readable code, currently only `client_limit_reached` on 402.
+    /// A machine-readable code: `client_limit_reached` on the coach 402, and
+    /// `subscription_active` when coach account deletion is refused with 409.
     public var code: String? {
         if case .api(_, _, let code, _) = self {
             return code

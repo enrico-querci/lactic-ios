@@ -93,6 +93,8 @@ struct SignInView: View {
                 errorMessage = nil
             } catch is AppleSignInProvider.Failure {
                 errorMessage = String(localized: "Sign in with Apple didn't finish. Try again.")
+            } catch is SessionStore.WrongAppError {
+                errorMessage = String(localized: "This is a coach account. Sign in to Lactic Studio instead.")
             } catch let error as APIError {
                 errorMessage = error.message
             } catch {
@@ -112,6 +114,8 @@ struct SignInView: View {
                 // Backing out of the Google sheet is not an error worth
                 // reporting; the user knows what they did.
                 errorMessage = nil
+            } catch is SessionStore.WrongAppError {
+                errorMessage = String(localized: "This is a coach account. Sign in to Lactic Studio instead.")
             } catch let error as APIError {
                 errorMessage = error.message
             } catch {

@@ -160,7 +160,7 @@ final class AppEnvironment {
             let client = APIClient(configuration: Self.configuration(localeBox: localeBox))
         #endif
         self.client = client
-        session = SessionStore(client: client)
+        session = SessionStore(client: client, app: .lactic)
         outbox = Outbox(client: client)
         self.localeBox = localeBox
 

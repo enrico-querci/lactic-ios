@@ -70,6 +70,15 @@ public enum CoachAPI {
         Endpoint(method: .delete, path: "/coach/client_invitations/\(id)")
     }
 
+    // MARK: - Account
+
+    /// Deletes the coach and everything they own; their clients keep their
+    /// accounts. Answers 409 with code `subscription_active` while a paid plan
+    /// will still renew, because billing lives on the web.
+    public static var deleteAccount: Endpoint {
+        Endpoint(method: .delete, path: "/coach/account")
+    }
+
     // MARK: - Subscription
 
     public static var subscription: Endpoint {

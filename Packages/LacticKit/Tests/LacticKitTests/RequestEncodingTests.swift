@@ -83,6 +83,20 @@ struct RequestEncodingTests {
         #expect(with["invitation_token"] as? String == "inv")
     }
 
+    @Test func sendsTheAppOnlyWhenScoped() throws {
+        let web = try json(ClientAPI.signIn(provider: "google", idToken: "tok", invitationToken: nil))
+        #expect(web["app"] == nil)
+
+        let lactic = try json(ClientAPI.signIn(provider: "google", idToken: "tok", invitationToken: nil, app: "lactic"))
+        #expect(lactic["app"] as? String == "lactic")
+    }
+
+    @Test func deletesTheCoachAccountAtItsOwnPath() {
+        #expect(CoachAPI.deleteAccount.method == .delete)
+        #expect(CoachAPI.deleteAccount.path == "/coach/account")
+        #expect(CoachAPI.deleteAccount.requiresAuthentication)
+    }
+
     /// Apple's name and code are optional on the wire: a Google sign-in, or
     /// any Apple sign-in after the first, sends neither key rather than null.
     @Test func sendsApplesNameAndCodeOnlyWhenPresent() throws {

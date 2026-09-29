@@ -170,6 +170,12 @@ models, builds, and screenshot states pass.
 - A user has exactly one role: `coach` or `client`.
 - Existing users sign in normally using their linked provider identity.
 - An unknown client must present a valid invitation token during social sign-in.
+- Each native app sends `app` (`lactic` or `studio`) on `POST /auth`, and the
+  API refuses a user that app cannot serve without creating or linking
+  anything: a coach in Lactic, a client in Lactic Studio, and an email with no
+  invitation in Lactic. The value only ever refuses; it never chooses a role.
+  The web sends none. The apps also sign out a stored session of the wrong
+  role on launch.
 - Coach signup is open: an unrecognized email with no pending client
   invitation becomes a coach automatically, on the free plan. The one guard
   is that an email with a pending, unexpired client invitation cannot become
@@ -471,6 +477,7 @@ WorkoutSession
 | Review progress | Inspect sessions, actual weights, and repetitions |
 | Planning metrics | Volume sets and estimated workout duration |
 | Billing | View current plan and usage; subscribe or upgrade via RevenueCat |
+| Delete account | `DELETE /api/v1/coach/account`, offered in native Studio. Refused (409, `subscription_active`) while a paid plan still renews; clients keep their accounts, but the coach's programmes and the sessions logged against them go |
 
 ### 4.3 Implemented web portal
 

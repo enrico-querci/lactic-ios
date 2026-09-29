@@ -21,6 +21,24 @@ public enum AuthPhase: Equatable, Sendable {
     }
 }
 
+/// Which app a session belongs to, and so which role it can serve.
+///
+/// A user has exactly one role (AGENTS.md §2.3), and each app serves one of
+/// them. The API is told which app is asking and refuses the wrong role —
+/// and, for the client app, an email with no invitation — without creating
+/// anything; `SessionStore` enforces the same on restore.
+public enum SessionApp: String, Sendable {
+    case lactic
+    case studio
+
+    public var role: UserRole {
+        switch self {
+        case .lactic: .client
+        case .studio: .coach
+        }
+    }
+}
+
 /// Owns the session: which user is signed in, and the tokens that prove it.
 ///
 /// `@MainActor` because it is observed directly by SwiftUI and its state
@@ -32,6 +50,14 @@ public enum AuthPhase: Equatable, Sendable {
 public final class SessionStore: TokenProviding {
     public private(set) var phase: AuthPhase = .restoring
 
+    /// Thrown when a sign-in completes for a user this app cannot serve.
+    ///
+    /// The API refuses these itself, so this is the backstop for a server that
+    /// does not yet, and for `dev_login`, which skips `POST /auth`.
+    public struct WrongAppError: Error, Equatable {
+        public let role: UserRole
+    }
+
     /// In memory only, exactly like the web client. It lives 15 minutes, so
     /// persisting it would add exposure for almost no benefit.
     @ObservationIgnored private var accessToken: String?
@@ -42,6 +68,8 @@ public final class SessionStore: TokenProviding {
     @ObservationIgnored private let keychain: any SecureStorage
     @ObservationIgnored private let client: APIClient
     @ObservationIgnored private var refreshTask: Task<String?, any Error>?
+    /// `nil` only in tests that exercise the session mechanics on their own.
+    @ObservationIgnored private let app: SessionApp?
 
     /// Derived from the bundle id so each app keeps its own session rather
     /// than sharing a literal. For the client app this resolves to exactly the
@@ -54,10 +82,12 @@ public final class SessionStore: TokenProviding {
 
     public init(
         client: APIClient,
-        keychain: any SecureStorage = KeychainStore(service: SessionStore.defaultKeychainService)
+        keychain: any SecureStorage = KeychainStore(service: SessionStore.defaultKeychainService),
+        app: SessionApp? = nil
     ) {
         self.client = client
         self.keychain = keychain
+        self.app = app
     }
 
     // MARK: - Lifecycle
@@ -74,6 +104,13 @@ public final class SessionStore: TokenProviding {
         do {
             _ = try await performRefresh(using: stored)
             let user: User = try await client.send(ClientAPI.me)
+            // A session from before the apps were scoped can belong to the
+            // wrong role. It is ended rather than shown an explanation screen.
+            guard serves(user) else {
+                AppLog.auth.info("Stored session is for the wrong app; signing out")
+                await signOut()
+                return
+            }
             phase = .signedIn(user)
         } catch {
             AppLog.auth.info("Session restore failed; signing out")
@@ -92,8 +129,7 @@ public final class SessionStore: TokenProviding {
         try apply(session)
         // The auth response carries a four-key user with no avatar_url, so read
         // the full record rather than synthesising one from it.
-        let user: User = try await client.send(ClientAPI.me)
-        phase = .signedIn(user)
+        try await finishSignIn()
     }
 
     public func signIn(
@@ -102,12 +138,11 @@ public final class SessionStore: TokenProviding {
     ) async throws {
         let endpoint = try ClientAPI.signIn(
             provider: provider, idToken: idToken, invitationToken: invitationToken,
-            name: name, authorizationCode: authorizationCode
+            name: name, authorizationCode: authorizationCode, app: app?.rawValue
         )
         let session: AuthSession = try await client.send(endpoint)
         try apply(session)
-        let user: User = try await client.send(ClientAPI.me)
-        phase = .signedIn(user)
+        try await finishSignIn()
     }
 
     /// Signs in with a credential from `SignInWithAppleButton`.
@@ -216,6 +251,21 @@ public final class SessionStore: TokenProviding {
     }
 
     // MARK: - Internals
+
+    private func serves(_ user: User) -> Bool {
+        app.map { $0.role == user.role } ?? true
+    }
+
+    /// Loads the full user and only then declares the session signed in, so a
+    /// user this app cannot serve never reaches `.signedIn` at all.
+    private func finishSignIn() async throws {
+        let user: User = try await client.send(ClientAPI.me)
+        guard serves(user) else {
+            await signOut()
+            throw WrongAppError(role: user.role)
+        }
+        phase = .signedIn(user)
+    }
 
     private var storedRefreshToken: String? {
         try? keychain.string(forKey: Self.refreshTokenKey)

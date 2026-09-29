@@ -34,15 +34,9 @@ struct RootView: View {
             case .signedOut:
                 StudioSignInView()
             case .signedIn(let user):
-                // The mirror image of the client app's coach screen: roles are
-                // server-controlled, and every /coach/** endpoint rejects a
-                // client, so routing one into the shell would show errors
-                // everywhere instead of an explanation.
-                if user.role == .coach {
-                    StudioClientView(user: user)
-                } else {
-                    StudioWrongRoleView(user: user)
-                }
+                // Always a coach: the session is scoped to this app, so a
+                // client is refused at sign-in and signed out on restore.
+                StudioClientView(user: user)
             }
         }
         .animation(.default, value: environment.session.phase)
@@ -52,33 +46,6 @@ struct RootView: View {
                 await environment.signInFromLaunchArguments()
             #endif
         }
-    }
-}
-
-/// A client signed into the coach app.
-private struct StudioWrongRoleView: View {
-    @Environment(StudioEnvironment.self) private var environment
-    let user: User
-
-    var body: some View {
-        VStack(spacing: LacticSpacing.lg) {
-            Text("This is a client account")
-                .font(.lacticTitle)
-            Text("Lactic Studio is for coaches. Use the Lactic app to follow your programme.")
-                .font(.lacticBody)
-                .foregroundStyle(LacticColor.textSecondary)
-                .multilineTextAlignment(.center)
-            Text(user.email)
-                .font(.lacticCaption)
-                .foregroundStyle(LacticColor.textMuted)
-            Button("Sign out") {
-                Task { await environment.session.signOut() }
-            }
-            .lacticButton(.secondary)
-        }
-        .padding(LacticSpacing.lg)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(LacticColor.surface)
     }
 }
 

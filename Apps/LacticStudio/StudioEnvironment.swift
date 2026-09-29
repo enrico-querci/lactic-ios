@@ -86,7 +86,7 @@ final class StudioEnvironment {
         self.localeBox = localeBox
         // The keychain service derives from the bundle id, so Studio's session
         // is its own — signing out of one app leaves the other alone.
-        session = SessionStore(client: client)
+        session = SessionStore(client: client, app: .studio)
         Task { await client.setTokenProvider(session) }
     }
 

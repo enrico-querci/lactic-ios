@@ -61,16 +61,10 @@ struct RootView: View {
                 .background(LacticColor.surface)
         case .signedOut:
             SignInView()
-        case .signedIn(let user):
-            // A user has exactly one role, assigned by the server. A coach
-            // gets 403 from every client endpoint, so routing them into the
-            // client shell shows an error on every screen instead of an
-            // explanation.
-            if user.role == .coach {
-                CoachAccountView(user: user)
-            } else {
-                ClientShell()
-            }
+        case .signedIn:
+            // Always a client: the session is scoped to this app, so a coach
+            // is refused at sign-in and signed out on restore.
+            ClientShell()
         }
     }
 }
