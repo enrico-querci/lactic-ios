@@ -320,8 +320,9 @@ the first Firebase App Distribution releases follow.
   debug and upload-key SHA-1s. No Firebase SDK ships in either app; builds are
   uploaded with the `firebase` CLI (`make distribute-studio`,
   `make distribute-lactic`).
-- Firebase App Distribution is the only channel; the one tester is
-  `stuff@yellowtulip.it`. Play Store publishing is future scope (§8).
+- Firebase App Distribution is the only channel; every build goes to the
+  "Lactic Testers" group (alias `lactic-testers`). Play Store publishing is
+  future scope (§8).
 - Release builds are signed with an upload keystore kept outside every
   repository. Its path, alias, and passwords are read from
   `~/.gradle/gradle.properties` (`LACTIC_UPLOAD_STORE_FILE`,
