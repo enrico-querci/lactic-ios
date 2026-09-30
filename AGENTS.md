@@ -18,8 +18,8 @@ is a workout-management ecosystem for coaches and their clients.
 
 | Product | Audience | Platform | Purpose | Current state |
 | --- | --- | --- | --- | --- |
-| **Lactic** | Client | iOS | Follow assigned programs and log workouts | Core flows implemented; visual redesign landed through `lactic-ios#1`-`#5`; see `docs/ios-plan.md` |
-| **Lactic Studio** | Coach/Admin | Web and iPad-first iOS | Manage clients and create training programs | Coach routes (`/coach/**`) are deployed on the web; the native app matches them (`lactic-ios#13`-`#16`) except buying a plan, which stays on the web |
+| **Lactic** | Client | iOS and Android | Follow assigned programs and log workouts | Core flows implemented; visual redesign landed through `lactic-ios#1`-`#5`; see `docs/ios-plan.md`. The Android app matches iOS (`lactic-android#6`-`#8`) |
+| **Lactic Studio** | Coach/Admin | Web, iPad-first iOS, and tablet-first Android | Manage clients and create training programs | Coach routes (`/coach/**`) are deployed on the web; the native apps match them (`lactic-ios#13`-`#16`, `lactic-android#3`-`#5`) except buying a plan, which stays on the web |
 | **Lactic Web** | Coach and client | Web | Browser access to both role-specific experiences | Implemented and deployed |
 | **Lactic API** | All clients | Rails API | Shared auth, business logic, persistence, email, and REST API | Implemented and deployed |
 
@@ -128,6 +128,32 @@ available during the client visual pass, so workout logging/deletion and client
 navigation still need hands-on interaction verification even though their
 models, builds, and screenshot states pass.
 
+### 1.3 Current Android milestone
+
+As of **2026-09-30**, `lactic-android` holds the Android counterpart of both
+apps, built from the iOS code as the behavioural reference and talking to the
+same production API with no backend change:
+
+- `lactic-android#1`-`#2` lay the foundation: Gradle convention plugins, the
+  design system ported from iOS tokens with contrast tests, networking with
+  single-flight token refresh, the encrypted session store, Google sign-in via
+  Credential Manager, the shared Profile and Settings, and DEBUG fixtures.
+- `lactic-android#3`-`#5` reach Studio parity with iOS: clients, invitations
+  and a read-only Plan; assignments and client detail; programmes, the
+  builder, the workout editor, templates, and the exercise catalog.
+- `lactic-android#6`-`#8` reach Lactic parity: Home, programmes, invitation
+  onboarding (`lactic://invite/<token>` or a pasted code), workout execution
+  over a Room outbox with a WorkManager backstop, the rest alert, and history
+  with exercise progress.
+
+Every screen was exercised on an API 36 emulator through DEBUG fixtures,
+including adb-driven workout logging and deletion, and Studio was checked on
+a Pixel Tablet emulator. Lactic also ran end to end against a local API: sets
+logged offline survived process death, and WorkManager sent them once the
+network returned. Still open: real Google sign-in needs an Android OAuth
+client per package and signing SHA-1 in the `lactic` Google Cloud project;
+the first Firebase App Distribution releases follow.
+
 ---
 
 ## 2. Architecture
@@ -139,12 +165,14 @@ models, builds, and screenshot states pass.
 | `lactic-ios` | iOS monorepo: Lactic (iPhone client), Lactic Studio (iPad coach), and the shared `LacticCore`/`LacticKit`/`LacticUI` packages |
 | `lactic-api` | Ruby on Rails API-only backend |
 | `lactic-web` | Next.js web portal with coach and client routes |
+| `lactic-android` | Android monorepo: Lactic (phone, client) and Lactic Studio (tablet-first, coach) with shared `core:*` and `feature:*` Gradle modules |
 
 ### 2.2 Technology stack
 
 | Layer | Technology |
 | --- | --- |
 | iOS | Swift 6.x, SwiftUI, modular Swift Packages |
+| Android | Kotlin 2.4, Jetpack Compose, Material 3, Hilt, Retrofit, Room, WorkManager, Gradle modules |
 | Web | Next.js 16.1.6, React 19.2.3, TypeScript 5, Tailwind CSS 4 |
 | Backend | Ruby 3.4.3, Rails 8.1.3.1, API-only |
 | Database | PostgreSQL hosted on Railway |
@@ -160,8 +188,11 @@ models, builds, and screenshot states pass.
 
 - Google and Apple are the only production sign-in methods in v1.
 - There is no email/password signup in v1.
-- Both iOS apps implement Sign in with Apple and Google. The web UI implements
-  Google only.
+- Both iOS apps implement Sign in with Apple and Google. The web UI and both
+  Android apps implement Google only. Android sign-in uses Credential Manager
+  with the web OAuth client as `serverClientId`, so its ID tokens carry the
+  audience the API already verifies; each package also needs an Android OAuth
+  client (package name plus signing SHA-1) in the same Google Cloud project.
 - A native Apple ID token's audience is the requesting app's bundle ID, so
   `Auth::AppleVerifier` accepts `com.enricoquerci.lactic` and
   `com.enricoquerci.lacticstudio` (`APPLE_CLIENT_IDS` overrides the list). It
@@ -279,6 +310,23 @@ models, builds, and screenshot states pass.
   `DELETE /api/v1/client/account` revokes as App Review guideline 5.1.1(v)
   requires. Optional, like Resend and RevenueCat: without them both calls are
   skipped, and neither can ever fail a sign-in or a deletion.
+- Never write secret values in source, documentation, logs, issues, or
+  commits. Document variable names only.
+
+#### Android distribution
+
+- Firebase project `lactic` (Google Cloud project `235345338249`, which also
+  owns the web OAuth client). Both Android apps are registered there with the
+  debug and upload-key SHA-1s. No Firebase SDK ships in either app; builds are
+  uploaded with the `firebase` CLI (`make distribute-studio`,
+  `make distribute-lactic`).
+- Firebase App Distribution is the only channel; the one tester is
+  `stuff@yellowtulip.it`. Play Store publishing is future scope (§8).
+- Release builds are signed with an upload keystore kept outside every
+  repository. Its path, alias, and passwords are read from
+  `~/.gradle/gradle.properties` (`LACTIC_UPLOAD_STORE_FILE`,
+  `LACTIC_UPLOAD_KEY_ALIAS`, `LACTIC_UPLOAD_STORE_PASSWORD`); without them a
+  release build is unsigned, which is how CI builds it.
 - Never write secret values in source, documentation, logs, issues, or
   commits. Document variable names only.
 
@@ -669,7 +717,44 @@ npm run lint
 npm run build
 ```
 
-### 6.4 Git and CI
+### 6.4 Android (`lactic-android`)
+
+- Kotlin 2.4 on AGP 9 (built-in Kotlin), Gradle 9, JDK 21 (Android Studio's
+  bundled JBR). compileSdk 37, targetSdk 36, **minSdk 26**.
+- Jetpack Compose with Material 3, Material 3 Adaptive, and Navigation 3.
+  Studio is tablet-first but must read well on phones.
+- Clean architecture: `feature` (stateless `XxxScreen` + stateful `XxxRoute` +
+  ViewModel) → `core:domain` (use cases with one `operator fun invoke`,
+  repository interfaces) ← `core:data` (implementations over `core:network`,
+  `core:database`, `core:datastore`). ViewModels depend only on use cases and
+  expose one immutable `UiState` `StateFlow`. `core:model`, `core:common`,
+  and `core:domain` are pure Kotlin.
+- Hilt (KSP), Retrofit 3 + OkHttp 5 + kotlinx.serialization, Room +
+  WorkManager for the workout outbox, DataStore for settings, the refresh
+  token encrypted with Tink under an Android Keystore key, Coil 3 for GIF
+  exercise animations.
+- Cancellation is never an error, so an abandoned load never ends in a
+  failure state or restarts itself.
+- No analytics or crash SDKs. HTTP logging exists only in debug builds, never
+  logs bodies, and redacts `Authorization`.
+- Strings in English and Italian, matching the iOS keys and translations.
+- DEBUG intent extras mirror the iOS launch arguments (`design_preview`,
+  `destination`, `route`, `dev_login`, `invitation`, …) and replay fixtures
+  without an account or a server.
+- Tests: JUnit 4, Truth, Turbine, MockWebServer, Robolectric + Roborazzi
+  screenshot goldens. Spotless (ktlint + Compose rules), detekt (140-column
+  lines), and Android Lint, with Kotlin and Lint warnings as errors.
+- Nested guidance lives in `docs/android.md`.
+
+Relevant validation commands:
+
+```bash
+make lint   # spotlessCheck, detekt, lintDebug
+make test   # unit tests and Roborazzi verification
+make build  # assembleDebug and assembleRelease (R8)
+```
+
+### 6.5 Git and CI
 
 - `main` is the production branch.
 - Use short-lived `feature/*`, `fix/*`, or `codex/*` branches.
@@ -707,6 +792,8 @@ npm run build
 | 14 | RevenueCat Web Billing for subscriptions | Web-only today with a native iOS app as a future target; RevenueCat unifies entitlements across both under one App User ID (the coach's own `User#id`) without committing to Apple In-App Purchase before that app exists |
 | 15 | Subscription state always re-derived from `expires_at`, never a stored status | Self-heals if a webhook is missed, delayed, or arrives out of order — RevenueCat's own delivery guarantee is at-least-once with no ordering guarantee |
 | 16 | `lactic-ios` generates its Xcode project from `project.yml` (XcodeGen) and git-ignores `Lactic.xcodeproj` | Removes `project.pbxproj` as a merge-conflict surface and makes adding a file a filesystem operation rather than a project edit. Build settings live in `Configs/*.xcconfig` as a direct consequence: the Xcode UI writes into the generated project, where a regenerate silently discards the change |
+| 17 | `lactic-android` is one Gradle monorepo with two apps and clean architecture (repository → use case → ViewModel → view) | Mirrors the iOS monorepo's sharing of models, networking, and UI; the iOS code is the behavioural reference, so behaviour and tests are ported rather than re-invented |
+| 18 | Google-only sign-in on Android in v1 | Credential Manager covers Google natively; Sign in with Apple on Android needs a web-based flow and no App Review rule requires it there |
 
 ---
 
@@ -726,6 +813,12 @@ npm run build
   `lactic-web` never built UI for either. The iOS client writes both, so until
   the web catches up a note taken on the phone is invisible in the browser.
 - Apple Sign-In UI in the web portal.
+- Sign in with Apple on Android, through Apple's web-based flow.
+- Play Store publishing for both Android apps. Play's billing policy raises
+  the same question as the App Store IAP item below, so Android Studio's Plan
+  stays read-only until it is decided.
+- Android App Links for `https://…/invite/*`, so an invitation email opens the
+  Android app directly instead of relying on the `lactic://invite` scheme.
 - Optional email/password authentication only if product requirements change.
 - In-App Purchase for the native iOS Lactic Studio app once it exists.
   RevenueCat already unifies entitlements across web and app-store purchases
