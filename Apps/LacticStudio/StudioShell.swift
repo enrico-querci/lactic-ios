@@ -137,7 +137,6 @@ struct StudioShell: View {
                 root(for: selection ?? .clients)
                     .navigationDestination(for: StudioRoute.self, destination: screen)
             }
-            .environment(navigator)
             // Deliberately no `.id(selection)` here. On iPhone, where the split
             // view collapses, it rebuilt the whole stack as the detail was
             // pushed; the destination's view kept disappearing and reappearing,
@@ -148,6 +147,11 @@ struct StudioShell: View {
             // already separate; the path is reset below instead.
         }
         .navigationSplitViewStyle(.balanced)
+        // On the split view, not the detail's stack: collapsed on iPhone, the
+        // split view hosts the pushed screens itself, outside that stack's
+        // environment, and the programme builder trapped reading a navigator
+        // that was never there.
+        .environment(navigator)
         .onChange(of: selection) { navigator.path = [] }
     }
 
