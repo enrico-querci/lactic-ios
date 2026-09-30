@@ -127,47 +127,54 @@ struct StudioProgramBuilderView: View {
     }
 
     private func header(_ program: CoachProgram) -> some View {
-        HStack(alignment: .top, spacing: LacticSpacing.md) {
-            VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+        // The button shares a row with the eyebrow only, so the name and the
+        // description get the card's full width: beside them, a wider
+        // translation of "Edit" truncated the name on iPhone.
+        VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+            HStack(spacing: LacticSpacing.md) {
                 Text("Programme")
                     .font(.lacticEyebrow)
                     .foregroundStyle(LacticColor.brand)
                     .textCase(.uppercase)
-                Text(verbatim: program.name)
-                    .font(.lacticDisplay)
-                    .foregroundStyle(LacticColor.textOnHero)
-                if let description = program.description, !description.isEmpty {
-                    Text(verbatim: description)
-                        .font(.lacticBody)
-                        .foregroundStyle(LacticColor.textOnHero.opacity(0.78))
-                }
+                Spacer()
+                Button("Edit") { sheet = .details }
+                    .lacticButton(.secondary, size: .small)
+                    .fixedSize()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            Button("Edit") { sheet = .details }
-                .lacticButton(.secondary, size: .small)
-                .fixedSize()
+            Text(verbatim: program.name)
+                .font(.lacticDisplay)
+                .foregroundStyle(LacticColor.textOnHero)
+            if let description = program.description, !description.isEmpty {
+                Text(verbatim: description)
+                    .font(.lacticBody)
+                    .foregroundStyle(LacticColor.textOnHero.opacity(0.78))
+            }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(LacticSpacing.xl)
         .background(LacticColor.heroSurface, in: RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous))
     }
 
     private func weekCard(_ week: Week) -> some View {
         VStack(alignment: .leading, spacing: LacticSpacing.md) {
-            HStack {
-                Text("Week \(week.position)")
-                    .font(.lacticTitle)
-                Spacer()
-                Button("Add workout", systemImage: "plus") { sheet = .addWorkout(weekID: week.id) }
-                    .lacticButton(.secondary, size: .small)
-                    .fixedSize()
-                Menu {
-                    Button("Delete week", systemImage: "trash", role: .destructive) { pendingWeekDeletion = week }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .font(.title3)
-                        .frame(width: LacticSize.minimumHitTarget, height: LacticSize.minimumHitTarget)
+            // One row where it fits. On iPhone a longer translation of the
+            // button ("Aggiungi allenamento") left the title a sliver to
+            // hyphenate in, so there the button drops to its own row.
+            ViewThatFits(in: .horizontal) {
+                HStack {
+                    weekTitle(week)
+                    Spacer()
+                    addWorkoutButton(week)
+                    weekMenu(week)
                 }
-                .accessibilityLabel(Text("Week actions"))
+                VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+                    HStack {
+                        weekTitle(week)
+                        Spacer()
+                        weekMenu(week)
+                    }
+                    addWorkoutButton(week)
+                }
             }
 
             let workouts = week.orderedWorkouts
@@ -182,6 +189,28 @@ struct StudioProgramBuilderView: View {
             }
         }
         .studioCard(radius: LacticRadius.card)
+    }
+
+    private func weekTitle(_ week: Week) -> some View {
+        Text("Week \(week.position)")
+            .font(.lacticTitle)
+    }
+
+    private func addWorkoutButton(_ week: Week) -> some View {
+        Button("Add workout", systemImage: "plus") { sheet = .addWorkout(weekID: week.id) }
+            .lacticButton(.secondary, size: .small)
+            .fixedSize()
+    }
+
+    private func weekMenu(_ week: Week) -> some View {
+        Menu {
+            Button("Delete week", systemImage: "trash", role: .destructive) { pendingWeekDeletion = week }
+        } label: {
+            Image(systemName: "ellipsis.circle")
+                .font(.title3)
+                .frame(width: LacticSize.minimumHitTarget, height: LacticSize.minimumHitTarget)
+        }
+        .accessibilityLabel(Text("Week actions"))
     }
 
     private func workoutRow(_ workout: Workout, weekID: Int) -> some View {
