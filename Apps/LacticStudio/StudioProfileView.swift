@@ -3,10 +3,7 @@ import LacticUI
 import SwiftUI
 
 /// The coach's own account: who is signed in, signing out, and deleting it.
-///
-/// A destination of its own rather than a footer on the sidebar, so on iPhone,
-/// where the sidebar collapses into a list, it is one tap away like Clients.
-struct StudioProfileView: View {
+struct StudioProfileSection: View {
     let name: String
     let email: String
     let signOut: () -> Void
@@ -19,23 +16,16 @@ struct StudioProfileView: View {
     @State private var deletionError: String?
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: LacticSpacing.xl) {
-                LacticProfileHeader(name: name, email: email)
+        VStack(alignment: .leading, spacing: LacticSpacing.xl) {
+            LacticProfileHeader(name: name, email: email)
 
-                Button(action: signOut) {
-                    Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
-                }
-                .lacticButton(.secondary, isEnabled: !isDeleting)
-
-                deletionCard
+            Button(action: signOut) {
+                Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
             }
-            .frame(maxWidth: 640, alignment: .leading)
-            .padding(LacticSpacing.xl)
-            .frame(maxWidth: .infinity)
+            .lacticButton(.secondary, isEnabled: !isDeleting)
+
+            deletionCard
         }
-        .background(LacticColor.surface)
-        .navigationTitle("Profile")
         .confirmationDialog(
             "Delete your coach account?",
             isPresented: $isConfirmingDeletion,

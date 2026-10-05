@@ -4,31 +4,31 @@ import LacticUI
 import SwiftUI
 
 /// One client: who they are, what they are assigned, and every session they
-/// have logged against this coach's programmes.
+/// have logged against this coach's programmes. Selecting a session opens it
+/// in the next column.
 struct StudioClientDetailView: View {
     @Environment(StudioEnvironment.self) private var environment
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(StudioNavigator.self) private var navigator
 
     @State private var model: ClientDetailModel
     private let client: APIClient
-    private let name: String
     private let roster: ClientListModel
+    @Binding private var selectedSession: Int?
 
     @State private var isAssigning = false
     @State private var isConfirmingRemoval = false
 
-    init(client: APIClient, clientID: Int, name: String, roster: ClientListModel) {
+    init(client: APIClient, clientID: Int, roster: ClientListModel, selectedSession: Binding<Int?>) {
         self.client = client
-        self.name = name
         self.roster = roster
+        _selectedSession = selectedSession
         _model = State(initialValue: ClientDetailModel(client: client, clientID: clientID))
     }
 
     var body: some View {
         Group {
             if model.user == nil, let failure = model.failure {
-                StudioInitialFailureView(failure: failure, title: Text(verbatim: title)) {
+                StudioInitialFailureView(failure: failure, title: Text("Workout")) {
                     Task { await model.load() }
                 }
             } else if let user = model.user {
@@ -60,7 +60,7 @@ struct StudioClientDetailView: View {
             }
         }
         .confirmationDialog(
-            "Remove \(model.user?.name ?? name) from your clients?",
+            "Remove \(model.user?.name ?? "") from your clients?",
             isPresented: $isConfirmingRemoval,
             titleVisibility: .visible
         ) {
@@ -74,100 +74,101 @@ struct StudioClientDetailView: View {
     }
 
     private var title: String {
-        model.user?.name ?? name
+        model.user?.name ?? ""
     }
 
     private func content(_ user: User) -> some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: LacticSpacing.xl) {
+        List(selection: $selectedSession) {
+            Section {
                 LacticProfileHeader(name: user.name, email: user.email)
-
-                let layout = horizontalSizeClass == .compact
-                    ? AnyLayout(VStackLayout(spacing: LacticSpacing.sm))
-                    : AnyLayout(HStackLayout(spacing: LacticSpacing.md))
-                layout {
-                    StudioMetricCard(
-                        title: "Sessions logged", value: model.sessions.count.formatted(),
-                        systemImage: "figure.strengthtraining.traditional", isRow: horizontalSizeClass == .compact
-                    )
-                    StudioMetricCard(
-                        title: "Completed", value: model.completedSessionCount.formatted(),
-                        systemImage: "checkmark.seal.fill", isRow: horizontalSizeClass == .compact
-                    )
-                    StudioMetricCard(
-                        title: "Active programmes",
-                        value: model.assignments.assignments.filter { $0.status == .active }.count.formatted(),
-                        systemImage: "calendar", isRow: horizontalSizeClass == .compact
-                    )
-                }
-
+                    .studioPlainRow()
+                stats
+                    .studioPlainRow()
                 if let failure = roster.failure {
                     StudioActionFailureNotice(failure: failure)
-                }
-
-                assignmentsSection
-                sessionsSection
-            }
-            .padding(LacticSpacing.xl)
-            .frame(maxWidth: 960)
-            .frame(maxWidth: .infinity)
-        }
-        .background(LacticColor.surface)
-    }
-
-    private var assignmentsSection: some View {
-        VStack(alignment: .leading, spacing: LacticSpacing.md) {
-            HStack {
-                Text("Programmes")
-                    .font(.lacticTitle)
-                Spacer()
-                Button("Assign", systemImage: "plus") { isAssigning = true }
-                    .lacticButton(.secondary, size: .small)
-                    .fixedSize()
-            }
-            if let failure = model.assignments.failure {
-                StudioActionFailureNotice(failure: failure)
-            }
-            if model.assignments.orderedAssignments.isEmpty {
-                Text("No programme assigned yet.")
-                    .font(.lacticBody)
-                    .foregroundStyle(LacticColor.textSecondary)
-                    .studioCard()
-            } else {
-                ForEach(model.assignments.orderedAssignments) { assignment in
-                    AssignmentCard(assignment: assignment, showsClient: false, model: model.assignments)
+                        .studioPlainRow()
                 }
             }
-        }
-    }
 
-    private var sessionsSection: some View {
-        VStack(alignment: .leading, spacing: LacticSpacing.md) {
-            Text("Workout history")
-                .font(.lacticTitle)
-            if model.sessions.isEmpty {
-                Text("No workout sessions yet.")
-                    .font(.lacticBody)
-                    .foregroundStyle(LacticColor.textSecondary)
-                    .studioCard()
-            } else {
-                ForEach(model.sessions) { session in
-                    NavigationLink(value: StudioRoute.clientSession(
-                        clientID: model.clientID, sessionID: session.id,
-                        title: session.workoutName ?? String(localized: "Workout")
-                    )) {
-                        SessionRow(session: session)
+            Section {
+                if let failure = model.assignments.failure {
+                    StudioActionFailureNotice(failure: failure)
+                        .studioPlainRow()
+                }
+                if model.assignments.orderedAssignments.isEmpty {
+                    Text("No programme assigned yet.")
+                        .font(.lacticBody)
+                        .foregroundStyle(LacticColor.textSecondary)
+                        .studioPlainRow()
+                } else {
+                    ForEach(model.assignments.orderedAssignments) { assignment in
+                        AssignmentCard(assignment: assignment, showsClient: false, model: model.assignments)
+                            .studioPlainRow()
                     }
-                    .buttonStyle(.plain)
+                }
+            } header: {
+                StudioSectionHeader(title: "Programmes") {
+                    Button("Assign", systemImage: "plus") { isAssigning = true }
+                        .lacticButton(.secondary, size: .small)
+                        .fixedSize()
+                        .textCase(nil)
                 }
             }
+
+            Section {
+                if model.sessions.isEmpty {
+                    Text("No workout sessions yet.")
+                        .font(.lacticBody)
+                        .foregroundStyle(LacticColor.textSecondary)
+                        .studioPlainRow()
+                } else {
+                    ForEach(model.sessions) { session in
+                        SessionRow(session: session)
+                            .tag(session.id)
+                            .studioListRow(isSelected: selectedSession == session.id)
+                    }
+                }
+            } header: {
+                StudioSectionHeader("Workout history")
+            }
         }
+        .studioListColumn()
+    }
+
+    private var stats: some View {
+        HStack(spacing: 0) {
+            stat(value: model.sessions.count.formatted(), label: "Sessions logged")
+            Divider()
+            stat(value: model.completedSessionCount.formatted(), label: "Completed")
+            Divider()
+            stat(
+                value: model.assignments.assignments.filter { $0.status == .active }.count.formatted(),
+                label: "Active programmes"
+            )
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .studioCard(padding: LacticSpacing.md)
+    }
+
+    private func stat(value: String, label: LocalizedStringKey) -> some View {
+        VStack(spacing: LacticSpacing.xs) {
+            Text(verbatim: value)
+                .font(.title2.weight(.bold).monospacedDigit())
+                .foregroundStyle(LacticColor.textPrimary)
+            Text(label)
+                .font(.lacticCaption)
+                .foregroundStyle(LacticColor.textSecondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, LacticSpacing.xs)
+        .accessibilityElement(children: .combine)
     }
 
     private func remove() {
         Task {
             if await roster.removeClient(id: model.clientID) {
-                dismiss()
+                navigator.clientID = nil
             }
         }
     }
@@ -205,12 +206,7 @@ private struct SessionRow: View {
             } else {
                 StatusBadge(String(localized: "In progress"), tone: .caution)
             }
-            Image(systemName: "chevron.right")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(LacticColor.textMuted)
-                .accessibilityHidden(true)
         }
-        .studioCard()
         .accessibilityElement(children: .combine)
     }
 }
@@ -219,10 +215,8 @@ private struct SessionRow: View {
 struct StudioClientSessionView: View {
     @Environment(StudioEnvironment.self) private var environment
     @State private var model: ClientSessionModel
-    private let title: String
 
-    init(client: APIClient, clientID: Int, sessionID: Int, title: String) {
-        self.title = title
+    init(client: APIClient, clientID: Int, sessionID: Int) {
         _model = State(initialValue: ClientSessionModel(client: client, clientID: clientID, sessionID: sessionID))
     }
 
@@ -231,7 +225,7 @@ struct StudioClientSessionView: View {
             if let summary = model.summary {
                 content(summary)
             } else if let failure = model.failure {
-                StudioInitialFailureView(failure: failure, title: Text(verbatim: title)) {
+                StudioInitialFailureView(failure: failure, title: Text("Workout")) {
                     Task { await model.load() }
                 }
             } else {
@@ -240,7 +234,7 @@ struct StudioClientSessionView: View {
                     .background(LacticColor.surface)
             }
         }
-        .navigationTitle(model.summary?.workoutName ?? title)
+        .navigationTitle(model.summary?.workoutName ?? String(localized: "Workout"))
         .navigationBarTitleDisplayMode(.inline)
         .task { await model.load() }
     }

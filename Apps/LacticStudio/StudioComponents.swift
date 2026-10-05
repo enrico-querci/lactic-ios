@@ -6,112 +6,110 @@ import SwiftUI
 // Building blocks every Studio destination shares, so the roster, the
 // programme builder and the rest read as one product.
 
-struct StudioSidebarRow: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    let title: LocalizedStringKey
-    let compactTitle: LocalizedStringKey
-    let systemImage: String
-    /// `nil` for a destination that is not a collection, like Profile.
-    let count: Int?
-
-    var body: some View {
-        HStack(spacing: LacticSpacing.sm) {
-            Label(
-                dynamicTypeSize.isAccessibilitySize ? compactTitle : title,
-                systemImage: systemImage
-            )
-            .lineLimit(1)
-            .accessibilityLabel(title)
-            Spacer(minLength: LacticSpacing.sm)
-            if let count {
-                Text(verbatim: count.formatted())
-                    .font(.lacticCaption.weight(.semibold).monospacedDigit())
-                    .foregroundStyle(LacticColor.textSecondary)
-                    .padding(.horizontal, LacticSpacing.sm)
-                    .padding(.vertical, LacticSpacing.xs)
-                    .background(LacticColor.surfacePressed, in: Capsule())
-            }
-        }
-        .frame(minHeight: LacticSize.minimumHitTarget)
-    }
-}
-
-struct StudioDashboardHeader: View {
-    let eyebrow: LocalizedStringKey
+/// What a detail column shows before anything is selected in the list beside it.
+struct StudioSelectPrompt: View {
     let title: LocalizedStringKey
     let message: LocalizedStringKey
+    let systemImage: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: LacticSpacing.sm) {
-            Text(eyebrow)
-                .font(.lacticEyebrow)
-                .foregroundStyle(LacticColor.brand)
-                .textCase(.uppercase)
-            Text(title)
-                .font(.lacticDisplay)
-                .foregroundStyle(LacticColor.textOnHero)
+        ContentUnavailableView {
+            Label(title, systemImage: systemImage)
+        } description: {
             Text(message)
-                .font(.lacticBody)
-                .foregroundStyle(LacticColor.textOnHero.opacity(0.78))
-                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(LacticSpacing.xl)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LacticColor.heroSurface,
-            in: RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous)
-        )
+        .foregroundStyle(LacticColor.textSecondary)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(LacticColor.surface)
     }
 }
 
-struct StudioMetricCard: View {
+/// A small header above a list section: the eyebrow type the hero cards use,
+/// with room for one trailing control.
+struct StudioSectionHeader<Trailing: View>: View {
     let title: LocalizedStringKey
-    let value: String
-    let systemImage: String
-    /// A single line — icon, label, value at the trailing edge — for stacked
-    /// layouts, where a card is a full-width row rather than a tile.
-    var isRow = false
+    @ViewBuilder let trailing: () -> Trailing
 
     var body: some View {
-        HStack(spacing: LacticSpacing.md) {
-            Image(systemName: systemImage)
-                .font(.title3.weight(.semibold))
-                .foregroundStyle(LacticColor.accent)
-                .frame(width: LacticSize.minimumHitTarget, height: LacticSize.minimumHitTarget)
-                .background(LacticColor.surfacePressed, in: Circle())
-                .accessibilityHidden(true)
+        HStack {
+            Text(title)
+                .font(.lacticEyebrow)
+                .foregroundStyle(LacticColor.textSecondary)
+                .textCase(.uppercase)
+            Spacer()
+            trailing()
+        }
+        .padding(.horizontal, LacticSpacing.sm)
+    }
+}
 
-            if isRow {
-                Text(title)
-                    .font(.lacticBody)
-                    .foregroundStyle(LacticColor.textSecondary)
-                Spacer(minLength: LacticSpacing.sm)
-                Text(verbatim: value)
-                    .font(.title3.weight(.bold).monospacedDigit())
-                    .foregroundStyle(LacticColor.textPrimary)
-            } else {
-                VStack(alignment: .leading, spacing: LacticSpacing.xs) {
-                    Text(verbatim: value)
-                        .font(.title2.weight(.bold).monospacedDigit())
-                        .foregroundStyle(LacticColor.textPrimary)
-                    Text(title)
-                        .font(.lacticCaption)
-                        .foregroundStyle(LacticColor.textSecondary)
-                }
+extension StudioSectionHeader where Trailing == EmptyView {
+    init(_ title: LocalizedStringKey) {
+        self.init(title: title) { EmptyView() }
+    }
+}
+
+/// A row of a list column: the elevated, bordered card the rest of Studio uses,
+/// with the selection drawn as an accent edge. Drawn by hand rather than left
+/// to the system highlight, which fills the row with the tint colour — and the
+/// tint is lime in dark appearance, where the row's text would not be readable
+/// on it.
+private struct StudioRowBackground: View {
+    let isSelected: Bool
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
+            .fill(isSelected ? LacticColor.accent.opacity(0.14) : LacticColor.surfaceElevated)
+            .overlay {
+                RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
+                    .strokeBorder(
+                        isSelected ? LacticColor.accent : LacticColor.border,
+                        lineWidth: isSelected ? 2 : 1
+                    )
             }
-        }
-        .accessibilityElement(children: .combine)
-        .padding(isRow ? LacticSpacing.md : LacticSpacing.lg)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LacticColor.surfaceElevated,
-            in: RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
-                .strokeBorder(LacticColor.border, lineWidth: 1)
-        }
+            .padding(.horizontal, LacticSpacing.lg)
+            .padding(.vertical, LacticSpacing.xs)
+    }
+}
+
+extension View {
+    /// A list row as a card. Pass `isSelected` for rows that open something in
+    /// the next column.
+    func studioListRow(isSelected: Bool = false) -> some View {
+        listRowSeparator(.hidden)
+            // The card is inset from the cell by `StudioRowBackground`'s padding,
+            // so the content's inset is that plus the card's own padding.
+            .listRowInsets(EdgeInsets(
+                top: LacticSpacing.lg, leading: LacticSpacing.xxl,
+                bottom: LacticSpacing.lg, trailing: LacticSpacing.xxl
+            ))
+            .listRowBackground(StudioRowBackground(isSelected: isSelected))
+            .tint(LacticColor.accent)
+    }
+
+    /// A list row that is not a card: a notice, an empty state, a header block.
+    /// Never selectable, so it cannot be mistaken for something that opens.
+    func studioPlainRow() -> some View {
+        selectionDisabled()
+            .listRowSeparator(.hidden)
+            .listRowInsets(EdgeInsets(
+                top: LacticSpacing.xs, leading: LacticSpacing.lg,
+                bottom: LacticSpacing.xs, trailing: LacticSpacing.lg
+            ))
+            .listRowBackground(Color.clear)
+            .tint(LacticColor.accent)
+    }
+
+    /// The list column treatment: cards on the chalk surface, no system grouping.
+    func studioListColumn() -> some View {
+        listStyle(.plain)
+            // The system outlines a selected row in the tint colour, as a
+            // square around the cell that fights the rounded card drawn by
+            // `StudioRowBackground`. Matching the tint to the surface here and restoring it on
+            // the rows' own content removes the outline and nothing else.
+            .tint(LacticColor.surface)
+            .scrollContentBackground(.hidden)
+            .background(LacticColor.surface)
     }
 }
 

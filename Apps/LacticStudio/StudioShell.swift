@@ -42,58 +42,64 @@ struct StudioWorkspace: View {
     }
 }
 
-/// The sidebar's destinations — the web's coach navigation, plus Profile.
-enum StudioDestination: String, Hashable, CaseIterable {
+/// The top-level tabs. Each is a workspace of its own: a list, and the thing
+/// selected in it beside the list on iPad, pushed over it on iPhone.
+enum StudioTab: String, Hashable, CaseIterable {
     case clients
-    case invitations
+    case programmes
     case assignments
-    case programs
     case exercises
-    case templates
-    case plan
-    case profile
+    case account
 }
 
-/// Everything a destination can drill into. Each carries enough to title the
-/// screen before its data arrives.
-enum StudioRoute: Hashable {
-    case client(id: Int, name: String)
-    case clientSession(clientID: Int, sessionID: Int, title: String)
-    case program(id: Int, name: String)
-    case workout(programID: Int, weekID: Int, workoutID: Int, name: String)
-    case exercise(id: Int, name: String)
+/// A workout inside its week, which every workout endpoint needs in its path.
+struct StudioWorkoutKey: Hashable {
+    let weekID: Int
+    let workoutID: Int
 }
 
-/// The current destination's drill-down stack.
+/// What is selected in each tab.
 ///
 /// A reference type held once by the shell and handed down through the
-/// environment, so a screen can open something it just created. It replaces
-/// a closure that was rebuilt on every render: a new closure is a new
-/// environment value, which invalidated the whole detail column each time
-/// the shell redrew.
+/// environment, so a screen in one tab can open something in another — an
+/// assignment's client, a new programme's builder. Selection lives here rather
+/// than in each tab's `@State` for the same reason.
 @MainActor
 @Observable
 final class StudioNavigator {
-    var path: [StudioRoute]
+    var tab: StudioTab
 
-    init(path: [StudioRoute] = []) {
-        self.path = path
+    var clientID: Int?
+    var sessionID: Int?
+    var programmeID: Int?
+    var workout: StudioWorkoutKey?
+    var exerciseID: Int?
+
+    init(tab: StudioTab = .clients) {
+        self.tab = tab
     }
 
-    func push(_ route: StudioRoute) {
-        path.append(route)
+    func openClient(_ id: Int) {
+        sessionID = nil
+        clientID = id
+        tab = .clients
+    }
+
+    func openProgramme(_ id: Int) {
+        workout = nil
+        programmeID = id
+        tab = .programmes
     }
 }
 
-/// The iPad-first coach workspace: a sidebar of destinations, each with its
-/// own drill-down stack in the detail column. On iPhone the split view
-/// collapses into a list that pushes the same screens.
+/// The coach workspace: five tabs. On iPad they sit in a tab bar that folds
+/// into a sidebar, and each one lays its list and the selected item side by
+/// side — three columns where there is something to drill into twice. On
+/// iPhone the tabs are a bottom bar and the columns collapse into pushes.
 @MainActor
 struct StudioShell: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
     /// Passed in rather than read from the environment, so the design preview
-    /// can run every destination against its fixture transport.
+    /// can run every tab against its fixture transport.
     let client: APIClient
     let coachName: String
     let coachEmail: String
@@ -101,153 +107,93 @@ struct StudioShell: View {
     let signOut: () -> Void
     let deleteAccount: () async throws -> Void
 
-    @State private var selection: StudioDestination? = Self.initialDestination
-    @State private var navigator = StudioNavigator(path: Self.initialPath)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var navigator = Self.initialNavigator
 
     var body: some View {
-        NavigationSplitView {
-            List(selection: $selection) {
-                Section("Coaching") {
-                    row(.clients, "Clients", compact: "Clients", image: "person.2.fill", count: roster.clients.count)
-                    row(
-                        .invitations, "Invitations", compact: "Invites", image: "envelope.fill",
-                        count: roster.pendingInvitations.count
-                    )
-                    row(.assignments, "Assignments", compact: "Assigned", image: "calendar.badge.checkmark")
-                }
-                Section("Library") {
-                    row(.programs, "Programmes", compact: "Programmes", image: "list.bullet.rectangle.fill")
-                    row(.exercises, "Exercises", compact: "Exercises", image: "dumbbell.fill")
-                    row(.templates, "Templates", compact: "Templates", image: "square.on.square.fill")
-                }
-                Section("Account") {
-                    row(.plan, "Plan", compact: "Plan", image: "creditcard.fill")
-                    row(.profile, "Profile", compact: "Profile", image: "person.crop.circle.fill")
-                }
+        @Bindable var navigator = navigator
+
+        TabView(selection: $navigator.tab) {
+            Tab("Clients", systemImage: "person.2", value: StudioTab.clients) {
+                StudioClientsTab(client: client, roster: roster)
             }
-            .listStyle(.sidebar)
-            .navigationTitle("Lactic Studio")
-            .navigationSplitViewColumnWidth(
-                min: dynamicTypeSize.isAccessibilitySize ? 360 : 250,
-                ideal: dynamicTypeSize.isAccessibilitySize ? 400 : 300,
-                max: dynamicTypeSize.isAccessibilitySize ? 440 : 360
-            )
-        } detail: {
-            NavigationStack(path: $navigator.path) {
-                root(for: selection ?? .clients)
-                    .navigationDestination(for: StudioRoute.self, destination: screen)
+
+            Tab("Programmes", systemImage: "list.bullet.rectangle", value: StudioTab.programmes) {
+                StudioProgrammesTab(client: client)
             }
-            // Deliberately no `.id(selection)` here. On iPhone, where the split
-            // view collapses, it rebuilt the whole stack as the detail was
-            // pushed; the destination's view kept disappearing and reappearing,
-            // each time cancelling its load and starting another. With real
-            // network latency that never converged: 122 requests in five
-            // seconds to /coach/program_assignments behind an endless spinner.
-            // Each destination is a different view type, so its state is
-            // already separate; the path is reset below instead.
+
+            Tab("Assignments", systemImage: "calendar.badge.checkmark", value: StudioTab.assignments) {
+                StudioAssignmentsTab(client: client)
+            }
+
+            Tab("Exercises", systemImage: "dumbbell", value: StudioTab.exercises) {
+                StudioExercisesTab(client: client)
+            }
+
+            Tab("Account", systemImage: "person.crop.circle", value: StudioTab.account) {
+                StudioAccountView(
+                    roster: roster, name: coachName, email: coachEmail,
+                    signOut: signOut, deleteAccount: deleteAccount
+                )
+            }
+            // iPad's tab bar has room for four titles, not five: there Account
+            // is reached from the sidebar the bar folds into.
+            .defaultVisibility(horizontalSizeClass == .compact ? .automatic : .hidden, for: .tabBar)
         }
-        .navigationSplitViewStyle(.balanced)
-        // On the split view, not the detail's stack: collapsed on iPhone, the
-        // split view hosts the pushed screens itself, outside that stack's
-        // environment, and the programme builder trapped reading a navigator
-        // that was never there.
+        .tabViewStyle(.sidebarAdaptable)
+        // On the tab view, not on each tab: collapsed on iPhone a split view
+        // hosts its pushed columns itself, outside the environment of the
+        // column that pushed them.
         .environment(navigator)
-        .onChange(of: selection) { navigator.path = [] }
-    }
-
-    private func row(
-        _ destination: StudioDestination, _ title: LocalizedStringKey, compact: LocalizedStringKey,
-        image: String, count: Int? = nil
-    ) -> some View {
-        StudioSidebarRow(title: title, compactTitle: compact, systemImage: image, count: count)
-            .tag(destination)
-    }
-
-    @ViewBuilder
-    private func root(for destination: StudioDestination) -> some View {
-        switch destination {
-        case .clients:
-            StudioClientsDashboard(model: roster)
-        case .invitations:
-            StudioInvitationsDashboard(model: roster)
-        case .assignments:
-            StudioAssignmentsView(client: client)
-        case .programs:
-            StudioProgramsView(client: client)
-        case .exercises:
-            StudioExercisesView(client: client)
-        case .templates:
-            StudioTemplatesView(client: client)
-        case .plan:
-            StudioPlanView(roster: roster)
-        case .profile:
-            StudioProfileView(name: coachName, email: coachEmail, signOut: signOut, deleteAccount: deleteAccount)
-        }
-    }
-
-    @ViewBuilder
-    private func screen(for route: StudioRoute) -> some View {
-        switch route {
-        case .client(let id, let name):
-            StudioClientDetailView(client: client, clientID: id, name: name, roster: roster)
-        case .clientSession(let clientID, let sessionID, let title):
-            StudioClientSessionView(client: client, clientID: clientID, sessionID: sessionID, title: title)
-        case .program(let id, let name):
-            StudioProgramBuilderView(client: client, programID: id, name: name)
-        case .workout(let programID, let weekID, let workoutID, let name):
-            StudioWorkoutEditorView(
-                client: client, programID: programID, weekID: weekID, workoutID: workoutID, name: name
-            )
-        case .exercise(let id, let name):
-            StudioExerciseDetailView(client: client, exerciseID: id, name: name)
-        }
     }
 
     // MARK: - DEBUG deep links
 
-    /// `--studio-destination <name>` opens a destination and `--studio-route`
-    /// pushes a screen — `client:<id>`, `session:<client>:<session>`,
-    /// `program:<id>` or `workout:<program>:<week>:<workout>` — so each can be
-    /// reviewed without driving the sidebar. The older `--studio-profile` still
-    /// opens Profile.
-    private static var initialDestination: StudioDestination {
+    /// `--studio-destination <name>` opens a tab and `--studio-route` selects
+    /// something in it — `client:<id>`, `session:<client>:<session>`,
+    /// `program:<id>`, `workout:<program>:<week>:<workout>` or `exercise:<id>` —
+    /// so each can be reviewed without driving the UI. The old destination
+    /// names still work: `invitations` and `profile` and `plan` land on the
+    /// tab that now holds them. `--studio-profile` still opens Account.
+    private static var initialNavigator: StudioNavigator {
+        let navigator = StudioNavigator()
         #if DEBUG
             let arguments = ProcessInfo.processInfo.arguments
             if arguments.contains("--studio-profile") {
-                return .profile
+                navigator.tab = .account
             }
             if let index = arguments.firstIndex(of: "--studio-destination"), arguments.indices.contains(index + 1) {
-                return StudioDestination(rawValue: arguments[index + 1]) ?? .clients
+                navigator.tab = switch arguments[index + 1] {
+                case "invitations": .clients
+                case "programs", "programmes", "templates": .programmes
+                case "assignments": .assignments
+                case "exercises": .exercises
+                case "plan", "profile", "account": .account
+                default: .clients
+                }
+            }
+            if let index = arguments.firstIndex(of: "--studio-route"), arguments.indices.contains(index + 1) {
+                let parts = arguments[index + 1].split(separator: ":").map(String.init)
+                let ids = parts.dropFirst().compactMap { Int($0) }
+                switch (parts.first, ids.count) {
+                case ("client", 1):
+                    navigator.openClient(ids[0])
+                case ("session", 2):
+                    navigator.openClient(ids[0])
+                    navigator.sessionID = ids[1]
+                case ("program", 1):
+                    navigator.openProgramme(ids[0])
+                case ("workout", 3):
+                    navigator.openProgramme(ids[0])
+                    navigator.workout = StudioWorkoutKey(weekID: ids[1], workoutID: ids[2])
+                case ("exercise", 1):
+                    navigator.tab = .exercises
+                    navigator.exerciseID = ids[0]
+                default:
+                    break
+                }
             }
         #endif
-        return .clients
-    }
-
-    private static var initialPath: [StudioRoute] {
-        #if DEBUG
-            let arguments = ProcessInfo.processInfo.arguments
-            guard let index = arguments.firstIndex(of: "--studio-route"), arguments.indices.contains(index + 1)
-            else { return [] }
-            let parts = arguments[index + 1].split(separator: ":").map(String.init)
-            switch (parts.first, parts.dropFirst().compactMap { Int($0) }) {
-            case ("client", let ids) where ids.count == 1:
-                return [.client(id: ids[0], name: "")]
-            case ("session", let ids) where ids.count == 2:
-                return [.client(id: ids[0], name: ""), .clientSession(clientID: ids[0], sessionID: ids[1], title: "")]
-            case ("program", let ids) where ids.count == 1:
-                return [.program(id: ids[0], name: "")]
-            case ("exercise", let ids) where ids.count == 1:
-                return [.exercise(id: ids[0], name: "")]
-            case ("workout", let ids) where ids.count == 3:
-                return [
-                    .program(id: ids[0], name: ""),
-                    .workout(programID: ids[0], weekID: ids[1], workoutID: ids[2], name: ""),
-                ]
-            default:
-                return []
-            }
-        #else
-            return []
-        #endif
+        return navigator
     }
 }

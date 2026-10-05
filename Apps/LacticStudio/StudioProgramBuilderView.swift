@@ -8,13 +8,15 @@ import SwiftUI
 // swiftlint:disable file_length
 
 /// One programme's weeks and the workouts on each day — the web's programme
-/// page, where a coach builds the plan.
+/// page, where a coach builds the plan. Selecting a workout opens its
+/// exercises in the next column.
 struct StudioProgramBuilderView: View {
     @Environment(StudioEnvironment.self) private var environment
-    @Environment(StudioNavigator.self) private var navigator
 
     @State private var model: ProgramBuilderModel
-    private let name: String
+    @Binding private var selection: StudioWorkoutKey?
+    private let volumeVersion: Int
+    private let didChangeDetails: () -> Void
 
     @State private var sheet: BuilderSheet?
     @State private var pendingWeekDeletion: Week?
@@ -22,8 +24,15 @@ struct StudioProgramBuilderView: View {
     @State private var templateSource: WorkoutRef?
     @State private var templateName = ""
 
-    init(client: APIClient, programID: Int, name: String) {
-        self.name = name
+    /// `volumeVersion` changes when the workout editor beside this changes a
+    /// workout, whose volume this screen summarises.
+    init(
+        client: APIClient, programID: Int, selection: Binding<StudioWorkoutKey?>,
+        volumeVersion: Int, didChangeDetails: @escaping () -> Void
+    ) {
+        _selection = selection
+        self.volumeVersion = volumeVersion
+        self.didChangeDetails = didChangeDetails
         _model = State(initialValue: ProgramBuilderModel(client: client, programID: programID))
     }
 
@@ -32,7 +41,7 @@ struct StudioProgramBuilderView: View {
             if let program = model.program {
                 content(program)
             } else if let failure = model.failure {
-                StudioInitialFailureView(failure: failure, title: Text(verbatim: name)) {
+                StudioInitialFailureView(failure: failure, title: Text("Programme")) {
                     Task { await model.load() }
                 }
             } else {
@@ -41,7 +50,7 @@ struct StudioProgramBuilderView: View {
                     .background(LacticColor.surface)
             }
         }
-        .navigationTitle(model.program?.name ?? name)
+        .navigationTitle(model.program?.name ?? String(localized: "Programme"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -61,7 +70,11 @@ struct StudioProgramBuilderView: View {
             presenting: pendingWeekDeletion
         ) { week in
             Button("Delete week", role: .destructive) {
-                Task { await model.deleteWeek(id: week.id) }
+                Task {
+                    if await model.deleteWeek(id: week.id), selection?.weekID == week.id {
+                        selection = nil
+                    }
+                }
             }
             Button("Cancel", role: .cancel) {}
         }
@@ -72,7 +85,12 @@ struct StudioProgramBuilderView: View {
             presenting: pendingWorkoutDeletion
         ) { ref in
             Button("Delete workout", role: .destructive) {
-                Task { await model.deleteWorkout(weekID: ref.weekID, id: ref.workout.id) }
+                Task {
+                    let deleted = await model.deleteWorkout(weekID: ref.weekID, id: ref.workout.id)
+                    if deleted, selection?.workoutID == ref.workout.id {
+                        selection = nil
+                    }
+                }
             }
             Button("Cancel", role: .cancel) {}
         } message: { _ in
@@ -87,41 +105,39 @@ struct StudioProgramBuilderView: View {
         } message: { _ in
             Text("A template can be added to any week of any programme.")
         }
-        // On every return, not once: the workout editor changes the volume
-        // this screen summarises.
-        .onAppear { Task { await model.load() } }
+        // Once on appearing, and again whenever the editor beside this changes
+        // a workout.
+        .task(id: volumeVersion) { await model.load() }
     }
 
     private func content(_ program: CoachProgram) -> some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: LacticSpacing.xl) {
-                header(program)
+        List(selection: $selection) {
+            header(program)
+                .studioPlainRow()
 
-                if let failure = model.failure {
-                    StudioActionFailureNotice(failure: failure)
-                }
-
-                if model.orderedWeeks.isEmpty {
-                    StudioEmptyCard(
-                        title: "No weeks yet",
-                        message: "Add the first week to start building the programme.",
-                        systemImage: "calendar"
-                    ) {
-                        Button("Add week") { Task { await model.addWeek() } }
-                            .lacticButton(isEnabled: !model.isSubmitting)
-                            .frame(maxWidth: 280)
-                    }
-                } else {
-                    ForEach(model.orderedWeeks) { week in
-                        weekCard(week)
-                    }
-                }
+            if let failure = model.failure {
+                StudioActionFailureNotice(failure: failure)
+                    .studioPlainRow()
             }
-            .padding(LacticSpacing.xl)
-            .frame(maxWidth: 960)
-            .frame(maxWidth: .infinity)
+
+            if model.orderedWeeks.isEmpty {
+                StudioEmptyCard(
+                    title: "No weeks yet",
+                    message: "Add the first week to start building the programme.",
+                    systemImage: "calendar"
+                ) {
+                    Button("Add week") { Task { await model.addWeek() } }
+                        .lacticButton(isEnabled: !model.isSubmitting)
+                        .frame(maxWidth: 280)
+                }
+                .studioPlainRow()
+            }
+
+            ForEach(model.orderedWeeks) { week in
+                weekSection(week)
+            }
         }
-        .background(LacticColor.surface)
+        .studioListColumn()
         .opacity(model.isSubmitting ? 0.7 : 1)
         .refreshable { await model.load() }
     }
@@ -155,51 +171,34 @@ struct StudioProgramBuilderView: View {
         .background(LacticColor.heroSurface, in: RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous))
     }
 
-    private func weekCard(_ week: Week) -> some View {
-        VStack(alignment: .leading, spacing: LacticSpacing.md) {
-            // One row where it fits. On iPhone a longer translation of the
-            // button ("Aggiungi allenamento") left the title a sliver to
-            // hyphenate in, so there the button drops to its own row.
-            ViewThatFits(in: .horizontal) {
-                HStack {
-                    weekTitle(week)
-                    Spacer()
-                    addWorkoutButton(week)
-                    weekMenu(week)
-                }
-                VStack(alignment: .leading, spacing: LacticSpacing.sm) {
-                    HStack {
-                        weekTitle(week)
-                        Spacer()
-                        weekMenu(week)
-                    }
-                    addWorkoutButton(week)
-                }
-            }
-
+    private func weekSection(_ week: Week) -> some View {
+        Section {
             let workouts = week.orderedWorkouts
             if workouts.isEmpty {
                 Text("No workouts this week yet.")
                     .font(.lacticBody)
                     .foregroundStyle(LacticColor.textSecondary)
-            } else {
-                ForEach(workouts) { workout in
-                    workoutRow(workout, weekID: week.id)
-                }
+                    .studioPlainRow()
+            }
+            ForEach(workouts) { workout in
+                let key = StudioWorkoutKey(weekID: week.id, workoutID: workout.id)
+                let ref = WorkoutRef(weekID: week.id, workout: workout)
+                workoutRow(ref)
+                    .tag(key)
+                    .studioListRow(isSelected: selection == key)
+                    .swipeActions {
+                        Button("Delete", systemImage: "trash", role: .destructive) { pendingWorkoutDeletion = ref }
+                    }
+                    .contextMenu { workoutActions(ref) }
+            }
+            Button("Add workout", systemImage: "plus") { sheet = .addWorkout(weekID: week.id) }
+                .lacticButton(.secondary, size: .small)
+                .studioPlainRow()
+        } header: {
+            StudioSectionHeader(title: "Week \(week.position)") {
+                weekMenu(week)
             }
         }
-        .studioCard(radius: LacticRadius.card)
-    }
-
-    private func weekTitle(_ week: Week) -> some View {
-        Text("Week \(week.position)")
-            .font(.lacticTitle)
-    }
-
-    private func addWorkoutButton(_ week: Week) -> some View {
-        Button("Add workout", systemImage: "plus") { sheet = .addWorkout(weekID: week.id) }
-            .lacticButton(.secondary, size: .small)
-            .fixedSize()
     }
 
     private func weekMenu(_ week: Week) -> some View {
@@ -209,43 +208,36 @@ struct StudioProgramBuilderView: View {
             Image(systemName: "ellipsis.circle")
                 .font(.title3)
                 .frame(width: LacticSize.minimumHitTarget, height: LacticSize.minimumHitTarget)
+                .contentShape(Rectangle())
         }
+        .textCase(nil)
         .accessibilityLabel(Text("Week actions"))
     }
 
-    private func workoutRow(_ workout: Workout, weekID: Int) -> some View {
-        let ref = WorkoutRef(weekID: weekID, workout: workout)
-        return HStack(spacing: LacticSpacing.md) {
-            NavigationLink(value: StudioRoute.workout(
-                programID: model.programID, weekID: weekID, workoutID: workout.id, name: workout.name
-            )) {
-                HStack(alignment: .top, spacing: LacticSpacing.md) {
-                    Text(verbatim: Formatters.weekdayName(day: workout.day, locale: environment.locale))
-                        .font(.lacticCaption.weight(.semibold))
-                        .foregroundStyle(LacticColor.textSecondary)
-                        .frame(width: 44, alignment: .leading)
-                        .padding(.top, 2)
-                    VStack(alignment: .leading, spacing: LacticSpacing.sm) {
-                        Text(verbatim: workout.name)
-                            .font(.lacticHeadline)
-                            .foregroundStyle(LacticColor.textPrimary)
-                        if !workout.volumeSets.isEmpty {
-                            FlowLayout(spacing: LacticSpacing.xs) {
-                                ForEach(workout.volumeSets.sorted { $0.key < $1.key }, id: \.key) { muscle, sets in
-                                    VolumeChip(muscleGroup: muscle, sets: sets)
-                                }
-                            }
-                        } else {
-                            Text("No exercises yet")
-                                .font(.lacticCaption)
-                                .foregroundStyle(LacticColor.textMuted)
+    private func workoutRow(_ ref: WorkoutRef) -> some View {
+        HStack(alignment: .top, spacing: LacticSpacing.md) {
+            Text(verbatim: Formatters.weekdayName(day: ref.workout.day, locale: environment.locale))
+                .font(.lacticCaption.weight(.semibold))
+                .foregroundStyle(LacticColor.textSecondary)
+                .frame(width: 44, alignment: .leading)
+                .padding(.top, 2)
+            VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+                Text(verbatim: ref.workout.name)
+                    .font(.lacticHeadline)
+                    .foregroundStyle(LacticColor.textPrimary)
+                if !ref.workout.volumeSets.isEmpty {
+                    FlowLayout(spacing: LacticSpacing.xs) {
+                        ForEach(ref.workout.volumeSets.sorted { $0.key < $1.key }, id: \.key) { muscle, sets in
+                            VolumeChip(muscleGroup: muscle, sets: sets)
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    Text("No exercises yet")
+                        .font(.lacticCaption)
+                        .foregroundStyle(LacticColor.textMuted)
                 }
-                .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             Menu {
                 workoutActions(ref)
@@ -253,12 +245,10 @@ struct StudioProgramBuilderView: View {
                 Image(systemName: "ellipsis.circle")
                     .font(.title3)
                     .frame(width: LacticSize.minimumHitTarget, height: LacticSize.minimumHitTarget)
+                    .contentShape(Rectangle())
             }
             .accessibilityLabel(Text("Workout actions"))
         }
-        .padding(LacticSpacing.md)
-        .background(LacticColor.surface, in: RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous))
-        .contextMenu { workoutActions(ref) }
     }
 
     @ViewBuilder
@@ -280,13 +270,14 @@ struct StudioProgramBuilderView: View {
                 title: "Edit programme", saveTitle: "Save",
                 name: model.program?.name ?? "", description: model.program?.description ?? ""
             ) { name, description in
-                await model.updateDetails(name: name, description: description) ? nil : model.failure
+                guard await model.updateDetails(name: name, description: description) else { return model.failure }
+                didChangeDetails()
+                return nil
             }
         case .addWorkout(let weekID):
             AddWorkoutSheet(model: model, weekID: weekID) { workout in
-                navigator.push(.workout(
-                    programID: model.programID, weekID: weekID, workoutID: workout.id, name: workout.name
-                ))
+                // An empty workout is only a starting point: open it.
+                selection = StudioWorkoutKey(weekID: weekID, workoutID: workout.id)
             }
         case .editWorkout(let ref):
             WorkoutPlacementSheet(

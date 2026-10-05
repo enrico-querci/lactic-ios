@@ -3,8 +3,23 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
+/// Assignments: which programme each client follows, as a grid of cards that
+/// fills an iPad's width. Opening a client or a programme from a card moves
+/// to its own tab rather than pushing over this one.
+struct StudioAssignmentsTab: View {
+    let client: APIClient
+
+    var body: some View {
+        NavigationStack {
+            StudioAssignmentsView(client: client)
+        }
+    }
+}
+
 /// Which programme each client follows: the web's Assignments page.
 struct StudioAssignmentsView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     @State private var model: AssignmentListModel
     @State private var isCreating = false
     private let client: APIClient
@@ -50,12 +65,6 @@ struct StudioAssignmentsView: View {
     private var content: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: LacticSpacing.xl) {
-                StudioDashboardHeader(
-                    eyebrow: "Programme assignments",
-                    title: "Assignments",
-                    message: "Who follows which programme, from when, and whether it is running."
-                )
-
                 Picker("Status", selection: $model.statusFilter) {
                     Text("All").tag(AssignmentStatus?.none)
                     ForEach(AssignmentStatus.allCases, id: \.self) { status in
@@ -63,6 +72,7 @@ struct StudioAssignmentsView: View {
                     }
                 }
                 .pickerStyle(.segmented)
+                .frame(maxWidth: 480)
 
                 if let failure = model.failure {
                     StudioActionFailureNotice(failure: failure)
@@ -79,7 +89,12 @@ struct StudioAssignmentsView: View {
                             .frame(maxWidth: 280)
                     }
                 } else {
-                    VStack(spacing: LacticSpacing.md) {
+                    LazyVGrid(
+                        columns: dynamicTypeSize.isAccessibilitySize
+                            ? [GridItem(.flexible())]
+                            : [GridItem(.adaptive(minimum: 380), spacing: LacticSpacing.lg)],
+                        spacing: LacticSpacing.lg
+                    ) {
                         ForEach(model.orderedAssignments) { assignment in
                             AssignmentCard(assignment: assignment, showsClient: true, model: model)
                         }
@@ -87,7 +102,7 @@ struct StudioAssignmentsView: View {
                 }
             }
             .padding(LacticSpacing.xl)
-            .frame(maxWidth: 960)
+            .frame(maxWidth: 1180, alignment: .leading)
             .frame(maxWidth: .infinity)
         }
         .background(LacticColor.surface)
@@ -96,10 +111,11 @@ struct StudioAssignmentsView: View {
 }
 
 /// One assignment, with its status and the actions that change it. Shared by
-/// the Assignments destination and a client's detail screen, where the client
-/// is already known and so not repeated.
+/// the Assignments tab and a client's detail, where the client is already
+/// known and so not repeated.
 struct AssignmentCard: View {
     @Environment(StudioEnvironment.self) private var environment
+    @Environment(StudioNavigator.self) private var navigator
 
     let assignment: ProgramAssignment
     let showsClient: Bool
@@ -116,7 +132,9 @@ struct AssignmentCard: View {
                     StatusBadge(assignment.status.label, tone: assignment.status.tone)
                 }
                 if showsClient {
-                    NavigationLink(value: StudioRoute.client(id: assignment.client.id, name: assignment.client.name)) {
+                    Button {
+                        navigator.openClient(assignment.client.id)
+                    } label: {
                         Label {
                             Text(verbatim: assignment.client.name)
                         } icon: {
@@ -142,6 +160,7 @@ struct AssignmentCard: View {
 
             actions
         }
+        .frame(maxHeight: .infinity, alignment: .top)
         .studioCard()
         .confirmationDialog(
             "Delete this assignment?",
@@ -159,6 +178,9 @@ struct AssignmentCard: View {
 
     private var actions: some View {
         Menu {
+            Button("Open programme", systemImage: "list.bullet.rectangle") {
+                navigator.openProgramme(assignment.program.id)
+            }
             Section("Status") {
                 ForEach(AssignmentStatus.allCases, id: \.self) { status in
                     Button {

@@ -73,6 +73,23 @@ screen binds to tested logic, and each request shape was checked against a
 running `lactic-api` — which is how `applyWorkoutTemplate` turned out never to
 have sent the `day` the API requires.
 
+**Studio navigation — tabs and master-detail, 2026-10-05.** Studio's single
+sidebar, where every destination was a page that pushed its details over itself,
+became a `TabView` (`.sidebarAdaptable`: a tab bar on iPad that folds into a
+sidebar, a bottom bar on iPhone). Each tab lays its list and the selection side
+by side: Clients is clients and pending invitations, then the client, then one
+logged session; Programmes is programmes and saved templates, then weeks and
+workouts, then the workout's exercises, so a change in the editor shows in the
+programme's volume at once; Exercises is the catalog and the exercise.
+Assignments is a card grid, and Account holds the plan and profile. A
+`NavigationSplitView` collapses into pushes on iPhone, so both layouts are one
+view tree. Selection lives in `StudioNavigator`, which lets a screen open
+something in another tab — an assignment's client or programme. iPad's tab bar
+has room for four titles, so Account is reached from the sidebar there and is
+the fifth tab on iPhone. `--studio-destination` and `--studio-route` still work;
+the retired destinations (`invitations`, `templates`, `plan`, `profile`) land on
+the tab that now holds them.
+
 ---
 
 ## Findings that shape the implementation
