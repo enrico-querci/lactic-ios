@@ -73,6 +73,30 @@ screen binds to tested logic, and each request shape was checked against a
 running `lactic-api` — which is how `applyWorkoutTemplate` turned out never to
 have sent the `day` the API requires.
 
+**Studio navigation — sidebar and master-detail, 2026-10-05.** Studio's single
+sidebar, where every destination was a page that pushed its details over itself,
+now keeps the sidebar but stops the pushing. On iPad the sidebar lists the five
+destinations and the selected one lays its list and the selection side by side
+next to it: Clients is clients and pending invitations, then the client, then
+one logged session; Programmes is programmes and saved templates, then weeks
+and workouts, then the workout's exercises, so a change in the editor shows in
+the programme's volume at once; Exercises is the catalog and the exercise.
+Assignments is a card grid and Account holds the profile, plan and account
+actions. On iPhone the same destinations are a bottom `TabView` and each tab's
+columns collapse into pushes in a `NavigationSplitView`.
+
+The iPad columns are laid out by hand (`StudioColumns`) rather than as a
+`NavigationSplitView`, so the sidebar is not a split-view column and a tab with
+three columns is not a split view nested in a split view. Three panes need about
+1100 pt, two about 700; below that the deepest panes win and the first visible
+one gets a back button. The sidebar starts open in landscape, closed in
+portrait, and any pane's toolbar toggles it. Selection lives in
+`StudioNavigator`, which lets a screen open something in another tab — an
+assignment's client or programme. `--studio-destination` and `--studio-route`
+still work; the retired destinations (`invitations`, `templates`, `plan`,
+`profile`) land on the tab that now holds them, and `--studio-sidebar` /
+`--studio-no-sidebar` force the iPad sidebar.
+
 ---
 
 ## Findings that shape the implementation

@@ -3,55 +3,102 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
-/// The exercise catalog, plus the coach's own exercises — the web's Exercises
-/// page.
-struct StudioExercisesView: View {
+/// Exercises: the catalog on one side, the selected exercise on the other.
+struct StudioExercisesTab: View {
+    @Environment(StudioNavigator.self) private var navigator
+
+    let client: APIClient
     @State private var model: ExerciseCatalogModel
-    @State private var isCreating = false
-    @State private var pendingDeletion: Exercise?
 
     init(client: APIClient) {
+        self.client = client
         _model = State(initialValue: ExerciseCatalogModel(client: client))
     }
 
     var body: some View {
-        List {
+        @Bindable var navigator = navigator
+
+        StudioColumns(
+            depth: navigator.exerciseID != nil ? 2 : 1,
+            back: { navigator.exerciseID = nil },
+            root: {
+                StudioExercisesView(model: model, selection: $navigator.exerciseID)
+            },
+            second: {
+                if let exerciseID = navigator.exerciseID {
+                    StudioExerciseDetailView(client: client, exerciseID: exerciseID)
+                        .id(exerciseID)
+                } else {
+                    StudioSelectPrompt(
+                        title: "Select an exercise",
+                        message: "Its demonstration, muscles and instructions appear here.",
+                        systemImage: "dumbbell"
+                    )
+                }
+            }
+        )
+    }
+}
+
+/// The exercise catalog, plus the coach's own exercises — the web's Exercises
+/// page.
+struct StudioExercisesView: View {
+    let model: ExerciseCatalogModel
+    @Binding var selection: Int?
+
+    @State private var isCreating = false
+    @State private var pendingDeletion: Exercise?
+
+    var body: some View {
+        @Bindable var model = model
+
+        List(selection: $selection) {
             Section {
                 if let failure = model.failure {
                     StudioActionFailureNotice(failure: failure)
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
+                        .studioPlainRow()
                 }
                 ForEach(model.exercises) { exercise in
-                    NavigationLink(value: StudioRoute.exercise(id: exercise.id, name: exercise.name)) {
-                        ExerciseRow(exercise: exercise)
-                    }
-                    .swipeActions {
-                        if exercise.isCustom {
-                            Button("Delete", systemImage: "trash", role: .destructive) { pendingDeletion = exercise }
+                    ExerciseRow(exercise: exercise)
+                        .tag(exercise.id)
+                        .studioListRow(isSelected: selection == exercise.id)
+                        .swipeActions {
+                            if exercise.isCustom {
+                                Button("Delete", systemImage: "trash", role: .destructive) {
+                                    pendingDeletion = exercise
+                                }
+                            }
                         }
-                    }
-                    .onAppear {
-                        if exercise.id == model.exercises.last?.id {
-                            Task { await model.loadMore() }
+                        .contextMenu {
+                            if exercise.isCustom {
+                                Button("Delete exercise", systemImage: "trash", role: .destructive) {
+                                    pendingDeletion = exercise
+                                }
+                            }
                         }
-                    }
+                        .onAppear {
+                            if exercise.id == model.exercises.last?.id {
+                                Task { await model.loadMore() }
+                            }
+                        }
                 }
                 if model.isLoadingMore || (model.isLoading && model.exercises.isEmpty) {
-                    ProgressView().frame(maxWidth: .infinity)
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .studioPlainRow()
                 } else if model.hasLoaded, model.exercises.isEmpty {
                     Text("No exercises match these filters.")
                         .foregroundStyle(LacticColor.textSecondary)
                         .frame(maxWidth: .infinity)
+                        .studioPlainRow()
                 }
             } header: {
                 if model.hasLoaded {
-                    Text("\(model.totalCount) exercises")
+                    StudioSectionHeader("\(model.totalCount) exercises")
                 }
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(LacticColor.surface)
+        .studioListColumn()
         .searchable(text: $model.filter.search, prompt: Text("Search exercises"))
         .navigationTitle("Exercises")
         .toolbar {
@@ -80,7 +127,11 @@ struct StudioExercisesView: View {
             presenting: pendingDeletion
         ) { exercise in
             Button("Delete exercise", role: .destructive) {
-                Task { await model.deleteCustom(id: exercise.id) }
+                Task {
+                    if await model.deleteCustom(id: exercise.id), selection == exercise.id {
+                        selection = nil
+                    }
+                }
             }
             Button("Cancel", role: .cancel) {}
         } message: { _ in
@@ -178,10 +229,8 @@ private struct CustomExerciseSheet: View {
 /// level and step-by-step instructions.
 struct StudioExerciseDetailView: View {
     @State private var model: ExerciseDetailModel
-    private let name: String
 
-    init(client: APIClient, exerciseID: Int, name: String) {
-        self.name = name
+    init(client: APIClient, exerciseID: Int) {
         _model = State(initialValue: ExerciseDetailModel(client: client, exerciseID: exerciseID))
     }
 
@@ -190,7 +239,7 @@ struct StudioExerciseDetailView: View {
             if let detail = model.detail {
                 content(detail)
             } else if let failure = model.failure {
-                StudioInitialFailureView(failure: failure, title: Text(verbatim: name)) {
+                StudioInitialFailureView(failure: failure, title: Text("Exercise")) {
                     Task { await model.load() }
                 }
             } else {
@@ -199,7 +248,7 @@ struct StudioExerciseDetailView: View {
                     .background(LacticColor.surface)
             }
         }
-        .navigationTitle(model.detail?.name ?? name)
+        .navigationTitle(model.detail?.name ?? String(localized: "Exercise"))
         .navigationBarTitleDisplayMode(.inline)
         .task { await model.load() }
     }

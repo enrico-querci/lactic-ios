@@ -3,208 +3,133 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
-// The roster: clients and pending invitations. One file because the two
-// screens share their plan, failure and empty states.
+// The roster: clients and pending invitations in one list, because the two
+// share their plan, failure and empty states — and because an invitation is
+// just a client who has not arrived yet.
 // swiftlint:disable file_length
 
-struct StudioClientsDashboard: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
+/// The Clients tab's first column: how full the plan is, the coach's clients,
+/// and the invitations still waiting. Selecting a client opens them beside it.
+struct StudioRosterList: View {
     let model: ClientListModel
+    @Binding var selection: Int?
+
     @State private var isInviting = false
+    @State private var pendingRevocation: ClientInvitation?
 
     var body: some View {
         StudioRosterGate(model: model, title: Text("Clients")) {
-            content
+            list
         }
         .inviteClientControls(model: model, isInviting: $isInviting)
+        .confirmationDialog(
+            "Revoke invitation?",
+            isPresented: Binding(get: { pendingRevocation != nil }, set: {
+                if !$0 {
+                    pendingRevocation = nil
+                }
+            }),
+            titleVisibility: .visible,
+            presenting: pendingRevocation
+        ) { invitation in
+            Button("Revoke invitation", role: .destructive) {
+                Task { await model.revoke(invitationID: invitation.id) }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: { invitation in
+            Text("The invitation link for \(invitation.email) will stop working.")
+        }
     }
 
-    private func invite() {
-        isInviting = true
-    }
-
-    private var content: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: LacticSpacing.xl) {
-                StudioDashboardHeader(
-                    eyebrow: "Client roster",
-                    title: "Your clients",
-                    message: "Keep clients and pending invitations organised in one place."
-                )
-
-                StudioOverviewMetrics(
-                    clientCount: model.clients.count,
-                    invitationCount: model.pendingInvitations.count,
-                    subscription: model.subscription
-                )
-
+    private var list: some View {
+        List(selection: $selection) {
+            Section {
+                StudioCapacityRow(subscription: model.subscription)
+                    .studioPlainRow()
                 if model.failure == .planIsFull || model.canInviteClient == false {
                     StudioPlanFullNotice(subscription: model.subscription)
+                        .studioPlainRow()
                 } else if let failure = model.failure {
                     StudioActionFailureNotice(failure: failure)
+                        .studioPlainRow()
                 }
+            }
 
+            Section {
                 if model.clients.isEmpty {
                     StudioEmptyCard(
                         title: "No clients yet",
                         message: "Invite your first client to start building your roster.",
                         systemImage: "person.2"
                     ) {
-                        Button("Invite client", action: invite)
-                            .lacticButton()
+                        Button("Invite client") { isInviting = true }
+                            .lacticButton(isEnabled: model.canInviteClient)
                             .frame(maxWidth: 280)
                     }
+                    .studioPlainRow()
                 } else {
-                    LazyVGrid(
-                        columns: dynamicTypeSize.isAccessibilitySize
-                            ? [GridItem(.flexible())]
-                            : [GridItem(.adaptive(minimum: 280), spacing: LacticSpacing.lg)],
-                        spacing: LacticSpacing.lg
-                    ) {
-                        ForEach(model.clients) { client in
-                            NavigationLink(value: StudioRoute.client(id: client.id, name: client.name)) {
-                                StudioClientCard(client: client)
-                            }
-                            .buttonStyle(.plain)
-                        }
+                    ForEach(model.clients) { client in
+                        StudioClientRow(client: client)
+                            .tag(client.id)
+                            .studioListRow(isSelected: selection == client.id)
                     }
                 }
+            } header: {
+                StudioSectionHeader("Clients")
             }
-            .padding(LacticSpacing.xl)
-            .frame(maxWidth: 1080)
-            .frame(maxWidth: .infinity)
+
+            if !model.pendingInvitations.isEmpty {
+                Section {
+                    ForEach(model.pendingInvitations) { invitation in
+                        StudioInvitationRow(
+                            invitation: invitation,
+                            isSubmitting: model.isSubmitting,
+                            resend: { Task { await model.resend(invitationID: invitation.id) } },
+                            revoke: { pendingRevocation = invitation }
+                        )
+                        .selectionDisabled()
+                        .studioListRow()
+                    }
+                } header: {
+                    StudioSectionHeader("Pending invitations")
+                }
+            }
         }
-        .background(LacticColor.surface)
+        .studioListColumn()
         .navigationTitle("Clients")
         .refreshable { await model.load() }
     }
 }
 
-struct StudioInvitationsDashboard: View {
-    let model: ClientListModel
-    @State private var isInviting = false
+/// Plan usage at a glance, where the coach decides whether to invite.
+private struct StudioCapacityRow: View {
+    let subscription: CoachSubscription?
 
     var body: some View {
-        StudioRosterGate(model: model, title: Text("Invitations")) {
-            content
-        }
-        .inviteClientControls(model: model, isInviting: $isInviting)
-    }
-
-    private func invite() {
-        isInviting = true
-    }
-
-    private var content: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: LacticSpacing.xl) {
-                StudioDashboardHeader(
-                    eyebrow: "Client roster",
-                    title: "Pending invitations",
-                    message: "Follow up with people who have not joined your roster yet."
-                )
-
-                if model.failure == .planIsFull || model.canInviteClient == false {
-                    StudioPlanFullNotice(subscription: model.subscription)
-                } else if let failure = model.failure {
-                    StudioActionFailureNotice(failure: failure)
-                }
-
-                if model.pendingInvitations.isEmpty {
-                    StudioEmptyCard(
-                        title: "No pending invitations",
-                        message: "Invitations waiting for a response will appear here.",
-                        systemImage: "envelope.open"
-                    ) {
-                        Button("Invite client", action: invite)
-                            .lacticButton(isEnabled: model.canInviteClient)
-                            .frame(maxWidth: 280)
-                    }
-                } else {
-                    VStack(spacing: LacticSpacing.md) {
-                        ForEach(model.pendingInvitations) { invitation in
-                            StudioInvitationRow(
-                                invitation: invitation,
-                                isSubmitting: model.isSubmitting,
-                                resend: {
-                                    Task { await model.resend(invitationID: invitation.id) }
-                                },
-                                revoke: {
-                                    Task { await model.revoke(invitationID: invitation.id) }
-                                }
-                            )
-                        }
-                    }
-                }
+        VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+            Label {
+                Text(verbatim: summary)
+                    .font(.lacticHeadline.monospacedDigit())
+            } icon: {
+                Image(systemName: "gauge.with.dots.needle.33percent")
+                    .foregroundStyle(LacticColor.accent)
             }
-            .padding(LacticSpacing.xl)
-            .frame(maxWidth: 960)
-            .frame(maxWidth: .infinity)
+            if let subscription, let limit = subscription.clientLimit {
+                ProgressView(value: Double(min(subscription.clientSlotsUsed, limit)), total: Double(max(limit, 1)))
+                    .tint(subscription.canInviteClient ? LacticColor.accent : LacticColor.warning)
+                    .accessibilityHidden(true)
+            }
         }
-        .background(LacticColor.surface)
-        .navigationTitle("Invitations")
-        .refreshable { await model.load() }
-    }
-}
-
-private struct StudioOverviewMetrics: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-
-    let clientCount: Int
-    let invitationCount: Int
-    let subscription: CoachSubscription?
-
-    /// Three cards side by side only have room on a regular-width screen. On
-    /// an iPhone they squeezed their labels down to a letter per line, so a
-    /// compact width stacks them as full-width rows instead.
-    private var isStacked: Bool {
-        horizontalSizeClass == .compact || dynamicTypeSize.isAccessibilitySize
+        .studioCard()
+        .accessibilityElement(children: .combine)
     }
 
-    var body: some View {
-        let layout = isStacked
-            ? AnyLayout(VStackLayout(spacing: LacticSpacing.sm))
-            : AnyLayout(HStackLayout(spacing: LacticSpacing.md))
-
-        layout {
-            StudioMetricCard(
-                title: "Active clients",
-                value: clientCount.formatted(),
-                systemImage: "person.2.fill",
-                isRow: isStacked
-            )
-            StudioMetricCard(
-                title: "Pending invites",
-                value: invitationCount.formatted(),
-                systemImage: "envelope.fill",
-                isRow: isStacked
-            )
-            StudioCapacityMetric(subscription: subscription, isRow: isStacked)
-        }
-    }
-}
-
-private struct StudioCapacityMetric: View {
-    let subscription: CoachSubscription?
-    var isRow = false
-
-    var body: some View {
-        StudioMetricCard(
-            title: "Client capacity",
-            value: capacity,
-            systemImage: "gauge.with.dots.needle.33percent",
-            isRow: isRow
-        )
-    }
-
-    private var capacity: String {
+    private var summary: String {
         guard let subscription else { return "—" }
         guard let limit = subscription.clientLimit else {
-            return String(localized: "Unlimited")
+            return String(localized: "\(subscription.clientSlotsUsed) clients · unlimited")
         }
-        return "\(subscription.clientSlotsUsed.formatted()) / \(limit.formatted())"
+        return String(localized: "\(subscription.clientSlotsUsed) of \(limit) clients")
     }
 }
 
@@ -250,7 +175,7 @@ struct StudioPlanFullNotice: View {
     }
 }
 
-private struct StudioClientCard: View {
+private struct StudioClientRow: View {
     let client: User
 
     var body: some View {
@@ -267,91 +192,63 @@ private struct StudioClientCard: View {
                 Text(verbatim: client.email)
                     .font(.lacticCaption)
                     .foregroundStyle(LacticColor.textSecondary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-
-            Image(systemName: "chevron.right")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(LacticColor.textMuted)
-                .accessibilityHidden(true)
-        }
-        .padding(LacticSpacing.lg)
-        .frame(maxWidth: .infinity, minHeight: 96, alignment: .leading)
-        .background(
-            LacticColor.surfaceElevated,
-            in: RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
-                .strokeBorder(LacticColor.border, lineWidth: 1)
         }
         .accessibilityElement(children: .combine)
     }
 }
 
 private struct StudioInvitationRow: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(StudioEnvironment.self) private var environment
 
     let invitation: ClientInvitation
     let isSubmitting: Bool
     let resend: () -> Void
     let revoke: () -> Void
-    @State private var isConfirmingRevocation = false
 
     var body: some View {
-        let layout = dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: LacticSpacing.md))
-            : AnyLayout(HStackLayout(alignment: .center, spacing: LacticSpacing.lg))
-
-        layout {
+        HStack(spacing: LacticSpacing.md) {
             VStack(alignment: .leading, spacing: LacticSpacing.sm) {
+                Text(verbatim: invitation.email)
+                    .font(.lacticHeadline)
+                    .foregroundStyle(LacticColor.textPrimary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
                 HStack(spacing: LacticSpacing.sm) {
-                    Text(verbatim: invitation.email)
-                        .font(.lacticHeadline)
                     StatusBadge(String(localized: "Pending"), tone: .caution)
+                    Text("Expires \(Formatters.date(invitation.expiresAt, locale: environment.locale))")
+                        .font(.lacticCaption)
+                        .foregroundStyle(LacticColor.textSecondary)
                 }
-                LabeledContent {
-                    Text(verbatim: Formatters.date(invitation.expiresAt, locale: environment.locale))
-                } label: {
-                    Text("Expires")
-                }
-                .font(.lacticCaption)
-                .foregroundStyle(LacticColor.textSecondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            HStack(spacing: LacticSpacing.sm) {
-                Button("Resend", action: resend)
-                    .lacticButton(.secondary, size: .small, isEnabled: !isSubmitting)
-                    .lineLimit(1)
-                Button("Revoke") {
-                    isConfirmingRevocation = true
-                }
-                .lacticButton(.danger, size: .small, isEnabled: !isSubmitting)
-                .lineLimit(1)
-                .confirmationDialog(
-                    "Revoke invitation?",
-                    isPresented: $isConfirmingRevocation,
-                    titleVisibility: .visible
-                ) {
-                    Button("Revoke invitation", role: .destructive, action: revoke)
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text("The invitation link for \(invitation.email) will stop working.")
-                }
+            Menu {
+                actions
+            } label: {
+                Image(systemName: "ellipsis.circle")
+                    .font(.title3)
+                    .frame(width: LacticSize.minimumHitTarget, height: LacticSize.minimumHitTarget)
+                    .contentShape(Rectangle())
             }
-            .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : 300)
+            .disabled(isSubmitting)
+            .accessibilityLabel(Text("Invitation actions"))
         }
-        .padding(LacticSpacing.lg)
-        .background(
-            LacticColor.surfaceElevated,
-            in: RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: LacticRadius.control, style: .continuous)
-                .strokeBorder(LacticColor.border, lineWidth: 1)
+        .swipeActions(edge: .trailing) {
+            Button("Revoke", systemImage: "xmark.circle", role: .destructive, action: revoke)
+            Button("Resend", systemImage: "arrow.clockwise", action: resend)
+                .tint(LacticColor.accent)
         }
+        .contextMenu { actions }
+    }
+
+    @ViewBuilder
+    private var actions: some View {
+        Button("Resend", systemImage: "arrow.clockwise", action: resend)
+        Button("Revoke", systemImage: "xmark.circle", role: .destructive, action: revoke)
     }
 }
 

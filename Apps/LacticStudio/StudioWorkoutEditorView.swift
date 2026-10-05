@@ -10,15 +10,20 @@ struct StudioWorkoutEditorView: View {
 
     @State private var model: WorkoutEditorModel
     private let client: APIClient
-    private let name: String
+    private let didChangeVolume: () -> Void
 
     @State private var isPicking = false
     @State private var editing: WorkoutExercise?
     @State private var pendingRemoval: WorkoutExercise?
 
-    init(client: APIClient, programID: Int, weekID: Int, workoutID: Int, name: String) {
+    /// `didChangeVolume` runs after an exercise is added, edited or removed,
+    /// which moves the workout's volume that the programme beside this shows.
+    init(
+        client: APIClient, programID: Int, weekID: Int, workoutID: Int,
+        didChangeVolume: @escaping () -> Void
+    ) {
         self.client = client
-        self.name = name
+        self.didChangeVolume = didChangeVolume
         _model = State(initialValue: WorkoutEditorModel(
             client: client, programID: programID, weekID: weekID, workoutID: workoutID
         ))
@@ -29,7 +34,7 @@ struct StudioWorkoutEditorView: View {
             if let workout = model.workout {
                 content(workout)
             } else if let failure = model.failure {
-                StudioInitialFailureView(failure: failure, title: Text(verbatim: name)) {
+                StudioInitialFailureView(failure: failure, title: Text("Workout")) {
                     Task { await model.load() }
                 }
             } else {
@@ -38,7 +43,7 @@ struct StudioWorkoutEditorView: View {
                     .background(LacticColor.surface)
             }
         }
-        .navigationTitle(model.workout?.name ?? name)
+        .navigationTitle(model.workout?.name ?? String(localized: "Workout"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -74,6 +79,12 @@ struct StudioWorkoutEditorView: View {
             Button("Cancel", role: .cancel) {}
         }
         .task { await model.load() }
+        // Not the first load, which fills the volume in rather than changing it.
+        .onChange(of: model.workout?.volumeSets) { old, _ in
+            if old != nil {
+                didChangeVolume()
+            }
+        }
     }
 
     private func content(_ workout: WorkoutDetail) -> some View {
