@@ -2,6 +2,10 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
+// `StudioColumns` takes a list and its detail as closures beside `back`, which
+// reads better as one trailing-closure block per column.
+// swiftlint:disable multiple_closures_with_trailing_closure
+
 /// Clients: the roster, the selected client beside it, and one of that
 /// client's logged sessions beside that — three columns on iPad, a stack of
 /// pushes on iPhone.
@@ -14,7 +18,6 @@ struct StudioClientsTab: View {
     var body: some View {
         @Bindable var navigator = navigator
 
-        // swiftlint:disable:next multiple_closures_with_trailing_closure
         StudioColumns(
             depth: navigator.sessionID != nil ? 3 : navigator.clientID != nil ? 2 : 1,
             back: {

@@ -3,6 +3,10 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
+// `StudioColumns` takes a list and its detail as closures beside `back`, which
+// reads better as one trailing-closure block per column.
+// swiftlint:disable multiple_closures_with_trailing_closure
+
 /// Programmes: the library, one programme's weeks and workouts beside it, and
 /// the selected workout's exercises beside that. Building a programme is the
 /// one task that goes two levels deep, and on a wide iPad all three are on
@@ -27,7 +31,6 @@ struct StudioProgrammesTab: View {
     var body: some View {
         @Bindable var navigator = navigator
 
-        // swiftlint:disable:next multiple_closures_with_trailing_closure
         StudioColumns(
             depth: navigator.workout != nil ? 3 : navigator.programmeID != nil ? 2 : 1,
             back: {

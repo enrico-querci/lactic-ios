@@ -3,6 +3,10 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
+// `StudioColumns` takes a list and its detail as closures beside `back`, which
+// reads better as one trailing-closure block per column.
+// swiftlint:disable multiple_closures_with_trailing_closure
+
 /// Exercises: the catalog on one side, the selected exercise on the other.
 struct StudioExercisesTab: View {
     @Environment(StudioNavigator.self) private var navigator
@@ -18,7 +22,6 @@ struct StudioExercisesTab: View {
     var body: some View {
         @Bindable var navigator = navigator
 
-        // swiftlint:disable:next multiple_closures_with_trailing_closure
         StudioColumns(
             depth: navigator.exerciseID != nil ? 2 : 1,
             back: { navigator.exerciseID = nil }
