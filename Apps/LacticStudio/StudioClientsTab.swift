@@ -14,10 +14,19 @@ struct StudioClientsTab: View {
     var body: some View {
         @Bindable var navigator = navigator
 
-        NavigationSplitView {
+        // swiftlint:disable:next multiple_closures_with_trailing_closure
+        StudioColumns(
+            depth: navigator.sessionID != nil ? 3 : navigator.clientID != nil ? 2 : 1,
+            back: {
+                if navigator.sessionID != nil {
+                    navigator.sessionID = nil
+                } else {
+                    navigator.clientID = nil
+                }
+            }
+        ) {
             StudioRosterList(model: roster, selection: $navigator.clientID)
-                .navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 400)
-        } content: {
+        } second: {
             if let clientID = navigator.clientID {
                 StudioClientDetailView(
                     client: client, clientID: clientID, roster: roster, selectedSession: $navigator.sessionID
@@ -25,7 +34,6 @@ struct StudioClientsTab: View {
                 // A new client is a new model: the view's `@State` would
                 // otherwise keep showing the previous one.
                 .id(clientID)
-                .navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 480)
             } else {
                 StudioSelectPrompt(
                     title: "Select a client",
@@ -33,7 +41,7 @@ struct StudioClientsTab: View {
                     systemImage: "person.2"
                 )
             }
-        } detail: {
+        } third: {
             if let clientID = navigator.clientID, let sessionID = navigator.sessionID {
                 StudioClientSessionView(client: client, clientID: clientID, sessionID: sessionID)
                     .id(sessionID)
@@ -45,7 +53,6 @@ struct StudioClientsTab: View {
                 )
             }
         }
-        .navigationSplitViewStyle(.balanced)
         .onChange(of: navigator.clientID) { navigator.sessionID = nil }
     }
 }

@@ -18,10 +18,13 @@ struct StudioExercisesTab: View {
     var body: some View {
         @Bindable var navigator = navigator
 
-        NavigationSplitView {
+        // swiftlint:disable:next multiple_closures_with_trailing_closure
+        StudioColumns(
+            depth: navigator.exerciseID != nil ? 2 : 1,
+            back: { navigator.exerciseID = nil }
+        ) {
             StudioExercisesView(model: model, selection: $navigator.exerciseID)
-                .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
-        } detail: {
+        } second: {
             if let exerciseID = navigator.exerciseID {
                 StudioExerciseDetailView(client: client, exerciseID: exerciseID)
                     .id(exerciseID)
@@ -33,7 +36,6 @@ struct StudioExercisesTab: View {
                 )
             }
         }
-        .navigationSplitViewStyle(.balanced)
     }
 }
 

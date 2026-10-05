@@ -68,6 +68,9 @@ struct StudioWorkoutKey: Hashable {
 @Observable
 final class StudioNavigator {
     var tab: StudioTab
+    /// Whether iPad shows the sidebar beside the columns. Starts open where
+    /// there is width for it, and any pane's toolbar can toggle it.
+    var showsSidebar = true
 
     var clientID: Int?
     var sessionID: Int?
@@ -92,12 +95,16 @@ final class StudioNavigator {
     }
 }
 
-/// The coach workspace: five tabs. On iPad they sit in a tab bar that folds
-/// into a sidebar, and each one lays its list and the selected item side by
-/// side — three columns where there is something to drill into twice. On
-/// iPhone the tabs are a bottom bar and the columns collapse into pushes.
+/// The coach workspace: five destinations.
+///
+/// On iPad a sidebar lists them and the selected one lays its list and the
+/// selection side by side next to it — three columns where there is something
+/// to drill into twice. On iPhone the same destinations are a bottom tab bar,
+/// and the columns collapse into pushes.
 @MainActor
 struct StudioShell: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     /// Passed in rather than read from the environment, so the design preview
     /// can run every tab against its fixture transport.
     let client: APIClient
@@ -107,44 +114,94 @@ struct StudioShell: View {
     let signOut: () -> Void
     let deleteAccount: () async throws -> Void
 
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var navigator = Self.initialNavigator
+    @State private var hasSizedSidebar = false
 
     var body: some View {
+        Group {
+            if horizontalSizeClass == .compact {
+                tabs
+            } else {
+                sidebarLayout
+            }
+        }
+        // On the root, not on each tab: collapsed on iPhone a split view hosts
+        // its pushed columns itself, outside the environment of the column
+        // that pushed them.
+        .environment(navigator)
+    }
+
+    // MARK: - iPhone
+
+    private var tabs: some View {
         @Bindable var navigator = navigator
 
-        TabView(selection: $navigator.tab) {
+        return TabView(selection: $navigator.tab) {
             Tab("Clients", systemImage: "person.2", value: StudioTab.clients) {
-                StudioClientsTab(client: client, roster: roster)
+                content(for: .clients)
             }
-
+            .badge(roster.pendingInvitations.count)
             Tab("Programmes", systemImage: "list.bullet.rectangle", value: StudioTab.programmes) {
-                StudioProgrammesTab(client: client)
+                content(for: .programmes)
             }
-
             Tab("Assignments", systemImage: "calendar.badge.checkmark", value: StudioTab.assignments) {
-                StudioAssignmentsTab(client: client)
+                content(for: .assignments)
             }
-
             Tab("Exercises", systemImage: "dumbbell", value: StudioTab.exercises) {
-                StudioExercisesTab(client: client)
+                content(for: .exercises)
             }
-
             Tab("Account", systemImage: "person.crop.circle", value: StudioTab.account) {
-                StudioAccountView(
-                    roster: roster, name: coachName, email: coachEmail,
-                    signOut: signOut, deleteAccount: deleteAccount
-                )
+                content(for: .account)
             }
-            // iPad's tab bar has room for four titles, not five: there Account
-            // is reached from the sidebar the bar folds into.
-            .defaultVisibility(horizontalSizeClass == .compact ? .automatic : .hidden, for: .tabBar)
         }
-        .tabViewStyle(.sidebarAdaptable)
-        // On the tab view, not on each tab: collapsed on iPhone a split view
-        // hosts its pushed columns itself, outside the environment of the
-        // column that pushed them.
-        .environment(navigator)
+        .tint(LacticColor.accent)
+    }
+
+    // MARK: - iPad
+
+    private var sidebarLayout: some View {
+        GeometryReader { proxy in
+            HStack(spacing: 0) {
+                if navigator.showsSidebar {
+                    StudioSidebar(pendingInvitations: roster.pendingInvitations.count)
+                        .frame(width: 260)
+                    Rectangle()
+                        .fill(LacticColor.border)
+                        .frame(width: 1)
+                        .ignoresSafeArea()
+                }
+                content(for: navigator.tab)
+                    .id(navigator.tab)
+            }
+            .animation(.snappy, value: navigator.showsSidebar)
+            .onAppear {
+                // Open in landscape; in portrait the columns want the width.
+                guard !hasSizedSidebar else { return }
+                hasSizedSidebar = true
+                navigator.showsSidebar = Self.initialSidebar ?? (proxy.size.width >= 1100)
+            }
+        }
+        .background(LacticColor.surface)
+        .tint(LacticColor.accent)
+    }
+
+    @ViewBuilder
+    private func content(for tab: StudioTab) -> some View {
+        switch tab {
+        case .clients:
+            StudioClientsTab(client: client, roster: roster)
+        case .programmes:
+            StudioProgrammesTab(client: client)
+        case .assignments:
+            StudioAssignmentsTab(client: client)
+        case .exercises:
+            StudioExercisesTab(client: client)
+        case .account:
+            StudioAccountView(
+                roster: roster, name: coachName, email: coachEmail,
+                signOut: signOut, deleteAccount: deleteAccount
+            )
+        }
     }
 
     // MARK: - DEBUG deep links
@@ -155,6 +212,21 @@ struct StudioShell: View {
     /// so each can be reviewed without driving the UI. The old destination
     /// names still work: `invitations` and `profile` and `plan` land on the
     /// tab that now holds them. `--studio-profile` still opens Account.
+    /// `--studio-sidebar` and `--studio-no-sidebar` force the iPad sidebar open
+    /// or closed.
+    private static var initialSidebar: Bool? {
+        #if DEBUG
+            let arguments = ProcessInfo.processInfo.arguments
+            if arguments.contains("--studio-sidebar") {
+                return true
+            }
+            if arguments.contains("--studio-no-sidebar") {
+                return false
+            }
+        #endif
+        return nil
+    }
+
     private static var initialNavigator: StudioNavigator {
         let navigator = StudioNavigator()
         #if DEBUG

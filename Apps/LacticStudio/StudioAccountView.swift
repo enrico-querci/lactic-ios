@@ -27,7 +27,7 @@ struct StudioAccountView: View {
     @State private var deletionError: String?
 
     var body: some View {
-        NavigationStack {
+        StudioColumns {
             ScrollView {
                 VStack(spacing: LacticSpacing.lg) {
                     profileCard

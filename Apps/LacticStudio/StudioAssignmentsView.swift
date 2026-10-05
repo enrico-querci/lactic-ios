@@ -10,7 +10,7 @@ struct StudioAssignmentsTab: View {
     let client: APIClient
 
     var body: some View {
-        NavigationStack {
+        StudioColumns {
             StudioAssignmentsView(client: client)
         }
     }

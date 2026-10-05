@@ -5,8 +5,9 @@ import SwiftUI
 
 /// Programmes: the library, one programme's weeks and workouts beside it, and
 /// the selected workout's exercises beside that. Building a programme is the
-/// one task that goes two levels deep, and on iPad all three are on screen at
-/// once, so a change in the editor shows in the programme's volume at once.
+/// one task that goes two levels deep, and on a wide iPad all three are on
+/// screen at once, so a change in the editor shows in the programme's volume
+/// at once.
 struct StudioProgrammesTab: View {
     @Environment(StudioNavigator.self) private var navigator
 
@@ -26,10 +27,19 @@ struct StudioProgrammesTab: View {
     var body: some View {
         @Bindable var navigator = navigator
 
-        NavigationSplitView {
+        // swiftlint:disable:next multiple_closures_with_trailing_closure
+        StudioColumns(
+            depth: navigator.workout != nil ? 3 : navigator.programmeID != nil ? 2 : 1,
+            back: {
+                if navigator.workout != nil {
+                    navigator.workout = nil
+                } else {
+                    navigator.programmeID = nil
+                }
+            }
+        ) {
             StudioProgrammeList(programmes: programmes, templates: templates, selection: $navigator.programmeID)
-                .navigationSplitViewColumnWidth(min: 280, ideal: 320, max: 380)
-        } content: {
+        } second: {
             if let programmeID = navigator.programmeID {
                 StudioProgramBuilderView(
                     client: client, programID: programmeID, selection: $navigator.workout,
@@ -37,7 +47,6 @@ struct StudioProgrammesTab: View {
                     didChangeDetails: { Task { await programmes.load() } }
                 )
                 .id(programmeID)
-                .navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 480)
             } else {
                 StudioSelectPrompt(
                     title: "Select a programme",
@@ -45,7 +54,7 @@ struct StudioProgrammesTab: View {
                     systemImage: "list.bullet.rectangle"
                 )
             }
-        } detail: {
+        } third: {
             if let programmeID = navigator.programmeID, let workout = navigator.workout {
                 StudioWorkoutEditorView(
                     client: client, programID: programmeID, weekID: workout.weekID, workoutID: workout.workoutID,
@@ -60,7 +69,6 @@ struct StudioProgrammesTab: View {
                 )
             }
         }
-        .navigationSplitViewStyle(.balanced)
         .onChange(of: navigator.programmeID) { navigator.workout = nil }
     }
 }
@@ -153,7 +161,12 @@ struct StudioProgrammeList: View {
         } message: { _ in
             Text("Workouts already made from it are not affected.")
         }
-        .task { await templates.load() }
+        .task {
+            async let programmeLoad: Void = programmes.load()
+            async let templateLoad: Void = templates.load()
+            await programmeLoad
+            await templateLoad
+        }
     }
 
     private var list: some View {
@@ -214,7 +227,6 @@ struct StudioProgrammeList: View {
             }
         }
         .studioListColumn()
-        // Every time, not once: a rename in the builder should show here.
         .refreshable {
             await programmes.load()
             await templates.load()
