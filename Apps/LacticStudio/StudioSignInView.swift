@@ -3,8 +3,8 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
-/// Coach sign-in, using the same graphite and electric-lime identity as the
-/// client app but with a workspace-oriented iPad composition.
+/// Coach sign-in: the brand mark, a line about what Studio is, and the two
+/// sign-in buttons, centred and close together so neither is below the fold.
 struct StudioSignInView: View {
     @Environment(StudioEnvironment.self) private var environment
 
@@ -12,83 +12,48 @@ struct StudioSignInView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        ScrollView {
-            ViewThatFits(in: .horizontal) {
-                HStack(alignment: .center, spacing: LacticSpacing.xl) {
-                    brandPanel
-                        .frame(minWidth: 360, maxWidth: .infinity)
-                    signInCard
-                        .frame(minWidth: 360, maxWidth: 460)
+        // Centered in the space there is, and scrolling only when there is
+        // not enough (a large Dynamic Type size, or a short window).
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: LacticSpacing.xxl) {
+                    brand
+                    signInControls
+                    footer
                 }
-
-                VStack(spacing: LacticSpacing.xl) {
-                    brandPanel
-                    signInCard
-                }
+                .padding(LacticSpacing.xl)
+                .frame(maxWidth: 440)
+                .frame(maxWidth: .infinity, minHeight: proxy.size.height)
             }
-            .padding(LacticSpacing.xl)
-            .frame(maxWidth: 1180)
-            .frame(maxWidth: .infinity)
+            .scrollBounceBehavior(.basedOnSize)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(LacticColor.surface)
     }
 
-    private var brandPanel: some View {
-        VStack(alignment: .leading, spacing: LacticSpacing.xl) {
-            HStack(spacing: LacticSpacing.sm) {
-                Image(systemName: "dumbbell.fill")
-                    .font(.title2.weight(.bold))
-                    .foregroundStyle(LacticColor.heroSurface)
-                    .frame(width: 52, height: 52)
-                    .background(LacticColor.brand, in: RoundedRectangle(cornerRadius: LacticRadius.control))
-                    .accessibilityHidden(true)
+    private var brand: some View {
+        VStack(spacing: LacticSpacing.lg) {
+            Image(systemName: "dumbbell.fill")
+                .font(.system(size: 36, weight: .bold))
+                .foregroundStyle(LacticColor.heroSurface)
+                .frame(width: 84, height: 84)
+                .background(LacticColor.brand, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+                .accessibilityHidden(true)
+
+            VStack(spacing: LacticSpacing.sm) {
                 Text("Lactic Studio")
-                    .font(.lacticHeadline)
-                    .foregroundStyle(LacticColor.textOnHero)
-            }
-
-            Spacer(minLength: LacticSpacing.xl)
-
-            VStack(alignment: .leading, spacing: LacticSpacing.md) {
-                Text("Coach workspace")
-                    .font(.lacticEyebrow)
-                    .foregroundStyle(LacticColor.brand)
-                    .textCase(.uppercase)
-                Text("Build better training, together.")
                     .font(.lacticDisplay)
-                    .foregroundStyle(LacticColor.textOnHero)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text("Manage your clients and keep every training relationship moving from one focused workspace.")
-                    .font(.lacticBody)
-                    .foregroundStyle(LacticColor.textOnHero.opacity(0.76))
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            Spacer(minLength: LacticSpacing.xl)
-
-            Label("Secure coach access", systemImage: "lock.shield.fill")
-                .font(.lacticCaption.weight(.semibold))
-                .foregroundStyle(LacticColor.textOnHero.opacity(0.82))
-        }
-        .padding(LacticSpacing.xxl)
-        .frame(maxWidth: .infinity, minHeight: 520, alignment: .leading)
-        .background(
-            LacticColor.heroSurface,
-            in: RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous)
-        )
-    }
-
-    private var signInCard: some View {
-        VStack(alignment: .leading, spacing: LacticSpacing.xl) {
-            VStack(alignment: .leading, spacing: LacticSpacing.sm) {
-                Text("Welcome back")
-                    .font(.lacticTitle)
-                Text("Sign in to manage your coaching roster.")
+                    .foregroundStyle(LacticColor.textPrimary)
+                Text("Build programmes, manage clients, follow their progress.")
                     .font(.lacticBody)
                     .foregroundStyle(LacticColor.textSecondary)
             }
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+    }
 
+    private var signInControls: some View {
+        VStack(spacing: LacticSpacing.md) {
             if let errorMessage {
                 Text(verbatim: errorMessage)
                     .font(.lacticCaption)
@@ -125,10 +90,16 @@ struct StudioSignInView: View {
                 .frame(maxWidth: .infinity)
             }
             .lacticButton(isEnabled: !isSigningIn)
+        }
+    }
+
+    private var footer: some View {
+        VStack(spacing: LacticSpacing.lg) {
+            Label("Secure coach access", systemImage: "lock.shield.fill")
+                .font(.lacticCaption.weight(.semibold))
+                .foregroundStyle(LacticColor.textSecondary)
 
             #if DEBUG
-                Divider()
-
                 // The picker lives here rather than in Settings because Studio
                 // has no signed-in Settings yet, and a build that cannot reach
                 // the server it needs is unusable.
@@ -139,16 +110,6 @@ struct StudioSignInView: View {
                 }
                 .pickerStyle(.segmented)
             #endif
-        }
-        .padding(LacticSpacing.xl)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LacticColor.surfaceElevated,
-            in: RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: LacticRadius.card, style: .continuous)
-                .strokeBorder(LacticColor.border, lineWidth: 1)
         }
     }
 

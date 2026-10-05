@@ -225,11 +225,11 @@
         "it": { "stringUnit": { "state": "translated", "value": "Bicipiti" } }
       }
     },
-    "Build better training, together.": {
+    "Build programmes, manage clients, follow their progress.": {
       "extractionState": "manual",
       "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Build better training, together." } },
-        "it": { "stringUnit": { "state": "translated", "value": "Crea allenamenti migliori, insieme." } }
+        "en": { "stringUnit": { "state": "translated", "value": "Build programmes, manage clients, follow their progress." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Crea programmi, gestisci i clienti, segui i loro progressi." } }
       }
     },
     "Calves": {
@@ -370,13 +370,6 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Coach notes" } },
         "it": { "stringUnit": { "state": "translated", "value": "Note del coach" } }
-      }
-    },
-    "Coach workspace": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Coach workspace" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Area di lavoro coach" } }
       }
     },
     "Completed": {
@@ -919,13 +912,6 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Loading your workspace" } },
         "it": { "stringUnit": { "state": "translated", "value": "Caricamento area di lavoro" } }
-      }
-    },
-    "Manage your clients and keep every training relationship moving from one focused workspace.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Manage your clients and keep every training relationship moving from one focused workspace." } },
-        "it": { "stringUnit": { "state": "translated", "value": "Gestisci i tuoi clienti e fai crescere ogni rapporto di allenamento da un’unica area di lavoro." } }
       }
     },
     "No programme assigned yet.": {
@@ -1547,13 +1533,6 @@
         "it": { "stringUnit": { "state": "translated", "value": "Mostra dimostrazione" } }
       }
     },
-    "Sign in to manage your coaching roster.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Sign in to manage your coaching roster." } },
-        "it": { "stringUnit": { "state": "translated", "value": "Accedi per gestire i tuoi clienti." } }
-      }
-    },
     "Sign out": {
       "extractionState": "manual",
       "localizations": {
@@ -1727,13 +1706,6 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Week actions" } },
         "it": { "stringUnit": { "state": "translated", "value": "Azioni sulla settimana" } }
-      }
-    },
-    "Welcome back": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Welcome back" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Bentornato" } }
       }
     },
     "Workout": {
