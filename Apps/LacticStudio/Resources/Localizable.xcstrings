@@ -977,13 +977,6 @@
         "it": { "stringUnit": { "state": "translated", "value": "Apri programma" } }
       }
     },
-    "Plan": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Plan" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Piano" } }
-      }
-    },
     "Plyometrics": {
       "extractionState": "manual",
       "localizations": {
@@ -1003,13 +996,6 @@
       "localizations": {
         "en": { "stringUnit": { "state": "translated", "value": "Primary muscle" } },
         "it": { "stringUnit": { "state": "translated", "value": "Muscolo principale" } }
-      }
-    },
-    "Profile": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Profile" } },
-        "it": { "stringUnit": { "state": "translated", "value": "Profilo" } }
       }
     },
     "Select a client": {
