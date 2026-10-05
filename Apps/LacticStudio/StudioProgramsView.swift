@@ -3,10 +3,6 @@ import LacticKit
 import LacticUI
 import SwiftUI
 
-// `StudioColumns` takes a list and its detail as closures beside `back`, which
-// reads better as one trailing-closure block per column.
-// swiftlint:disable multiple_closures_with_trailing_closure
-
 /// Programmes: the library, one programme's weeks and workouts beside it, and
 /// the selected workout's exercises beside that. Building a programme is the
 /// one task that goes two levels deep, and on a wide iPad all three are on
@@ -39,40 +35,42 @@ struct StudioProgrammesTab: View {
                 } else {
                     navigator.programmeID = nil
                 }
+            },
+            root: {
+                StudioProgrammeList(programmes: programmes, templates: templates, selection: $navigator.programmeID)
+            },
+            second: {
+                if let programmeID = navigator.programmeID {
+                    StudioProgramBuilderView(
+                        client: client, programID: programmeID, selection: $navigator.workout,
+                        volumeVersion: volumeVersion,
+                        didChangeDetails: { Task { await programmes.load() } }
+                    )
+                    .id(programmeID)
+                } else {
+                    StudioSelectPrompt(
+                        title: "Select a programme",
+                        message: "Its weeks and workouts appear here.",
+                        systemImage: "list.bullet.rectangle"
+                    )
+                }
+            },
+            third: {
+                if let programmeID = navigator.programmeID, let workout = navigator.workout {
+                    StudioWorkoutEditorView(
+                        client: client, programID: programmeID, weekID: workout.weekID, workoutID: workout.workoutID,
+                        didChangeVolume: { volumeVersion += 1 }
+                    )
+                    .id(workout)
+                } else {
+                    StudioSelectPrompt(
+                        title: "Select a workout",
+                        message: "Its exercises, sets and reps appear here.",
+                        systemImage: "dumbbell"
+                    )
+                }
             }
-        ) {
-            StudioProgrammeList(programmes: programmes, templates: templates, selection: $navigator.programmeID)
-        } second: {
-            if let programmeID = navigator.programmeID {
-                StudioProgramBuilderView(
-                    client: client, programID: programmeID, selection: $navigator.workout,
-                    volumeVersion: volumeVersion,
-                    didChangeDetails: { Task { await programmes.load() } }
-                )
-                .id(programmeID)
-            } else {
-                StudioSelectPrompt(
-                    title: "Select a programme",
-                    message: "Its weeks and workouts appear here.",
-                    systemImage: "list.bullet.rectangle"
-                )
-            }
-        } third: {
-            if let programmeID = navigator.programmeID, let workout = navigator.workout {
-                StudioWorkoutEditorView(
-                    client: client, programID: programmeID, weekID: workout.weekID, workoutID: workout.workoutID,
-                    didChangeVolume: { volumeVersion += 1 }
-                )
-                .id(workout)
-            } else {
-                StudioSelectPrompt(
-                    title: "Select a workout",
-                    message: "Its exercises, sets and reps appear here.",
-                    systemImage: "dumbbell"
-                )
-            }
-        }
-        .onChange(of: navigator.programmeID) { navigator.workout = nil }
+        ).onChange(of: navigator.programmeID) { navigator.workout = nil }
     }
 }
 
